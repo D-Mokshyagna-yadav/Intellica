@@ -1,6 +1,9 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import { useResponsive } from "../../../hooks/useResponsive";
 import "../../../styles/responsiveDashboard.css";
+import { apiFetch } from "../../../api";
+import { buildYearOptions } from "../../../constants/years";
+import { showToast } from "../../../utils/toast";
 
 function DepartmentDashboard({ uploads }) {
 
@@ -9,13 +12,9 @@ const [selectedCategory, setSelectedCategory] = useState(null);
 const [deptRank, setDeptRank] = useState(null);
 
 useEffect(() => {
-  const token = localStorage.getItem("token");
   const userDept = localStorage.getItem("user_department");
 
-  fetch("/api/ranking", {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
+  apiFetch("/ranking")
     .then(data => {
       if (!Array.isArray(data)) return;
 
@@ -52,7 +51,7 @@ useEffect(() => {
 
       setDeptRank({ rank, totalDepts, tierLabel });
     })
-    .catch(err => console.error("Rank fetch error:", err));
+    .catch(err => showToast({ type: "error", message: err.message || "Failed to load department rank" }));
 }, []);
 
 const [searchName, setSearchName] = useState("");
@@ -86,13 +85,13 @@ const categoryCredits = {
   certification: byCategory("certification"),
   others: byCategory("others"),
   researchpolicy: byCategory("researchpolicy"),
-  membership: byCategory("membership"),
+  membership: byCategory("professionalmembership"),
   ipr: byCategory("ipr"),
   consultancy: byCategory("consultancy"),
   incubation: byCategory("incubation"),
-  researchprojects: byCategory("researchprojects"),
+  researchprojects: byCategory("researchproject"),
   doctoralthesis: byCategory("doctoralthesis"),
-  mous: byCategory("mous")
+  mous: byCategory("mou")
 };
 
 const years = useMemo(() => {
@@ -253,7 +252,7 @@ return (
             className="filter-select"
           >
             <option value="">All Years</option>
-            {years.map(y => (
+            {buildYearOptions(2000).filter((year) => years.includes(Number(year))).map(y => (
               <option key={y} value={y}>{y}</option>
             ))}
           </select>

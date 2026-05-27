@@ -1,648 +1,240 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { apiFetch, getFileUrl } from "../../../api";
+import LoadingState from "../../../components/LoadingState";
+import { showToast } from "../../../utils/toast";
 
 function ApproveUploads() {
+  const [uploads, setUploads] = useState([]);
+  const [selectedUpload, setSelectedUpload] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [facultyFilter, setFacultyFilter] = useState("");
+  const [searchTitle, setSearchTitle] = useState("");
 
-const [uploads, setUploads] = useState([]);
-const [selectedUpload, setSelectedUpload] = useState(null);
+  const fetchPendingUploads = async () => {
+    try {
+      setLoading(true);
+      const result = await apiFetch("/uploads/hod/pending");
+      const flattened = (result || []).map((item) => ({
+        ...item,
+        metadata: item.metadata || {},
+        displayTitle: getTitle(item),
+        comment: item.hodComment || item.adminComment || "",
+        changedFields: item.changedFields || [],
+      }));
+      setUploads(flattened);
+    } catch (error) {
+      setUploads([]);
+      showToast({ type: "error", message: error.message || "Failed to fetch uploads" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const [categoryFilter,setCategoryFilter] = useState("");
-const [facultyFilter,setFacultyFilter] = useState("");
-const [searchTitle,setSearchTitle] = useState("");
+  useEffect(() => {
+    fetchPendingUploads();
+  }, []);
 
-const token = localStorage.getItem("token");
+  const categories = useMemo(() => [...new Set(uploads.map((upload) => upload.category).filter(Boolean))], [uploads]);
+  const faculties = useMemo(() => [...new Set(uploads.map((upload) => upload.faculty?.name).filter(Boolean))], [uploads]);
 
-/* ================= FORMAT FIELD NAME ================= */
+  const filteredUploads = uploads.filter((upload) => {
+    if (categoryFilter && upload.category !== categoryFilter) return false;
+    if (facultyFilter && upload.faculty?.name !== facultyFilter) return false;
+    if (searchTitle && !upload.displayTitle.toLowerCase().includes(searchTitle.toLowerCase())) return false;
+    return true;
+  });
 
-const formatFieldName = (field) => {
-return field
-.replace(/([A-Z])/g," $1")
-.replace(/^./,str => str.toUpperCase());
-};
+  const handleApprove = async (id) => {
+    try {
+      await apiFetch(`/uploads/hod/approve/${id}`, { method: "PUT" });
+      showToast({ type: "success", message: "Upload approved" });
+      fetchPendingUploads();
+    } catch (error) {
+      showToast({ type: "error", message: error.message || "Approval failed" });
+    }
+  };
 
-/* ================= UNIVERSAL TITLE ================= */
+  const handleDiscussion = async (id) => {
+    const comment = window.prompt("Enter discussion comment for faculty:");
+    if (!comment?.trim()) {
+      showToast({ type: "error", message: "Comment required" });
+      return;
+    }
 
-const getTitle = (item) => {
+    try {
+      await apiFetch(`/uploads/discussion/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ comment }),
+      });
+      showToast({ type: "success", message: "Discussion comment sent" });
+      fetchPendingUploads();
+    } catch (error) {
+      showToast({ type: "error", message: error.message || "Discussion failed" });
+    }
+  };
 
-const metadata = item.metadata || {};
+  if (loading) {
+    return <LoadingState message="Loading pending uploads..." />;
+  }
 
-return (
-  item.title ||
-  metadata.title ||
-  metadata.paperTitle ||
-  metadata.conferenceTitle ||
-  metadata.conferenceName ||
-  metadata.workshopTitle ||
-  metadata.fdpTitle ||
-  metadata.bookTitle ||
-  metadata.courseName ||
-  metadata.awardName ||
-  metadata.policyName ||
-  metadata.projectTitle ||
-  metadata.startupName ||
-  metadata.organization ||
-  metadata.topic ||
-  "-"
-);
+  return (
+    <div style={pageContainer}>
+      <div style={headerSection}>
+        <h1 style={title}>Approve Faculty Uploads</h1>
+        <p style={subtitle}>Review submitted academic activities and assign credits.</p>
+      </div>
 
-};
+      <div style={filterWrapper}>
+        <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} style={filterSelect}>
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category}>{category}</option>
+          ))}
+        </select>
 
-/* ================= FETCH UPLOADS ================= */
+        <select value={facultyFilter} onChange={(event) => setFacultyFilter(event.target.value)} style={filterSelect}>
+          <option value="">All Faculty</option>
+          {faculties.map((faculty) => (
+            <option key={faculty}>{faculty}</option>
+          ))}
+        </select>
 
-const fetchPendingUploads = async () => {
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchTitle}
+          onChange={(event) => setSearchTitle(event.target.value)}
+          style={searchInput}
+        />
+      </div>
 
-try {
+      <div style={scrollWrapper}>
+        <table style={table}>
+          <thead>
+            <tr>
+              <th style={th}>Faculty</th>
+              <th style={th}>Category</th>
+              <th style={th}>Title</th>
+              <th style={th}>Credits</th>
+              <th style={th}>Status</th>
+              <th style={th}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUploads.map((upload) => (
+              <tr key={upload._id}>
+                <td style={td}>{upload.faculty?.name} ({upload.faculty?.employeeId})</td>
+                <td style={td}>{upload.category}</td>
+                <td style={td}>{upload.displayTitle}</td>
+                <td style={td}>{upload.credits}</td>
+                <td style={td}>{upload.status}</td>
+                <td style={td}>
+                  <div style={actionWrapper}>
+                    <button style={viewBtn} onClick={() => setSelectedUpload(upload)}>View Details</button>
+                    <button style={approveBtn} onClick={() => handleApprove(upload._id)}>Approve</button>
+                    <button style={discussionBtn} onClick={() => handleDiscussion(upload._id)}>Call for Discussion</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-const res = await fetch(
-"http://localhost:5000/api/uploads/hod/pending",
-{
-headers:{ Authorization:`Bearer ${token}` }
+      {selectedUpload && (
+        <div style={modalOverlay}>
+          <div style={modalBox}>
+            <h2>{selectedUpload.displayTitle}</h2>
+            <p><b>Faculty:</b> {selectedUpload.faculty?.name} ({selectedUpload.faculty?.employeeId})</p>
+            <p><b>Category:</b> {selectedUpload.category}</p>
+            <p><b>Status:</b> {selectedUpload.status}</p>
+            <p><b>Credits:</b> {selectedUpload.credits}</p>
+
+            {selectedUpload.comment && (
+              <div style={{ background: "#fee2e2", border: "1px solid #f87171", padding: 10, borderRadius: 6, marginTop: 10 }}>
+                <b>Comment</b>
+                <p>{selectedUpload.comment}</p>
+              </div>
+            )}
+
+            <hr />
+
+            {Object.entries(selectedUpload.metadata || {}).map(([key, value]) => {
+              if (!value) return null;
+              return (
+                <p
+                  key={key}
+                  style={{
+                    background: (selectedUpload.changedFields || []).includes(key) ? "#fde68a" : "transparent",
+                    padding: "4px 6px",
+                    borderRadius: 4,
+                  }}
+                >
+                  <b>{formatFieldName(key)}</b> : {String(value)}
+                </p>
+              );
+            })}
+
+            {selectedUpload.filePath && (
+              <a href={getFileUrl(selectedUpload.filePath)} target="_blank" rel="noreferrer" style={pdfBtn}>
+                View PDF
+              </a>
+            )}
+
+            <br />
+            <button style={closeBtn} onClick={() => setSelectedUpload(null)}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
-);
 
-const result = await res.json();
-console.log("UPLOAD DATA:", result);
-
-const flattened = (result || []).map(item => ({
-
-...item,
-metadata:item.metadata || {},
-displayTitle:getTitle(item),
-comment:item.comment || "",
-changedFields:item.changedFields || []
-
-}));
-
-setUploads(flattened);
-
-} catch(err){
-console.error(err);
-setUploads([]);
+function getTitle(item) {
+  const metadata = item.metadata || {};
+  return (
+    item.title ||
+    metadata.title ||
+    metadata.paperTitle ||
+    metadata.conferenceTitle ||
+    metadata.conferenceName ||
+    metadata.workshopTitle ||
+    metadata.fdpTitle ||
+    metadata.bookTitle ||
+    metadata.courseName ||
+    metadata.awardName ||
+    metadata.policyName ||
+    metadata.projectTitle ||
+    metadata.startupName ||
+    metadata.organization ||
+    metadata.topic ||
+    "-"
+  );
 }
 
-};
-
-/* ================= LOAD ON START ================= */
-
-useEffect(()=>{
-fetchPendingUploads();
-},[]);
-
-/* ================= FILTER DATA ================= */
-
-const categories=[...new Set(uploads.map(u=>u.category))];
-
-const faculties=[
-...new Set(
-uploads.map(u=>u.faculty?.name).filter(Boolean)
-)
-];
-
-const filteredUploads = uploads.filter(upload => {
-
-if(categoryFilter && upload.category !== categoryFilter) return false;
-
-if(facultyFilter && upload.faculty?.name !== facultyFilter) return false;
-
-if(searchTitle){
-
-const titleMatch = upload.displayTitle;
-
-if(!titleMatch.toLowerCase().includes(searchTitle.toLowerCase()))
-return false;
-
-}
-
-return true;
-
-});
-
-/* ================= APPROVE ================= */
-
-const handleApprove = async (id) => {
-
-await fetch(
-`http://localhost:5000/api/uploads/hod/approve/${id}`,
-{
-method:"PUT",
-headers:{ Authorization:`Bearer ${token}` }
-}
-);
-
-alert("Upload approved");
-
-fetchPendingUploads();
-
-};
-
-/* ================= DISCUSSION ================= */
-
-const handleDiscussion = async (id) => {
-
-const comment = prompt("Enter discussion comment for faculty:");
-
-if(!comment || comment.trim()===""){
-alert("Comment required");
-return;
-}
-
-await fetch(
-`http://localhost:5000/api/uploads/discussion/${id}`,
-{
-method:"PUT",
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${token}`
-},
-body:JSON.stringify({comment})
-}
-);
-
-fetchPendingUploads();
-
-};
-
-return (
-
-<div style={pageContainer}>
-
-<div style={headerSection}>
-<h1 style={title}>Approve Faculty Uploads</h1>
-<p style={subtitle}>
-Review submitted academic activities and assign credits
-</p>
-</div>
-
-{/* FILTER BAR */}
-
-<div style={filterWrapper}>
-
-<select
-value={categoryFilter}
-onChange={(e)=>setCategoryFilter(e.target.value)}
-style={filterSelect}
->
-<option value="">All Categories</option>
-{categories.map(c => (
-<option key={c}>{c}</option>
-))}
-</select>
-
-<select
-value={facultyFilter}
-onChange={(e)=>setFacultyFilter(e.target.value)}
-style={filterSelect}
->
-<option value="">All Faculty</option>
-{faculties.map(f => (
-<option key={f}>{f}</option>
-))}
-</select>
-
-<input
-type="text"
-placeholder="Search by title..."
-value={searchTitle}
-onChange={(e)=>setSearchTitle(e.target.value)}
-style={searchInput}
-/>
-
-</div>
-
-{/* TABLE */}
-
-<div style={scrollWrapper}>
-
-<table style={table}>
-
-<thead>
-
-<tr>
-<th style={th}>Faculty</th>
-<th style={th}>Category</th>
-<th style={th}>Title</th>
-<th style={th}>Credits</th>
-<th style={th}>Status</th>
-<th style={th}>Actions</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-{filteredUploads.map(u => (
-
-<tr key={u._id}>
-
-<td style={td}>{u.faculty?.name} ({u.faculty?.employeeId})</td>
-<td style={td}>{u.category}</td>
-<td style={td}>{u.displayTitle}</td>
-<td style={td}>{u.credits}</td>
-<td style={td}>{u.status}</td>
-
-<td style={td}>
-
-<div style={actionWrapper}>
-
-<button
-style={viewBtn}
-onClick={()=>setSelectedUpload(u)}
-onMouseEnter={(e)=>{e.target.style.transform="scale(1.05)";e.target.style.boxShadow="0 4px 12px rgba(37,99,235,0.4)"}}
-onMouseLeave={(e)=>{e.target.style.transform="scale(1)";e.target.style.boxShadow="none"}}
->
-View Details
-</button>
-
-<button
-style={approveBtn}
-onClick={()=>handleApprove(u._id)}
-onMouseEnter={(e)=>{e.target.style.transform="scale(1.05)";e.target.style.boxShadow="0 4px 12px rgba(22,163,74,0.4)"}}
-onMouseLeave={(e)=>{e.target.style.transform="scale(1)";e.target.style.boxShadow="none"}}
->
-Approve
-</button>
-
-<button
-style={discussionBtn}
-onClick={()=>handleDiscussion(u._id)}
-onMouseEnter={(e)=>{e.target.style.transform="scale(1.05)";e.target.style.boxShadow="0 4px 12px rgba(245,158,11,0.4)"}}
-onMouseLeave={(e)=>{e.target.style.transform="scale(1)";e.target.style.boxShadow="none"}}
->
-Call for Discussion
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-{/* VIEW MODAL */}
-
-{selectedUpload && (
-
-<div style={modalOverlay}>
-
-<div style={modalBox}>
-
-<h2>{selectedUpload.displayTitle}</h2>
-
-<p>
-<b>Faculty:</b> {selectedUpload.faculty?.name} ({selectedUpload.faculty?.employeeId})
-</p>
-<p><b>Category:</b> {selectedUpload.category}</p>
-<p><b>Status:</b> {selectedUpload.status}</p>
-<p><b>Credits:</b> {selectedUpload.credits}</p>
-
-{/* ===== COMMENT ===== */}
-
-{selectedUpload.comment && (
-
-<div style={{
-background:"#fee2e2",
-border:"1px solid #f87171",
-padding:"10px",
-borderRadius:6,
-marginTop:10
-}}>
-
-<b>Comment</b>
-<p>{selectedUpload.comment}</p>
-
-</div>
-
-)}
-
-<hr/>
-
-{/* ===== METADATA ===== */}
-
-{Object.entries(selectedUpload.metadata || {})
-.filter(([key]) => {
-
-const k = key.toLowerCase();
-
-return !(
-k.includes("guided") ||
-k.includes("guiding") ||
-k.includes("guide")
-);
-
-})
-.map(([key,value]) => {
-
-if(!value) return null;
-
-return (
-
-<p
-key={key}
-style={{
-background:
-(selectedUpload.changedFields || []).includes(key)
-? "#fde68a"
-: "transparent",
-padding:"4px 6px",
-borderRadius:4
-}}
->
-<b>{formatFieldName(key)}</b> : {value}
-</p>
-
-);
-
-})}
-{/* ===== GUIDED SCHOLARS ===== */}
-
-{selectedUpload.metadata?.guidedDetails && (()=>{
-
-let guided = [];
-
-try{
-guided = JSON.parse(selectedUpload.metadata.guidedDetails);
-}catch(e){}
-
-if(!guided.length) return null;
-
-return(
-
-<div style={{marginTop:20}}>
-
-<h3>Guided Scholars</h3>
-
-<table style={{
-width:"100%",
-borderCollapse:"collapse",
-marginTop:10
-}}>
-
-<thead>
-
-<tr style={{background:"#f1f5f9"}}>
-<th style={th}>Scholar Name</th>
-<th style={th}>University</th>
-<th style={th}>Completion Date</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-{guided.map((s,i)=>(
-
-<tr key={i}>
-<td style={td}>{s.scholarName || "-"}</td>
-<td style={td}>{s.university || "-"}</td>
-<td style={td}>{s.completionDate || "-"}</td>
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-);
-
-})()}
-
-{/* ===== GUIDING SCHOLARS ===== */}
-
-{selectedUpload.metadata?.guidingDetails && (()=>{
-
-let guiding = [];
-
-try{
-guiding = JSON.parse(selectedUpload.metadata.guidingDetails);
-}catch(e){}
-
-if(!guiding.length) return null;
-
-return(
-
-<div style={{marginTop:20}}>
-
-<h3>Guiding Scholars</h3>
-
-<table style={{
-width:"100%",
-borderCollapse:"collapse",
-marginTop:10
-}}>
-
-<thead>
-
-<tr style={{background:"#f1f5f9"}}>
-<th style={th}>Scholar Name</th>
-<th style={th}>University</th>
-<th style={th}>Completion Date</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-{guiding.map((s,i)=>(
-
-<tr key={i}>
-<td style={td}>{s.scholarName || "-"}</td>
-<td style={td}>{s.university || "-"}</td>
-<td style={td}>{s.completionDate || "-"}</td>
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-);
-
-})()}
-{/* PDF */}
-
-{selectedUpload.filePath && (
-
-<a
-href={`http://localhost:5000/${selectedUpload.filePath}`}
-target="_blank"
-rel="noreferrer"
-style={pdfBtn}
->
-View PDF
-</a>
-
-)}
-
-<br/>
-
-<button
-style={closeBtn}
-onClick={()=>setSelectedUpload(null)}
-onMouseEnter={(e)=>{e.target.style.transform="translateY(-2px)";e.target.style.boxShadow="0 4px 12px rgba(239,68,68,0.4)"}}
-onMouseLeave={(e)=>{e.target.style.transform="translateY(0)";e.target.style.boxShadow="none"}}
->
-Close
-</button>
-
-</div>
-
-</div>
-
-)}
-
-</div>
-
-);
-
+function formatFieldName(field) {
+  return field.replace(/([A-Z])/g, " $1").replace(/^./, (value) => value.toUpperCase());
 }
 
 export default ApproveUploads;
 
-
-/* ================= STYLES ================= */
-
-const pageContainer={width:"100%",paddingTop:20};
-const headerSection={marginBottom:30};
-
-const title={
-fontSize:26,
-fontWeight:700,
-color:"#0F172A",
-marginBottom:8
-};
-
-const subtitle={fontSize:14,color:"#334155"};
-
-const filterWrapper={
-display:"flex",
-gap:12,
-marginBottom:20,
-flexWrap:"wrap"
-};
-
-const filterSelect={
-padding:"8px 14px",
-borderRadius:8,
-border:"1px solid #cbd5f5",
-backgroundColor:"#f8fafc",
-fontSize:14,
-minWidth:180
-};
-
-const searchInput={
-padding:"8px 14px",
-borderRadius:8,
-border:"1px solid #cbd5f5",
-fontSize:14,
-minWidth:240
-};
-
-const scrollWrapper={overflowX:"auto"};
-
-const table={
-minWidth:"900px",
-borderCollapse:"collapse",
-backgroundColor:"white",
-borderRadius:12,
-boxShadow:"0 6px 18px rgba(0,0,0,0.06)"
-};
-
-const th={
-padding:"18px 20px",
-backgroundColor:"#f8fafc",
-borderBottom:"1px solid #e2e8f0",
-fontWeight:600
-};
-
-const td={
-padding:"18px 20px",
-borderBottom:"1px solid #e2e8f0"
-};
-
-const actionWrapper={display:"flex",gap:10};
-
-const viewBtn={
-padding:"6px 12px",
-backgroundColor:"#2563eb",
-color:"white",
-borderRadius:8,
-border:"none",
-cursor:"pointer",
-transition:"all 0.2s ease"
-};
-
-const approveBtn={
-padding:"6px 16px",
-backgroundColor:"#16a34a",
-color:"white",
-border:"none",
-borderRadius:8,
-cursor:"pointer",
-transition:"all 0.2s ease"
-};
-
-const discussionBtn={
-padding:"6px 16px",
-backgroundColor:"#f59e0b",
-color:"white",
-border:"none",
-borderRadius:8,
-cursor:"pointer",
-transition:"all 0.2s ease"
-};
-
-const modalOverlay={
-position:"fixed",
-top:0,
-left:0,
-width:"100%",
-height:"100%",
-background:"rgba(0,0,0,0.4)",
-display:"flex",
-justifyContent:"center",
-alignItems:"center"
-};
-
-const modalBox={
-background:"white",
-padding:25,
-borderRadius:10,
-width:500,
-maxHeight:"80vh",
-overflowY:"auto"
-};
-
-const pdfBtn={
-display:"inline-block",
-marginTop:10,
-padding:"6px 12px",
-background:"#2563eb",
-color:"white",
-borderRadius:6,
-textDecoration:"none",
-cursor:"pointer",
-transition:"all 0.2s ease"
-};
-
-const closeBtn={
-marginTop:15,
-padding:"6px 12px",
-background:"#ef4444",
-color:"white",
-border:"none",
-borderRadius:6,
-cursor:"pointer",
-transition:"all 0.2s ease"
-};
+const pageContainer = { width: "100%", paddingTop: 20 };
+const headerSection = { marginBottom: 30 };
+const title = { fontSize: 26, fontWeight: 700, color: "#0F172A", marginBottom: 8 };
+const subtitle = { fontSize: 14, color: "#334155" };
+const filterWrapper = { display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" };
+const filterSelect = { padding: "8px 14px", borderRadius: 8, border: "1px solid #cbd5f5", backgroundColor: "#f8fafc", fontSize: 14, minWidth: 180 };
+const searchInput = { padding: "8px 14px", borderRadius: 8, border: "1px solid #cbd5f5", fontSize: 14, minWidth: 240 };
+const scrollWrapper = { overflowX: "auto" };
+const table = { minWidth: "900px", borderCollapse: "collapse", backgroundColor: "white", borderRadius: 12, boxShadow: "0 6px 18px rgba(0,0,0,0.06)" };
+const th = { padding: "18px 20px", backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", fontWeight: 600 };
+const td = { padding: "18px 20px", borderBottom: "1px solid #e2e8f0" };
+const actionWrapper = { display: "flex", gap: 10 };
+const viewBtn = { padding: "6px 12px", backgroundColor: "#2563eb", color: "white", borderRadius: 8, border: "none", cursor: "pointer" };
+const approveBtn = { padding: "6px 16px", backgroundColor: "#16a34a", color: "white", border: "none", borderRadius: 8, cursor: "pointer" };
+const discussionBtn = { padding: "6px 16px", backgroundColor: "#f59e0b", color: "white", border: "none", borderRadius: 8, cursor: "pointer" };
+const modalOverlay = { position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", justifyContent: "center", alignItems: "center" };
+const modalBox = { background: "white", padding: 25, borderRadius: 10, width: 500, maxHeight: "80vh", overflowY: "auto" };
+const pdfBtn = { display: "inline-block", marginTop: 10, padding: "6px 12px", background: "#2563eb", color: "white", borderRadius: 6, textDecoration: "none" };
+const closeBtn = { marginTop: 15, padding: "6px 12px", background: "#ef4444", color: "white", border: "none", borderRadius: 6, cursor: "pointer" };

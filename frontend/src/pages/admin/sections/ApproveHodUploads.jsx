@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-
-const API_BASE = "/api";   // ✅ central API base
+import { API_BASE } from "../../../api";
+import { showToast } from "../../../utils/toast";
 
 function ApproveHodUploads() {
 
@@ -45,7 +45,7 @@ const fetchUploads = async () => {
     }
 
   }catch(err){
-    console.error(err);
+    showToast({ type: "error", message: err.message || "Failed to load uploads" });
   }
 };
 
@@ -71,7 +71,7 @@ const approveUpload = async(id)=>{
     }
 
   }catch(err){
-    console.error(err);
+    showToast({ type: "error", message: err.message || "Approval failed" });
   }
 };
 
@@ -101,7 +101,7 @@ const callDiscussion = async(id)=>{
     }
 
   }catch(err){
-    console.error(err);
+    showToast({ type: "error", message: err.message || "Discussion failed" });
   }
 };
 

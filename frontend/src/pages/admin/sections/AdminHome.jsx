@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useResponsive } from "../../../hooks/useResponsive";
 import "../../../styles/responsiveDashboard.css";
+import { showToast } from "../../../utils/toast";
 
 export default function AdminHome({ setView }) {
 
@@ -105,8 +106,7 @@ setStats({
 });
 
 }catch(err){
-
-console.error(err);
+showToast({ type: "error", message: err.message || "Failed to load admin dashboard" });
 
 }
 

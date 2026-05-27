@@ -2,12 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
-require("dotenv").config();
+const fs = require("fs");
+const mongoSanitize = require("express-mongo-sanitize");
+const pinoHttp = require("pino-http");
 
-// Validate environment variables
+require("dotenv").config();
+const logger = require("./utils/logger");
 require("./utils/validateEnv");
 
-/* ================= ROUTES ================= */
+const securityMiddleware = require("./middleware/securityMiddleware");
+const requestSanitizer = require("./middleware/requestSanitizer");
+const { errorHandler, notFoundHandler } = require("./middleware/errorMiddleware");
+const bootstrapAdmin = require("./utils/bootstrapAdmin");
 
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -17,38 +23,48 @@ const facultyRoutes = require("./routes/facultyRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const creditConfigRoutes = require("./routes/creditConfigRoutes");
 const rankingRoutes = require("./routes/rankingroutes");
-
-/* ================= MIDDLEWARE ================= */
-
-const securityMiddleware = require("./middleware/securityMiddleware");
-
-/* ================= APP ================= */
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
-/* =====================================================
-   MIDDLEWARE STACK
-===================================================== */
+const allowedOrigins = (process.env.FRONTEND_ORIGINS || process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-// Security headers
+app.disable("x-powered-by");
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origin not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use(securityMiddleware);
+app.use(
+  pinoHttp({
+    logger,
+    autoLogging: process.env.NODE_ENV === "production",
+  })
+);
+app.use(express.json({ limit: process.env.JSON_LIMIT || "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: process.env.JSON_LIMIT || "1mb" }));
+app.use(mongoSanitize());
+app.use(requestSanitizer);
 
-// Enable CORS
-app.use(cors());
+const uploadsPath = path.join(__dirname, "uploads");
+app.use("/uploads", express.static(uploadsPath, { index: false }));
 
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
 
-// JSON & Form Data Support
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Static folder for uploaded files
-app.use("/uploads", express.static("uploads"));
-
-/* =====================================================
-   API ROUTES (IMPORTANT: BEFORE STATIC)
-===================================================== */
-
-app.use("/api/rank", require("./routes/rankRoutes"));
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/uploads", uploadRoutes);
@@ -57,54 +73,38 @@ app.use("/api/faculty", facultyRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/credit-config", creditConfigRoutes);
 app.use("/api/ranking", rankingRoutes);
-/* =====================================================
-   STATIC FRONTEND (AFTER API)
-===================================================== */
+app.use("/api/notifications", notificationRoutes);
 
-app.use(express.static(path.join(__dirname, "dist")));
+const frontendDistCandidates = [path.join(__dirname, "dist"), path.join(__dirname, "..", "frontend", "dist")];
+const frontendDistPath = frontendDistCandidates.find((candidatePath) => fs.existsSync(candidatePath));
 
-/* =====================================================
-   HEALTH CHECK
-===================================================== */
+if (frontendDistPath) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (req, res, next) => {
+    if (req.originalUrl.startsWith("/api/")) {
+      next();
+      return;
+    }
 
-app.get("/api/health", (req, res) => {
-  res.json({ status: "Faculty Research Management API Running" });
-});
-
-/* =====================================================
-   SPA FALLBACK (LAST)
-===================================================== */
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-
-/* =====================================================
-   GLOBAL ERROR HANDLER (VERY IMPORTANT)
-===================================================== */
-
-app.use((err, req, res, next) => {
-  console.error("❌ GLOBAL ERROR:", err.message);
-  console.error(err.stack);
-  res.status(500).json({ message: err.message });
-});
-
-/* =====================================================
-   DATABASE CONNECTION & SERVER STARTUP
-===================================================== */
-
-const DEFAULT_PORT = process.env.PORT || 5000;
-
-mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-
-  console.log("✅ MongoDB Connected");
-
-  app.listen(DEFAULT_PORT, () => {
-    console.log(`🔥 Server running on port ${DEFAULT_PORT}`);
+    res.sendFile(path.join(frontendDistPath, "index.html"));
   });
+}
 
-})
-.catch((err) => {
-  console.error("❌ MongoDB Connection Error:", err);
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+const port = Number(process.env.PORT || 5000);
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(async () => {
+    logger.info("MongoDB connected");
+    await bootstrapAdmin();
+    app.listen(port, () => {
+      logger.info({ port }, "Server started");
+    });
+  })
+  .catch((error) => {
+    logger.error({ err: error }, "MongoDB connection failed");
+    process.exit(1);
+  });

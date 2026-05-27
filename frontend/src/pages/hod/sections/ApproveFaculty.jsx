@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API_BASE from "../../../api";
 import ReusableTable from "../../../components/ReusableTable";
+import { showToast } from "../../../utils/toast";
 
 function ApproveFaculty() {
 
@@ -78,7 +79,7 @@ function ApproveFaculty() {
       );
 
     } catch (err) {
-      alert(err.message);
+      showToast({ type: "error", message: err.message });
     }
 
   };
@@ -111,7 +112,7 @@ function ApproveFaculty() {
       );
 
     } catch (err) {
-      alert(err.message);
+      showToast({ type: "error", message: err.message });
     }
 
   };

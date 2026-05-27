@@ -28,10 +28,14 @@ import Incubation from "./categories/Incubation";
 import Consultancy from "./categories/Consultancy";
 
 import ProfileInfo from "../common/ProfileInfo";
-import API_BASE from "../../api";
+import API_BASE, { apiFetch, getFileUrl } from "../../api";
 import CreditConfigViewer from "../admin/sections/credit-config/common/CreditConfigViewer";
+import { buildYearOptions } from "../../constants/years";
+import { CATEGORY_FILTER_OPTIONS } from "../../constants/categories";
+import LoadingState from "../../components/LoadingState";
+import { showToast } from "../../utils/toast";
 
-const ALL_YEARS = Array.from({ length: 1101 }, (_, i) => (1900 + i).toString());
+const ALL_YEARS = buildYearOptions(2000);
 
 function FacultyDashboard({ setPage, readOnly = false, facultyId = null })  {
 const responsive = useResponsive();
@@ -39,29 +43,7 @@ const isHODView = readOnly && facultyId;
 const [view,setView]=useState("dashboard");
 const [uploads,setUploads]=useState([]);
 
-const ALL_CATEGORIES = [
-  "Publications",
-  "Conferences",
-  "FDPs",
-  "Books",
-  "NPTEL",
-  "Seminars",
-  "Webinars",
-  "GuestLectures",
-  "HonorsAwards",
-  "Certification",
-  "ResearchPolicy",
-  "Membership",
-  "IPR",
-  "Consultancy",
-  "Incubation",
-  "ResearchProjects",
-  "DoctoralThesis",
-  "MOUs",
-  "Other"
-];
-
-const availableCategories = ALL_CATEGORIES;
+const availableCategories = CATEGORY_FILTER_OPTIONS;
 
 const availableYears = useMemo(() => 
   [...new Set(
@@ -77,6 +59,7 @@ const [categoryMode,setCategoryMode]=useState("upload");
 const [selectedCategory, setSelectedCategory] = useState("");
 const [selectedYear, setSelectedYear] = useState("");
 const [rankData, setRankData] = useState(null);
+const [loading, setLoading] = useState(true);
 
 const fileInputRef=useRef(null);
 const token=localStorage.getItem("token");
@@ -106,39 +89,18 @@ headers:{Authorization:`Bearer ${token}`}
 })
 .then(res=>res.json())
 .then(data=>setUser(data))
-.catch(console.error);
+.catch((error)=>showToast({ type:"error", message:error.message || "Failed to load profile" }));
 
 },[token, facultyId]);
 
 useEffect(() => {
   const fetchRank = async () => {
     try {
-      const res = await fetch(`${API_BASE}/ranking`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (!res.ok) {
-        console.error("Ranking fetch failed:", res.status);
-        return;
-      }
-
-      const data = await res.json();
-      console.log("FULL RANKING DATA:", data);
-
-      if (!Array.isArray(data)) return;
-
-      
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const userId = payload.id;
-
-      
-      const myData = data.find(f => f.facultyId === userId);
-      console.log("MY DATA:", myData);
-
+      const targetId = facultyId || localStorage.getItem("userId");
+      const myData = await apiFetch(`/ranking/${targetId}`);
       if (myData) {
-        
         setRankData({
-          departmentRank:  myData.rank,
+          departmentRank:  myData.departmentRank,
           departmentTotal: myData.departmentTotal,
           collegeRank:     myData.collegeRank,
           collegeTotal:    myData.collegeTotal,
@@ -147,12 +109,12 @@ useEffect(() => {
       }
 
     } catch (err) {
-      console.error("Rank fetch error:", err);
+      showToast({ type: "error", message: err.message || "Failed to load ranking" });
     }
   };
 
   if (token) fetchRank();
-}, [token]);
+}, [token, facultyId]);
 
 /* FETCH UPLOADS */
 
@@ -168,7 +130,7 @@ headers:{Authorization:`Bearer ${token}`}
 .then(async res => {
 
 if(!res.ok){
-console.error("Upload fetch failed",res.status);
+showToast({ type:"error", message:"Failed to load uploads" });
 setUploads([]);
 return;
 }
@@ -183,9 +145,10 @@ setUploads([]);
 
 })
 .catch(err=>{
-console.error("UPLOAD FETCH ERROR",err);
+showToast({ type:"error", message:err.message || "Failed to load uploads" });
 setUploads([]);
-});
+})
+.finally(()=>setLoading(false));
 
 },[token, facultyId]);
 
@@ -211,6 +174,7 @@ const data=await res.json();
 
 if(res.ok){
 setUser(prev=>({...prev,profileImage:data.profileImage}));
+showToast({ type:"success", message:"Profile image updated" });
 }
 
 };
@@ -238,7 +202,7 @@ approvedUploads
 .reduce((sum, u) => sum + (u.credits || 0), 0);
 const pendingUploads = uploads.filter((u) => {
   const status = (u.status || "").toUpperCase();
-  return status === "PENDING";
+  return status === "FACULTY_SUBMITTED" || status === "HOD_COMMENT" || status === "ADMIN_COMMENT";
 });
 
 const approvedCount = approvedUploads.length;
@@ -262,12 +226,12 @@ honorsawards:byCategory("honorsawards"),
 certification:byCategory("certification"),
 others: byCategory("others"),
 researchpolicy:byCategory("researchpolicy"),
-membership:byCategory("membership"),
+membership:byCategory("professionalmembership"),
 ipr:byCategory("ipr"),
 consultancy:byCategory("consultancy"),
 incubation:byCategory("incubation"),
-doctoralThesis:byCategory("doctoralThesis"),
-researchProjects:byCategory("researchProjects")
+doctoralThesis:byCategory("doctoralthesis"),
+researchProjects:byCategory("researchproject")
 };
 
 
@@ -298,21 +262,19 @@ const handleDownload = async () => {
       url += `?${params.toString()}`;
     }
 
-    console.log("DOWNLOAD URL:", url); // 🔍 debug this
-
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
     if (!res.ok) {
-      console.error("Download failed:", res.status);
+      showToast({ type:"error", message:"Download failed" });
       return;
     }
 
     const blob = await res.blob();
 
     if (blob.size === 0) {
-      console.error("Empty file returned ❌");
+      showToast({ type:"error", message:"No report data found" });
       return;
     }
 
@@ -322,9 +284,13 @@ const handleDownload = async () => {
     link.click();
 
   } catch (err) {
-    console.error("DOWNLOAD ERROR:", err);
+    showToast({ type:"error", message:err.message || "Download failed" });
   }
 };
+
+if (loading) {
+return <div style={{ paddingTop: 120, paddingInline: 32 }}><LoadingState message="Loading faculty dashboard..." /></div>;
+}
 
 
 
@@ -345,7 +311,7 @@ return(
 <img
 src={
   user?.profileImage
-    ? `/uploads/${user.profileImage}`
+    ? getFileUrl(`uploads/${user.profileImage}`)
     : "https://via.placeholder.com/260x220"
 }
 alt="Profile"
@@ -475,7 +441,7 @@ Download All
   <option value="">Year</option>
   <option value="All">ALL</option>
 
-  {Array.from({ length: 1101 }, (_, i) => 1900 + i).map(year => (
+  {ALL_YEARS.map(year => (
     <option key={year} value={year}>
       {year}
     </option>

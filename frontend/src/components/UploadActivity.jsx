@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { activityFields } from "../config/activityFields";
 import API_BASE from "../api";
+import { buildYearOptions } from "../constants/years";
+import { showToast } from "../utils/toast";
 
 function UploadActivity({ category, onSubmit, editData }) {
 
@@ -14,8 +16,6 @@ const [guidedForms, setGuidedForms] = useState([]);
 const [guidingForms, setGuidingForms] = useState([]);
 
 const token = localStorage.getItem("token");
-
-console.log("Sending Year:", selectedYear);
 
 /* ================= LOAD EDIT DATA ================= */
 
@@ -140,7 +140,7 @@ if (!selectedFile) return;
 const maxSize = 20 * 1024 * 1024;
 
 if (selectedFile.size > maxSize) {
-alert("PDF must be less than 20MB");
+showToast({ type: "error", message: "PDF must be less than 20MB" });
 return;
 }
 
@@ -155,7 +155,7 @@ const handleSubmit = async (e) => {
 e.preventDefault();
 
 if (!selectedYear) {
-  alert("Please select a valid year before submitting.");
+  showToast({ type: "error", message: "Please select a valid year before submitting." });
   return;
 }
 
@@ -163,9 +163,6 @@ try {
 
 const formData = new FormData();
 formData.append("year", selectedYear);
-for (let pair of formData.entries()) {
-  console.log("FORM DATA:", pair[0], pair[1]);
-}
 
 
 /* TITLE */
@@ -224,11 +221,11 @@ body: formData
 const data = await res.json();
 
 if (!res.ok) {
-alert(data.message || "Upload failed");
+showToast({ type: "error", message: data.message || "Upload failed" });
 return;
 }
 
-alert(editData ? "Updated & Resubmitted" : "Upload submitted");
+showToast({ type: "success", message: editData ? "Updated and resubmitted" : "Upload submitted" });
 
 setForm({});
 setFile(null);
@@ -239,8 +236,7 @@ if (onSubmit) onSubmit();
 
 } catch (err) {
 
-console.error(err);
-alert("Upload failed");
+showToast({ type: "error", message: err.message || "Upload failed" });
 
 }
 
@@ -265,7 +261,7 @@ return (
         required
       >
         <option value="">Year</option>
-        {Array.from({ length: 1101 }, (_, i) => 1900 + i).map(y => (
+        {buildYearOptions(2000).map(y => (
           <option key={y} value={y}>{y}</option>
         ))}
       </select>

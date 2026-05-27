@@ -1,169 +1,192 @@
 const Upload = require("../models/Upload");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
-const { rankFaculty } = require("../services/rankingDecisionTree");
+const { rankFaculty } = require("../services/rankingDecisiontree");
+const { getCategoryConfig } = require("../constants/categories");
+
+const APPROVED_STATUSES = ["HOD_APPROVED", "ADMIN_APPROVED"];
+
+function createEmptyParticipant(participant) {
+  return {
+    facultyId: participant._id.toString(),
+    name: participant.name || "Unknown",
+    department: participant.department || "Unknown",
+    createdByRole: participant.role || "FACULTY",
+    totalCredits: 0,
+    publications: 0,
+    conferences: 0,
+    fdps: 0,
+    workshop: 0,
+    book: 0,
+    nptel: 0,
+    seminar: 0,
+    webinar: 0,
+    guestlecture: 0,
+    honorsawards: 0,
+    certification: 0,
+    researchpolicy: 0,
+    membership: 0,
+    ipr: 0,
+    consultancy: 0,
+    incubation: 0,
+    researchprojects: 0,
+    doctoralthesis: 0,
+    mous: 0,
+    others: 0,
+  };
+}
+
+const rankingFieldMap = {
+  publications: "publications",
+  conferences: "conferences",
+  workshops: "workshop",
+  fdps: "fdps",
+  guestLectures: "guestlecture",
+  seminars: "seminar",
+  webinars: "webinar",
+  books: "book",
+  nptel: "nptel",
+  honorsAwards: "honorsawards",
+  certifications: "certification",
+  researchPolicies: "researchpolicy",
+  professionalMemberships: "membership",
+  iprs: "ipr",
+  incubations: "incubation",
+  consultancies: "consultancy",
+  mous: "mous",
+  researchProjects: "researchprojects",
+  doctoralTheses: "doctoralthesis",
+  others: "others",
+};
+
+async function buildLeaderboard() {
+  const [uploads, allFaculty, allHods] = await Promise.all([
+    Upload.find({ status: { $in: APPROVED_STATUSES } }).lean(),
+    Faculty.find({ isApproved: true, status: "APPROVED" }).lean(),
+    HOD.find({ isApproved: true, status: "APPROVED" }).lean(),
+  ]);
+
+  const participantMap = new Map();
+
+  [...allFaculty, ...allHods].forEach((participant) => {
+    participantMap.set(participant._id.toString(), createEmptyParticipant(participant));
+  });
+
+  uploads.forEach((upload) => {
+    if (!upload.faculty) {
+      return;
+    }
+
+    const participantId = upload.faculty.toString();
+    if (!participantMap.has(participantId)) {
+      participantMap.set(participantId, {
+        facultyId: participantId,
+        name: "Unknown",
+        department: upload.department || "Unknown",
+        createdByRole: upload.createdByRole || "FACULTY",
+        totalCredits: 0,
+        publications: 0,
+        conferences: 0,
+        fdps: 0,
+        workshop: 0,
+        book: 0,
+        nptel: 0,
+        seminar: 0,
+        webinar: 0,
+        guestlecture: 0,
+        honorsawards: 0,
+        certification: 0,
+        researchpolicy: 0,
+        membership: 0,
+        ipr: 0,
+        consultancy: 0,
+        incubation: 0,
+        researchprojects: 0,
+        doctoralthesis: 0,
+        mous: 0,
+        others: 0,
+      });
+    }
+
+    const participant = participantMap.get(participantId);
+    participant.totalCredits += Number(upload.credits) || 0;
+    participant.department = participant.department || upload.department || "Unknown";
+    participant.createdByRole = participant.createdByRole || upload.createdByRole || "FACULTY";
+
+    const categoryConfig = getCategoryConfig(upload.category);
+    const rankingKey = categoryConfig?.rankingKey;
+    const scoreField = rankingKey ? rankingFieldMap[rankingKey] : null;
+    if (scoreField) {
+      participant[scoreField] += 1;
+    }
+  });
+
+  const ranked = rankFaculty(
+    Array.from(participantMap.values()).filter(
+      (participant) => participant.name !== "Unknown" && participant.department !== "Unknown"
+    )
+  );
+
+  ranked.sort((a, b) => b.score - a.score || b.totalCredits - a.totalCredits);
+  ranked.forEach((participant, index) => {
+    participant.collegeRank = index + 1;
+    participant.collegeTotal = ranked.length;
+  });
+
+  const departmentGroups = ranked.reduce((accumulator, participant) => {
+    const department = String(participant.department || "Unknown").toUpperCase();
+    accumulator[department] = accumulator[department] || [];
+    accumulator[department].push(participant);
+    return accumulator;
+  }, {});
+
+  const finalRanked = [];
+  Object.entries(departmentGroups).forEach(([department, participants]) => {
+    participants.sort((a, b) => b.score - a.score || b.totalCredits - a.totalCredits);
+    participants.forEach((participant, index) => {
+      participant.rank = index + 1;
+      participant.departmentTotal = participants.length;
+      participant.department = department;
+    });
+    finalRanked.push(...participants);
+  });
+
+  return finalRanked;
+}
 
 exports.getRanking = async (req, res) => {
-  try {
+  const rankings = await buildLeaderboard();
+  const requestedDepartment = String(req.query.department || "").trim().toUpperCase();
 
-    // ✅ Step 1: All approved uploads
-    const uploads = await Upload.find({
-      status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] }
-    });
+  const filtered = requestedDepartment
+    ? rankings.filter((participant) => participant.department === requestedDepartment)
+    : rankings;
 
-    const facultyMap = {};
+  res.json(filtered);
+};
 
-    uploads.forEach((u) => {
-      const id = u.faculty?.toString();
-      if (!id) return;
+exports.getMyRank = async (req, res) => {
+  const rankings = await buildLeaderboard();
+  const participantId = req.params.id || req.user.id;
+  const participant = rankings.find((item) => item.facultyId === participantId);
 
-      if (!facultyMap[id]) {
-        facultyMap[id] = {
-          facultyId: id,
-          name: "Unknown",
-          department: u.department || "Unknown",
-          createdByRole: u.createdByRole || "FACULTY",
+  res.json(
+    participant
+      ? {
+          departmentRank: participant.rank,
+          departmentTotal: participant.departmentTotal,
+          collegeRank: participant.collegeRank,
+          collegeTotal: participant.collegeTotal,
+          score: participant.score,
+          totalCredits: participant.totalCredits,
+        }
+      : {
+          departmentRank: null,
+          departmentTotal: 0,
+          collegeRank: null,
+          collegeTotal: rankings.length,
+          score: 0,
           totalCredits: 0,
-          publications: 0,
-          conferences: 0,
-          fdps: 0,
-          workshop: 0,
-          book: 0,
-          nptel: 0,
-          seminar: 0,
-          webinar: 0,
-          guestlecture: 0,
-          honorsawards: 0,
-          certification: 0,
-          researchpolicy: 0,
-          membership: 0,
-          ipr: 0,
-          consultancy: 0,
-          incubation: 0,
-          researchprojects: 0,
-          doctoralthesis: 0,
-          mous: 0,
-          others: 0
-        };
-      }
-
-      // ✅ Total credits
-      facultyMap[id].totalCredits += Number(u.credits) || 0;
-
-      // ✅ Category count
-      const cat = (u.category || "").toLowerCase().trim();
-
-      if (cat === "publication")      facultyMap[id].publications     += 1;
-      if (cat === "conference")       facultyMap[id].conferences      += 1;
-      if (cat === "fdp")              facultyMap[id].fdps             += 1;
-      if (cat === "workshop")         facultyMap[id].workshop         += 1;
-      if (cat === "book")             facultyMap[id].book             += 1;
-      if (cat === "nptel")            facultyMap[id].nptel            += 1;
-      if (cat === "seminar")          facultyMap[id].seminar          += 1;
-      if (cat === "webinar")          facultyMap[id].webinar          += 1;
-      if (cat === "guestlecture")     facultyMap[id].guestlecture     += 1;
-      if (cat === "honorsawards")     facultyMap[id].honorsawards     += 1;
-      if (cat === "certification")    facultyMap[id].certification    += 1;
-      if (cat === "researchpolicy")   facultyMap[id].researchpolicy   += 1;
-      if (cat === "membership")       facultyMap[id].membership       += 1;
-      if (cat === "ipr")              facultyMap[id].ipr              += 1;
-      if (cat === "consultancy")      facultyMap[id].consultancy      += 1;
-      if (cat === "incubation")       facultyMap[id].incubation       += 1;
-      if (cat === "researchprojects") facultyMap[id].researchprojects += 1;
-      if (cat === "doctoralthesis")   facultyMap[id].doctoralthesis   += 1;
-      if (cat === "mous")             facultyMap[id].mous             += 1;
-      if (cat === "others")           facultyMap[id].others           += 1;
-    });
-
-    // ✅ Step 2: Fetch ALL approved faculty + HODs
-    
-      const allFaculty = await Faculty.find({ 
-        isApproved: true,
-        status: "APPROVED"  // ✅ Only fully approved faculty
-      });
-      const allHods = await HOD.find({ 
-        isApproved: true,
-        status: "APPROVED"  // ✅ Only fully approved HODs
-      });
-    // ✅ Step 3: Add all faculty to map (including 0 credits)
-    [...allFaculty, ...allHods].forEach(f => {
-      const id = f._id.toString();
-
-      if (facultyMap[id]) {
-        // Update name + department for existing entries
-        facultyMap[id].name       = f.name       || "Unknown";
-        facultyMap[id].department = f.department || "Unknown";
-      } else {
-        // Add faculty with 0 credits
-        facultyMap[id] = {
-          facultyId: id,
-          name: f.name || "Unknown",
-          department: f.department || "Unknown",
-          createdByRole: f.role || "FACULTY",
-          totalCredits: 0,
-          publications: 0,
-          conferences: 0,
-          fdps: 0,
-          workshop: 0,
-          book: 0,
-          nptel: 0,
-          seminar: 0,
-          webinar: 0,
-          guestlecture: 0,
-          honorsawards: 0,
-          certification: 0,
-          researchpolicy: 0,
-          membership: 0,
-          ipr: 0,
-          consultancy: 0,
-          incubation: 0,
-          researchprojects: 0,
-          doctoralthesis: 0,
-          mous: 0,
-          others: 0
-        };
-      }
-    });
-
-    const facultyList = Object.values(facultyMap).filter(f =>
-      f.name !== "Unknown" && f.department !== "Unknown"
-    );
-    if (facultyList.length === 0) return res.json([]);
-
-    // ✅ Step 4: Decision Tree scoring
-    const scored = rankFaculty(facultyList);
-
-    // ✅ Step 5: College rank (all faculty sorted by score)
-    scored.sort((a, b) => b.score - a.score);
-    scored.forEach((item, index) => {
-      item.collegeRank  = index + 1;
-      item.collegeTotal = scored.length;
-    });
-
-    // ✅ Step 6: Department grouping + rank
-    const deptMap = {};
-    scored.forEach(item => {
-      const dept = (item.department || "Unknown").toUpperCase();
-      if (!deptMap[dept]) deptMap[dept] = [];
-      deptMap[dept].push(item);
-    });
-
-    const finalRanked = [];
-    Object.keys(deptMap).forEach(dept => {
-      const deptFaculties = deptMap[dept];
-      deptFaculties.sort((a, b) => b.score - a.score);
-      deptFaculties.forEach((item, index) => {
-        item.rank            = index + 1;
-        item.departmentTotal = deptFaculties.length;
-        item.department      = dept;
-      });
-      finalRanked.push(...deptFaculties);
-    });
-
-    res.json(finalRanked);
-
-  } catch (err) {
-    console.error("Ranking error:", err);
-    res.status(500).json({ message: "Ranking error" });
-  }
+        }
+  );
 };

@@ -1,6 +1,8 @@
 import Page from "../common/Page";
 import Row from "../common/Row";
 import { useState, useEffect } from "react";
+import { apiFetch } from "../../../../../api";
+import { showToast } from "../../../../../utils/toast";
 
 function RNDCredits({ onBack, initialCategory }) {
 
@@ -163,8 +165,7 @@ Expired: 0.5
 
 useEffect(() => {
 
-fetch("http://localhost:5000/api/credit-config/rnd")
-.then(res => res.json())
+apiFetch("/credit-config/rnd")
 .then(data => {
 
 if (data?.config) {
@@ -175,7 +176,7 @@ setCredits(prev => ({
 }
 
 })
-.catch(err => console.error(err));
+.catch((error) => showToast({ type: "error", message: error.message || "Failed to load R&D credits" }));
 
 }, []);
 
@@ -202,18 +203,16 @@ const handleSave = async () => {
 
 try {
 
-await fetch("http://localhost:5000/api/credit-config/rnd", {
+await apiFetch("/credit-config/rnd", {
 method: "POST",
-headers: { "Content-Type": "application/json" },
 body: JSON.stringify({ config: credits })
 });
 
-alert("R&D credit configuration saved");
+showToast({ type: "success", message: "R&D credit configuration saved" });
 
 } catch (error) {
 
-console.error(error);
-alert("Failed to save credits");
+showToast({ type: "error", message: error.message || "Failed to save credits" });
 
 }
 

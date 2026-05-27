@@ -1,354 +1,396 @@
-const Upload = require("../models/Upload");
-const calculateCredits = require("../services/creditCalculator");
 const path = require("path");
+const Upload = require("../models/Upload");
+const Faculty = require("../models/Faculty");
+const HOD = require("../models/HOD");
+const User = require("../models/User");
+const calculateCredits = require("../services/creditCalculator");
+const ROLES = require("../constants/roles");
+const { AppError } = require("../utils/errors");
+
+const APPROVED_STATUSES = ["HOD_APPROVED", "ADMIN_APPROVED"];
+const DEPARTMENT_VISIBLE_STATUSES = ["FACULTY_SUBMITTED", "HOD_SUBMITTED", "HOD_APPROVED", "ADMIN_APPROVED", "HOD_COMMENT", "ADMIN_COMMENT"];
+
+function getRelativeFilePath(filePath) {
+  return path.relative(path.join(__dirname, ".."), filePath).replace(/\\/g, "/");
+}
+
+function unwrapBody(body = {}) {
+  return Object.entries(body).reduce((accumulator, [key, value]) => {
+    accumulator[key] = Array.isArray(value) ? value[0] : value;
+    return accumulator;
+  }, {});
+}
+
+function inferYear(body) {
+  const candidateValues = [
+    body.year,
+    body.monthYear?.split("-")[0],
+    body.fromDate,
+    body.date,
+    body.toDate,
+    body.startDate,
+    body.publishedDate,
+    body.completionDate,
+  ].filter(Boolean);
+
+  for (const candidateValue of candidateValues) {
+    const parsedYear =
+      typeof candidateValue === "string" && candidateValue.includes("-")
+        ? new Date(candidateValue).getFullYear()
+        : Number.parseInt(candidateValue, 10);
+
+    if (!Number.isNaN(parsedYear) && parsedYear >= 2000 && parsedYear <= new Date().getFullYear() + 1) {
+      return parsedYear;
+    }
+  }
+
+  throw new AppError("A valid year is required", 400);
+}
+
+function resolveStatusForRole(role) {
+  if (role === ROLES.ADMIN) return "ADMIN_APPROVED";
+  if (role === ROLES.HOD) return "HOD_SUBMITTED";
+  return "FACULTY_SUBMITTED";
+}
+
+async function resolveOwnerRecord(ownerId) {
+  const faculty = await Faculty.findById(ownerId).select("name employeeId department role");
+  if (faculty) return faculty.toObject();
+
+  const hod = await HOD.findById(ownerId).select("name employeeId department role");
+  if (hod) return hod.toObject();
+
+  const admin = await User.findById(ownerId).select("name regId email role");
+  if (admin) {
+    return {
+      _id: admin._id,
+      name: admin.name || admin.regId,
+      employeeId: admin.regId,
+      department: "",
+      role: admin.role,
+    };
+  }
+
+  return null;
+}
+
+async function assertCanViewOwner(requester, ownerId) {
+  const owner = await resolveOwnerRecord(ownerId);
+
+  if (!owner) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (requester.role === ROLES.ADMIN) {
+    return owner;
+  }
+
+  if (requester.role === ROLES.HOD) {
+    if (owner.role === ROLES.HOD && owner._id.toString() === requester.id) {
+      return owner;
+    }
+
+    if (owner.department !== requester.department) {
+      throw new AppError("Access denied", 403);
+    }
+
+    return owner;
+  }
+
+  if (requester.id !== owner._id.toString()) {
+    throw new AppError("Access denied", 403);
+  }
+
+  return owner;
+}
 
 exports.createUpload = async (req, res) => {
-try {
-  console.log("REQ BODY:", req.body);
-  if (!["FACULTY","HOD","ADMIN"].includes(req.user.role)) {
- return res.status(403).json({ message: "Not allowed to upload" });
-}
-const body = { ...req.body };
-Object.keys(body).forEach(key => {
-  if (Array.isArray(body[key])) { body[key] = body[key][0]; }
-});
-console.log("Year from frontend:", body.year);
-const category = req.params.category?.trim();
-let title = body.title || "";
-if (category === "mou" && !title) { title = body.organization || ""; }
-const metadata = { ...body };
-delete metadata.title;
-delete metadata.category;
-delete metadata.faculty;
-delete metadata.credits;
-let relativePath="";
-if(req.files && req.files.length>0){
-const mainFile = req.files.find(f=>f.fieldname==="file");
-if(mainFile){
-relativePath = path.relative(path.join(__dirname,".."),mainFile.path).replace(/\\/g,"/");
-}
-}
-
-const credits = await calculateCredits({ category, metadata });
-
-const yearValue = String(body.year || "").trim();
-let year = parseInt(yearValue, 10);
-if (isNaN(year)) {
-  const meta = { ...body };
-  if (meta.monthYear)        year = parseInt(meta.monthYear.split("-")[0], 10);
-  else if (meta.fromDate)    year = new Date(meta.fromDate).getFullYear();
-  else if (meta.date)        year = new Date(meta.date).getFullYear();
-  else if (meta.toDate)      year = new Date(meta.toDate).getFullYear();
-  else if (meta.startDate)   year = new Date(meta.startDate).getFullYear();
-  else if (meta.publishedDate)  year = new Date(meta.publishedDate).getFullYear();
-  else if (meta.completionDate) year = new Date(meta.completionDate).getFullYear();
-  else {
-    return res.status(400).json({ message: "Year is required" });
+  if (![ROLES.FACULTY, ROLES.HOD, ROLES.ADMIN].includes(req.user.role)) {
+    throw new AppError("Not allowed to upload", 403);
   }
-}
-let status;
-if(req.user.role === "FACULTY"){ status = "FACULTY_SUBMITTED"; }
-if(req.user.role === "HOD"){ status = "HOD_SUBMITTED"; }
-if(req.user.role === "ADMIN"){ status = "ADMIN_APPROVED"; }
-const upload = await Upload.create({
-faculty: req.user.id,
-createdByRole: req.user.role,
-department: req.user.department || "",
-category, title, metadata, credits, year:year,
-filePath: relativePath, status
-});
-res.status(201).json({ message:"Upload submitted successfully", upload });
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Upload failed" });
-}
+
+  const category = req.normalizedCategory || req.body.category;
+  const body = unwrapBody(req.body);
+  const metadata = { ...body };
+  const title =
+    body.title ||
+    body.paperTitle ||
+    body.conferenceTitle ||
+    body.conferenceName ||
+    body.workshopTitle ||
+    body.fdpTitle ||
+    body.bookTitle ||
+    body.courseName ||
+    body.awardName ||
+    body.policyName ||
+    body.projectTitle ||
+    body.startupName ||
+    body.organization ||
+    body.topic ||
+    "";
+
+  delete metadata.title;
+  delete metadata.category;
+  delete metadata.faculty;
+  delete metadata.credits;
+
+  const mainFile = req.files?.find((file) => file.fieldname === "file") || req.files?.[0];
+  const filePath = mainFile ? getRelativeFilePath(mainFile.path) : "";
+
+  const upload = await Upload.create({
+    faculty: req.user.id,
+    createdByRole: req.user.role,
+    department: req.user.department || "",
+    category,
+    title,
+    metadata,
+    credits: await calculateCredits({ category, metadata }),
+    year: inferYear(body),
+    filePath,
+    status: resolveStatusForRole(req.user.role),
+  });
+
+  res.status(201).json({
+    message: "Upload submitted successfully",
+    upload,
+  });
 };
 
-exports.getMyUploads = async(req,res)=>{
-try{
-const userId = req.user.id;
-const uploads = await Upload.find({ faculty:userId }).sort({createdAt:-1});
-res.json(uploads);
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Fetch failed" });
-}
+exports.getMyUploads = async (req, res) => {
+  const uploads = await Upload.find({ faculty: req.user.id }).sort({ createdAt: -1 });
+  res.json(uploads);
 };
 
 exports.updateUpload = async (req, res) => {
-try {
-const uploadDoc = await Upload.findById(req.params.id);
-if(!uploadDoc){ return res.status(404).json({message:"Upload not found"}); }
-const userId = req.user.id;
-if(uploadDoc.faculty.toString() !== userId){
-return res.status(403).json({message:"Not allowed"});
-}
-const body = { ...req.body };
-Object.keys(body).forEach(key => {
-if (Array.isArray(body[key])) { body[key] = body[key][0]; }
-});
-const category = req.params.category;
-let title = body.title || "";
-if (category === "mou" && !title) { title = body.organization || ""; }
-const metadata = { ...(uploadDoc.metadata || {}) };
-Object.keys(body).forEach(key => {
-  if(key === "title") return;
-  const value = body[key];
-  if(value !== "" && value !== null && value !== undefined){ metadata[key] = value; }
-});
-const changedFields = [];
-const oldMetadata = uploadDoc.metadata || {};
-const allKeys = new Set([...Object.keys(oldMetadata), ...Object.keys(metadata)]);
-allKeys.forEach(key => {
-const oldValue = (oldMetadata[key] ?? "").toString().trim();
-const newValue = (metadata[key] ?? "").toString().trim();
-if(oldValue !== newValue){ changedFields.push(key); }
-});
-if((uploadDoc.title || "").toString().trim() !== title.toString().trim()){
-changedFields.push("title");
-}
-uploadDoc.previousMetadata = { ...oldMetadata };
-uploadDoc.metadata = metadata;
-uploadDoc.changedFields = changedFields;
-uploadDoc.credits = await calculateCredits({ category, metadata });
-uploadDoc.category = category;
-uploadDoc.title = title;
+  const upload = await Upload.findById(req.params.id);
 
-if (body.year !== undefined && body.year !== null && body.year !== "") {
-  const yearValue = String(body.year).trim();
-  const parsedYear = parseInt(yearValue, 10);
-  if (!isNaN(parsedYear)) {
-    uploadDoc.year = parsedYear;
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
   }
-}
-if(req.user.role === "FACULTY"){ uploadDoc.status = "FACULTY_SUBMITTED"; }
-if(req.user.role === "HOD"){ uploadDoc.status = "HOD_SUBMITTED"; }
-if(req.files && req.files.length>0){
-let mainFile = req.files.find(f=>f.fieldname==="file");
-if(!mainFile){ mainFile = req.files[0]; }
-if(mainFile){
-const relativePath = path.relative(path.join(__dirname,".."),mainFile.path).replace(/\\/g,"/");
-uploadDoc.filePath = relativePath;
-}
-}
-await uploadDoc.save();
-res.json({ message:"Upload updated successfully" });
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Update failed" });
-}
+
+  if (upload.faculty.toString() !== req.user.id) {
+    throw new AppError("Not allowed", 403);
+  }
+
+  const body = unwrapBody(req.body);
+  const category = req.normalizedCategory || upload.category;
+  const metadata = { ...(upload.metadata || {}) };
+
+  Object.entries(body).forEach(([key, value]) => {
+    if (["title", "category", "credits"].includes(key)) {
+      return;
+    }
+
+    if (value !== "" && value !== null && value !== undefined) {
+      metadata[key] = value;
+    }
+  });
+
+  const title =
+    body.title ||
+    metadata.title ||
+    metadata.paperTitle ||
+    metadata.conferenceTitle ||
+    metadata.conferenceName ||
+    metadata.workshopTitle ||
+    metadata.fdpTitle ||
+    metadata.bookTitle ||
+    metadata.courseName ||
+    metadata.awardName ||
+    metadata.policyName ||
+    metadata.projectTitle ||
+    metadata.startupName ||
+    metadata.organization ||
+    metadata.topic ||
+    upload.title ||
+    "";
+
+  const changedFields = [];
+  const previousMetadata = upload.metadata || {};
+  const allKeys = new Set([...Object.keys(previousMetadata), ...Object.keys(metadata)]);
+
+  allKeys.forEach((key) => {
+    const previousValue = String(previousMetadata[key] ?? "").trim();
+    const nextValue = String(metadata[key] ?? "").trim();
+    if (previousValue !== nextValue) {
+      changedFields.push(key);
+    }
+  });
+
+  if (String(upload.title || "").trim() !== String(title).trim()) {
+    changedFields.push("title");
+  }
+
+  upload.previousMetadata = previousMetadata;
+  upload.changedFields = changedFields;
+  upload.metadata = metadata;
+  upload.category = category;
+  upload.title = title;
+  upload.year = inferYear(body);
+  upload.credits = await calculateCredits({ category, metadata });
+  upload.status = resolveStatusForRole(req.user.role);
+
+  const mainFile = req.files?.find((file) => file.fieldname === "file") || req.files?.[0];
+  if (mainFile) {
+    upload.filePath = getRelativeFilePath(mainFile.path);
+  }
+
+  await upload.save();
+
+  res.json({ message: "Upload updated successfully", upload });
 };
 
-exports.getPendingUploadsForHOD = async(req,res)=>{
-try{
-if(req.user.role!=="HOD"){
-return res.status(403).json({message:"Access denied"});
-}
-const uploads = await Upload.find({
-department:req.user.department,
-status:"FACULTY_SUBMITTED"
-})
-.populate("faculty","name employeeId department role")
-.sort({createdAt:-1});
-res.json(uploads);
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Error fetching uploads" });
-}
+exports.getPendingUploadsForHOD = async (req, res) => {
+  const uploads = await Upload.find({
+    department: req.user.department,
+    status: "FACULTY_SUBMITTED",
+  })
+    .populate("faculty", "name employeeId department role")
+    .sort({ createdAt: -1 });
+
+  res.json(uploads);
 };
 
-exports.approveUploadByHOD = async(req,res)=>{
-try{
-if(req.user.role!=="HOD"){
-return res.status(403).json({message:"Access denied"});
-}
-const uploadDoc = await Upload.findById(req.params.id);
-if(!uploadDoc){ return res.status(404).json({message:"Upload not found"}); }
-if(uploadDoc.department !== req.user.department){
-return res.status(403).json({message:"Access denied (Different department)"});
-}
-uploadDoc.status="HOD_APPROVED";
-await uploadDoc.save();
-res.json({ message:"Approved by HOD" });
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Approval failed" });
-}
+exports.approveUploadByHOD = async (req, res) => {
+  const upload = await Upload.findById(req.params.id);
+
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
+  }
+
+  if (upload.department !== req.user.department) {
+    throw new AppError("Access denied", 403);
+  }
+
+  upload.status = "HOD_APPROVED";
+  await upload.save();
+
+  res.json({ message: "Approved by HOD" });
 };
 
-exports.getPendingUploadsForAdmin = async(req,res)=>{
-try{
-if(req.user.role!=="ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
-const uploads = await Upload.find({
-status:{$in:["HOD_SUBMITTED","ADMIN_COMMENT"]}
-})
-.populate("faculty","name employeeId department role")
-.sort({createdAt:-1});
-res.json(uploads);
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Error fetching uploads" });
-}
+exports.getPendingUploadsForAdmin = async (req, res) => {
+  const uploads = await Upload.find({
+    status: { $in: ["HOD_SUBMITTED", "ADMIN_COMMENT"] },
+  })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const withOwners = await Promise.all(
+    uploads.map(async (upload) => ({
+      ...upload,
+      faculty: await resolveOwnerRecord(upload.faculty),
+    }))
+  );
+
+  res.json(withOwners);
 };
 
-exports.approveUploadByAdmin = async(req,res)=>{
-try{
-if(req.user.role!=="ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
-const uploadDoc = await Upload.findById(req.params.id);
-if(!uploadDoc){ return res.status(404).json({message:"Upload not found"}); }
-uploadDoc.status="ADMIN_APPROVED";
-await uploadDoc.save();
-res.json({ message:"Upload approved by admin" });
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Admin approval failed" });
-}
+exports.approveUploadByAdmin = async (req, res) => {
+  const upload = await Upload.findById(req.params.id);
+
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
+  }
+
+  upload.status = "ADMIN_APPROVED";
+  await upload.save();
+
+  res.json({ message: "Upload approved by admin" });
 };
 
-exports.callForDiscussion = async(req,res)=>{
-try{
-if(!["HOD","ADMIN"].includes(req.user.role)){
-return res.status(403).json({message:"Not allowed"});
-}
-const uploadDoc = await Upload.findById(req.params.id);
-if(!uploadDoc){ return res.status(404).json({message:"Upload not found"}); }
-if(req.user.role === "HOD" && uploadDoc.department !== req.user.department){
-  return res.status(403).json({message:"Access denied (Different department)"});
-}
-if(req.user.role === "HOD"){
-uploadDoc.hodComment = req.body.comment || "";
-uploadDoc.status = "HOD_COMMENT";
-}
-if(req.user.role === "ADMIN"){
-uploadDoc.adminComment = req.body.comment || "";
-uploadDoc.status = "ADMIN_COMMENT";
-}
-await uploadDoc.save();
-res.json({ message:"Comment added", upload:uploadDoc });
-}catch(err){
-console.error(err);
-res.status(500).json({ message:"Discussion failed" });
-}
+exports.callForDiscussion = async (req, res) => {
+  const upload = await Upload.findById(req.params.id);
+
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
+  }
+
+  if (req.user.role === ROLES.HOD && upload.department !== req.user.department) {
+    throw new AppError("Access denied", 403);
+  }
+
+  const comment = String(req.body.comment || "").trim();
+
+  if (!comment) {
+    throw new AppError("Discussion comment is required", 400);
+  }
+
+  if (req.user.role === ROLES.HOD) {
+    upload.hodComment = comment;
+    upload.status = "HOD_COMMENT";
+  } else {
+    upload.adminComment = comment;
+    upload.status = "ADMIN_COMMENT";
+  }
+
+  await upload.save();
+
+  res.json({
+    message: "Comment added",
+    upload,
+  });
 };
 
 exports.getUploadsByCategory = async (req, res) => {
-try {
-const { category, facultyId } = req.query;
-let targetUser;
-if (facultyId) { targetUser = facultyId; }
-else { targetUser = req.user.id; }
-const uploads = await Upload.find({
-  category, faculty: targetUser
-}).sort({ createdAt: -1 });
-res.json(uploads);
-} catch (err) {
-console.error(err);
-res.status(500).json({ message: "Fetch failed" });
-}
+  const category = req.normalizedCategory || req.query.category;
+  const targetOwnerId = req.query.facultyId || req.user.id;
+
+  await assertCanViewOwner(req.user, targetOwnerId);
+
+  const uploads = await Upload.find({
+    category,
+    faculty: targetOwnerId,
+  }).sort({ createdAt: -1 });
+
+  res.json(uploads);
 };
 
 exports.getFacultyUploads = async (req, res) => {
-  try {
-    const facultyId = req.params.facultyId;
-    const upload = await Upload.findOne({ faculty: facultyId });
-    if (!upload) {
-      return res.status(404).json({ message: "No uploads found" });
-    }
-    if (req.user.role === "HOD" && upload.department !== req.user.department) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-    const uploads = await Upload.find({
-      faculty: facultyId,
-      createdByRole: { $in: ["FACULTY", "HOD"] }
-    }).sort({ createdAt: -1 });
-    res.json(uploads);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
+  const facultyId = req.params.facultyId;
+  await assertCanViewOwner(req.user, facultyId);
+
+  const uploads = await Upload.find({
+    faculty: facultyId,
+    createdByRole: { $in: [ROLES.FACULTY, ROLES.HOD, ROLES.ADMIN] },
+  }).sort({ createdAt: -1 });
+
+  res.json(uploads);
 };
 
 exports.getDepartmentUploads = async (req, res) => {
-  try {
-    if (!["HOD", "ADMIN"].includes(req.user.role)) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-    let query = {
-      status: {
-        $in: ["FACULTY_SUBMITTED","HOD_SUBMITTED","HOD_APPROVED","ADMIN_APPROVED"]
-      }
-    };
-    if (req.user.role === "HOD") {
-      query.department = req.user.department;
-    } else if (req.user.role === "ADMIN" && req.query.department) {
-      query.department = req.query.department;
-    }
-    console.log("Role:", req.user.role);
-    console.log("Query:", JSON.stringify(query));
-    const uploads = await Upload.find(query).sort({ createdAt: -1 });
-    console.log("Found:", uploads.length);
-    const Faculty = require("../models/Faculty");
-    const HOD = require("../models/HOD");
-    const formattedUploads = await Promise.all(
-      uploads.map(async (upload) => {
-        let user;
-        if (upload.createdByRole === "FACULTY") {
-          user = await Faculty.findById(upload.faculty).select("name employeeId");
-        }
-        if (upload.createdByRole === "HOD") {
-          user = await HOD.findById(upload.faculty).select("name employeeId");
-        }
-        return { ...upload.toObject(), faculty: user };
-      })
-    );
-    res.json(formattedUploads);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+  const query = {
+    status: { $in: DEPARTMENT_VISIBLE_STATUSES },
+  };
+
+  if (req.user.role === ROLES.HOD) {
+    query.department = req.user.department;
+  } else if (req.query.department) {
+    query.department = String(req.query.department).trim().toUpperCase();
   }
+
+  const uploads = await Upload.find(query).sort({ createdAt: -1 }).lean();
+  const withOwners = await Promise.all(
+    uploads.map(async (upload) => ({
+      ...upload,
+      faculty: await resolveOwnerRecord(upload.faculty),
+    }))
+  );
+
+  res.json(withOwners);
 };
 
-/* =====================================================
-   GET DEPARTMENT RANK
-===================================================== */
-
 exports.getDepartmentRank = async (req, res) => {
-  try {
-    if (req.user.role !== "HOD") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+  const departmentTotals = await Upload.aggregate([
+    { $match: { status: { $in: APPROVED_STATUSES } } },
+    { $group: { _id: "$department", totalCredits: { $sum: "$credits" } } },
+    { $sort: { totalCredits: -1 } },
+  ]);
 
-     
-    const allUploads = await Upload.find({
-      status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] }
-    });
+  const rank = departmentTotals.findIndex((item) => item._id === req.user.department) + 1;
 
-    // Department wise credits sum 
-    const deptCredits = {};
-    allUploads.forEach(u => {
-      const dept = u.department || "Unknown";
-      deptCredits[dept] = (deptCredits[dept] || 0) + (u.credits || 0);
-    });
-
-    
-    const sorted = Object.entries(deptCredits).sort((a, b) => b[1] - a[1]);
-
-    const myDept = req.user.department;
-    const rank = sorted.findIndex(([dept]) => dept === myDept) + 1;
-    const totalDepts = sorted.length;
-
-    res.json({
-      rank: rank > 0 ? rank : null,
-      totalDepts,
-      myDept
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
+  res.json({
+    rank: rank > 0 ? rank : null,
+    totalDepts: departmentTotals.length,
+    myDept: req.user.department,
+  });
 };

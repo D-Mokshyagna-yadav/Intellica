@@ -1,31 +1,38 @@
 const mongoose = require("mongoose");
+const ROLES = require("../constants/roles");
 
 const userSchema = new mongoose.Schema(
   {
     regId: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      default: "",
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
-      required: false,
       default: null,
     },
     role: {
       type: String,
-      enum: ["ADMIN", "FACULTY", "HOD"],
-      default: "ADMIN"
+      enum: Object.values(ROLES),
+      default: ROLES.ADMIN,
     },
     isApproved: {
       type: Boolean,
-      default: true
+      default: true,
     },
     otp: {
       type: String,
@@ -34,10 +41,9 @@ const userSchema = new mongoose.Schema(
     otpExpires: {
       type: Date,
       default: null,
-    }
+    },
   },
   { timestamps: true }
 );
 
-// ✅ FIXED LINE
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);

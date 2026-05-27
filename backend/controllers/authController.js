@@ -1,560 +1,377 @@
-
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const crypto = require('crypto');
-
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
+const ROLES = require("../constants/roles");
 const { sendOTP, sendRegistrationNotification } = require("../utils/emailService");
-// Removed duplicate declaration of bcrypt
+const { AppError } = require("../utils/errors");
+const logger = require("../utils/logger");
 
-/* =====================================================
-   FACULTY REGISTRATION
-===================================================== */
+function normalizeIdentifier(identifier) {
+  return String(identifier || "").trim();
+}
+
+async function findUserByIdentifier(identifier) {
+  const normalizedIdentifier = normalizeIdentifier(identifier);
+  const lowerIdentifier = normalizedIdentifier.toLowerCase();
+
+  const faculty = await Faculty.findOne({
+    $or: [{ employeeId: normalizedIdentifier }, { email: lowerIdentifier }],
+  });
+
+  if (faculty) {
+    return { user: faculty, role: ROLES.FACULTY };
+  }
+
+  const hod = await HOD.findOne({
+    $or: [{ employeeId: normalizedIdentifier }, { email: lowerIdentifier }],
+  });
+
+  if (hod) {
+    return { user: hod, role: ROLES.HOD };
+  }
+
+  const admin = await User.findOne({
+    $or: [{ regId: normalizedIdentifier }, { email: lowerIdentifier }],
+  });
+
+  if (admin) {
+    return { user: admin, role: ROLES.ADMIN };
+  }
+
+  return { user: null, role: null };
+}
+
+function assertAccountIsLoginReady(role, user) {
+  if (role === ROLES.FACULTY) {
+    if (user.status === "DISCUSSION") {
+      throw new AppError("HOD requested discussion before approving your account", 403);
+    }
+
+    if (user.status !== "APPROVED") {
+      throw new AppError("Your account is waiting for HOD approval", 403);
+    }
+  }
+
+  if (role === ROLES.HOD) {
+    if (user.status === "DISCUSSION") {
+      throw new AppError("Admin requested discussion before approving your account", 403);
+    }
+
+    if (user.status !== "APPROVED") {
+      throw new AppError("Your account is waiting for Admin approval", 403);
+    }
+  }
+}
+
+function buildAuthPayload(user) {
+  return {
+    id: user._id.toString(),
+    role: user.role,
+    name: user.name || user.regId || "",
+    email: user.email || "",
+    department: user.department || "",
+    designation: user.designation || "",
+    googleScholar: user.googleScholar || "",
+    vidwanId: user.vidwanId || "",
+    scopusId: user.scopusId || "",
+    profileImage: user.profileImage || "",
+  };
+}
+
+async function sendOtpForIdentifier(identifier) {
+  const { user, role } = await findUserByIdentifier(identifier);
+
+  if (!user || !role) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (!user.email) {
+    throw new AppError("This account cannot receive OTP because no email is configured", 400);
+  }
+
+  assertAccountIsLoginReady(role, user);
+
+  const otp = crypto.randomInt(100000, 999999).toString();
+  user.otp = otp;
+  user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+  await user.save();
+
+  await sendOTP(user.email, otp);
+
+  return {
+    role,
+    expiresAt: user.otpExpires,
+  };
+}
+
 exports.registerFaculty = async (req, res) => {
-  try {
-
-    if (req.fileValidationError) {
-      return res.status(400).json({
-        message: req.fileValidationError
-      });
-    }
-
-    const {
-      employeeId,
-      name,
-      email,
-      department,
-      designation,
-      googleScholar,
-      vidwanId,
-      scopusId
-    } = req.body;
-
-    if (!employeeId || !name || !email || !department || !designation) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({
-        message: "Profile image is required"
-      });
-    }
-
-    if (!googleScholar && !vidwanId && !scopusId) {
-      return res.status(400).json({
-        message: "At least one research ID is required"
-      });
-    }
-
-    const normalizedDept = department.trim().toUpperCase();
-
-    const existing = await Faculty.findOne({
-      $or: [
-        { employeeId: employeeId.trim() },
-        { email: email.trim().toLowerCase() }
-      ]
-    });
-
-    if (existing) {
-      return res.status(400).json({
-        message: "Employee ID or Email already exists"
-      });
-    }
-
-    const hodExists = await HOD.findOne({
-      department: normalizedDept,
-      isApproved: true
-    });
-
-    if (!hodExists) {
-      return res.status(400).json({
-        message: "No approved HOD found for this department"
-      });
-    }
-
-    const newFaculty = new Faculty({
-      employeeId: employeeId.trim(),
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      department: normalizedDept,
-      designation: designation.trim(),
-      googleScholar: googleScholar || "",
-      vidwanId: vidwanId || "",
-      scopusId: scopusId || "",
-      role: "FACULTY",
-      isApproved: false,
-      status: "PENDING",
-      profileImage: req.file.filename
-    });
-
-    await newFaculty.save();
-
-    // send registration email to faculty and notify admins
-    try {
-      await sendRegistrationNotification({
-        name: newFaculty.name,
-        email: newFaculty.email,
-        role: 'FACULTY',
-        department: newFaculty.department
-      });
-    } catch (err) {
-      console.error('Failed to send registration notification:', err);
-    }
-
-    res.status(201).json({
-      message: `Faculty registered under ${normalizedDept}. Waiting for HOD approval.`
-    });
-
-  } catch (err) {
-    console.error("FACULTY REGISTER ERROR:", err);
-    res.status(500).json({ message: "Faculty registration failed" });
+  if (req.fileValidationError) {
+    throw new AppError(req.fileValidationError, 400);
   }
+
+  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId } = req.body;
+
+  if (!employeeId || !name || !email || !department || !designation) {
+    throw new AppError("All fields are required", 400);
+  }
+
+  if (!req.file) {
+    throw new AppError("Profile image is required", 400);
+  }
+
+  if (!googleScholar && !vidwanId && !scopusId) {
+    throw new AppError("At least one research ID is required", 400);
+  }
+
+  const normalizedDept = department.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmployeeId = employeeId.trim();
+
+  const existingFaculty = await Faculty.findOne({
+    $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }],
+  });
+
+  const existingHod = await HOD.findOne({
+    department: normalizedDept,
+    isApproved: true,
+    status: "APPROVED",
+  });
+
+  if (existingFaculty) {
+    throw new AppError("Employee ID or email already exists", 400);
+  }
+
+  if (!existingHod) {
+    throw new AppError("No approved HOD found for this department", 400);
+  }
+
+  const faculty = await Faculty.create({
+    employeeId: normalizedEmployeeId,
+    name: name.trim(),
+    email: normalizedEmail,
+    department: normalizedDept,
+    designation: designation.trim(),
+    googleScholar: googleScholar?.trim() || "",
+    vidwanId: vidwanId?.trim() || "",
+    scopusId: scopusId?.trim() || "",
+    role: ROLES.FACULTY,
+    isApproved: false,
+    status: "PENDING",
+    profileImage: req.file.filename,
+  });
+
+  sendRegistrationNotification({
+    name: faculty.name,
+    email: faculty.email,
+    role: ROLES.FACULTY,
+    department: faculty.department,
+  }).catch((error) => logger.warn({ err: error }, "Failed to send faculty registration notification"));
+
+  res.status(201).json({
+    message: `Faculty registered under ${normalizedDept}. Waiting for HOD approval.`,
+  });
 };
 
-
-/* =====================================================
-   HOD REGISTRATION
-===================================================== */
 exports.registerHOD = async (req, res) => {
-  try {
-
-    if (req.fileValidationError) {
-      return res.status(400).json({
-        message: req.fileValidationError
-      });
-    }
-
-    const {
-      employeeId,
-      name,
-      email,
-      department,
-      designation,
-      googleScholar,
-      vidwanId,
-      scopusId
-    } = req.body;
-
-    if (!employeeId || !name || !email || !department || !designation) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({
-        message: "Profile image is required"
-      });
-    }
-
-    const normalizedDept = department.trim().toUpperCase();
-
-    const existing = await HOD.findOne({
-      $or: [
-        { employeeId: employeeId.trim() },
-        { email: email.trim().toLowerCase() }
-      ]
-    });
-
-    if (existing) {
-      return res.status(400).json({
-        message: "Employee ID or Email already exists"
-      });
-    }
-
-    const departmentHOD = await HOD.findOne({
-      department: normalizedDept
-    });
-
-    if (departmentHOD) {
-      return res.status(400).json({
-        message: `HOD already registered for ${normalizedDept}`
-      });
-    }
-
-    const newHOD = new HOD({
-      employeeId: employeeId.trim(),
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      department: normalizedDept,
-      designation: designation.trim(),
-      googleScholar: googleScholar || "",
-      vidwanId: vidwanId || "",
-      scopusId: scopusId || "",
-      role: "HOD",
-      isApproved: false,
-      status: "PENDING",
-      profileImage: req.file.filename
-    });
-
-    await newHOD.save();
-
-    // send registration email to HOD and notify admins
-    try {
-      await sendRegistrationNotification({
-        name: newHOD.name,
-        email: newHOD.email,
-        role: 'HOD',
-        department: newHOD.department
-      });
-    } catch (err) {
-      console.error('Failed to send HOD registration notification:', err);
-    }
-
-    res.status(201).json({
-      message: `HOD registered for ${normalizedDept}. Waiting for Admin approval.`
-    });
-
-  } catch (err) {
-    console.error("HOD REGISTER ERROR:", err);
-    res.status(500).json({ message: "HOD registration failed" });
+  if (req.fileValidationError) {
+    throw new AppError(req.fileValidationError, 400);
   }
+
+  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId } = req.body;
+
+  if (!employeeId || !name || !email || !department || !designation) {
+    throw new AppError("All fields are required", 400);
+  }
+
+  if (!req.file) {
+    throw new AppError("Profile image is required", 400);
+  }
+
+  const normalizedDept = department.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmployeeId = employeeId.trim();
+
+  const existingHod = await HOD.findOne({
+    $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }, { department: normalizedDept }],
+  });
+
+  if (existingHod) {
+    throw new AppError("HOD already exists for this employee, email, or department", 400);
+  }
+
+  const hod = await HOD.create({
+    employeeId: normalizedEmployeeId,
+    name: name.trim(),
+    email: normalizedEmail,
+    department: normalizedDept,
+    designation: designation.trim(),
+    googleScholar: googleScholar?.trim() || "",
+    vidwanId: vidwanId?.trim() || "",
+    scopusId: scopusId?.trim() || "",
+    role: ROLES.HOD,
+    isApproved: false,
+    status: "PENDING",
+    profileImage: req.file.filename,
+  });
+
+  sendRegistrationNotification({
+    name: hod.name,
+    email: hod.email,
+    role: ROLES.HOD,
+    department: hod.department,
+  }).catch((error) => logger.warn({ err: error }, "Failed to send HOD registration notification"));
+
+  res.status(201).json({
+    message: `HOD registered for ${normalizedDept}. Waiting for Admin approval.`,
+  });
 };
 
-
-/* =====================================================
-   LOGIN - SEND OTP
-===================================================== */
 exports.login = async (req, res) => {
-  try {
+  const identifier = normalizeIdentifier(req.body.identifier);
 
-    const identifier = req.body.identifier?.toString().trim();
-
-    if (!identifier) {
-      return res.status(400).json({ message: "Identifier is required" });
-    }
-
-    let user;
-    let foundRole;
-
-    // Search in Faculty model
-    user = await Faculty.findOne({
-      $or: [
-        { employeeId: identifier },
-        { email: identifier.toLowerCase() }
-      ]
-    });
-    if (user) {
-      foundRole = "FACULTY";
-    } else {
-      // Search in HOD model
-      user = await HOD.findOne({
-        $or: [
-          { employeeId: identifier },
-          { email: identifier.toLowerCase() }
-        ]
-      });
-      if (user) {
-        foundRole = "HOD";
-      } else {
-        // Search in User model (Admin)
-        user = await User.findOne({
-          $or: [
-            { regId: identifier },
-            { email: identifier.toLowerCase() }
-          ]
-        });
-        if (user) {
-          foundRole = "ADMIN";
-        }
-      }
-    }
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-/* =====================================================
-   HANDLE ACCOUNT STATUS
-===================================================== */
-
-if (foundRole === "FACULTY") {
-
-  if (user.status === "DISCUSSION") {
-    return res.status(403).json({
-      message: "HOD requested discussion before approving your account"
-    });
+  if (!identifier) {
+    throw new AppError("Identifier is required", 400);
   }
 
-  if (user.status !== "APPROVED") {
-    return res.status(403).json({
-      message: "Your account is waiting for HOD approval"
-    });
-  }
+  const { expiresAt } = await sendOtpForIdentifier(identifier);
 
-}
-
-if (foundRole === "HOD") {
-
-  if (user.status === "DISCUSSION") {
-    return res.status(403).json({
-      message: "Admin requested discussion before approving your account"
-    });
-  }
-
-  if (user.status !== "APPROVED") {
-    return res.status(403).json({
-      message: "Your account is waiting for Admin approval"
-    });
-  }
-
-}
-
-    // Generate 6-digit OTP
-    const otp = crypto.randomInt(100000, 999999).toString();
-
-    // Set OTP and expiration (10 minutes)
-    user.otp = otp;
-    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
-
-    await user.save();
-
-    // Send OTP to email
-    try {
-      await sendOTP(user.email, otp);
-    } catch (emailError) {
-      console.error('Email send error:', emailError);
-      return res.status(500).json({ message: "Failed to send OTP. Please try again." });
-    }
-
-    res.status(200).json({
-      message: "OTP sent to your email. Please check your inbox."
-    });
-
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).json({ message: "Server error" });
-  }
+  res.status(200).json({
+    message: "OTP sent to your email. Please check your inbox.",
+    expiresAt,
+  });
 };
 
-/* =====================================================
-   VERIFY OTP
-===================================================== */
+exports.resendOTP = async (req, res) => {
+  const identifier = normalizeIdentifier(req.body.identifier);
+
+  if (!identifier) {
+    throw new AppError("Identifier is required", 400);
+  }
+
+  const { expiresAt } = await sendOtpForIdentifier(identifier);
+
+  res.status(200).json({
+    message: "A fresh OTP has been sent to your email.",
+    expiresAt,
+  });
+};
+
 exports.verifyOTP = async (req, res) => {
-  try {
-    const { identifier, otp } = req.body;
+  const identifier = normalizeIdentifier(req.body.identifier);
+  const otp = normalizeIdentifier(req.body.otp);
 
-    if (!identifier || !otp) {
-      return res.status(400).json({ message: "Identifier and OTP are required" });
-    }
-
-    let user;
-    let foundRole;
-
-    // Search in Faculty model
-    user = await Faculty.findOne({
-      $or: [
-        { employeeId: identifier },
-        { email: identifier.toLowerCase() }
-      ]
-    });
-    if (user) {
-      foundRole = "FACULTY";
-    } else {
-      // Search in HOD model
-      user = await HOD.findOne({
-        $or: [
-          { employeeId: identifier },
-          { email: identifier.toLowerCase() }
-        ]
-      });
-      if (user) {
-        foundRole = "HOD";
-      } else {
-        // Search in User model (Admin)
-        user = await User.findOne({
-          $or: [
-            { regId: identifier },
-            { email: identifier.toLowerCase() }
-          ]
-        });
-        if (user) {
-          foundRole = "ADMIN";
-        }
-      }
-    }
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (!user.otp || user.otp !== otp) {
-      return res.status(401).json({ message: "Invalid OTP" });
-    }
-
-    if (user.otpExpires < new Date()) {
-      return res.status(401).json({ message: "OTP expired" });
-    }
-
-    // Clear OTP
-    user.otp = null;
-    user.otpExpires = null;
-    await user.save();
-
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-        department: user.department || null
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "30d" }
-    );
-
-    res.status(200).json({
-      token,
-      role: user.role,
-      name: user.name,
-      department: user.department || null,
-      designation: user.designation || null,
-      googleScholar: user.googleScholar || "",
-      vidwanId: user.vidwanId || "",
-      scopusId: user.scopusId || "",
-      profileImage: user.profileImage || "",
-      message: "Login successful"
-    });
-
-  } catch (err) {
-    console.error("VERIFY OTP ERROR:", err);
-    res.status(500).json({ message: "Server error" });
+  if (!identifier || !otp) {
+    throw new AppError("Identifier and OTP are required", 400);
   }
+
+  const { user } = await findUserByIdentifier(identifier);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (!user.otp || user.otp !== otp) {
+    throw new AppError("Invalid OTP", 401);
+  }
+
+  if (!user.otpExpires || user.otpExpires < new Date()) {
+    throw new AppError("OTP expired", 401);
+  }
+
+  user.otp = null;
+  user.otpExpires = null;
+  await user.save();
+
+  const payload = buildAuthPayload(user);
+  const token = jwt.sign(
+    {
+      id: payload.id,
+      role: payload.role,
+      department: payload.department || null,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+  );
+
+  res.status(200).json({
+    token,
+    ...payload,
+    message: "Login successful",
+  });
 };
 
-
-/* =====================================================
-   GET CURRENT USER
-===================================================== */
 exports.getMe = async (req, res) => {
-  try {
+  const { user, role } = await findUserByIdentifier(req.user.email || req.user.employeeId || req.user.id);
 
-    let user;
-
-    if (req.user.role === "FACULTY") {
-      user = await Faculty.findById(req.user.id).select("-password");
-    } else if (req.user.role === "HOD") {
-      user = await HOD.findById(req.user.id).select("-password");
-    } else {
-      return res.status(403).json({ message: "Not allowed" });
-    }
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json(user);
-
-  } catch (err) {
-    console.error("GET ME ERROR:", err);
-    res.status(500).json({ message: "Failed to fetch user" });
+  if (!user || !role) {
+    throw new AppError("User not found", 404);
   }
+
+  res.json(buildAuthPayload(user));
 };
 
-
-/* =====================================================
-   UPDATE PROFILE NAME
-===================================================== */
 exports.updateProfile = async (req, res) => {
-  try {
+  const { name, email, designation, googleScholar, scopusId, vidwanId } = req.body;
+  const targetModel = req.user.role === ROLES.FACULTY ? Faculty : req.user.role === ROLES.HOD ? HOD : User;
 
-    const { name } = req.body;
+  const user = await targetModel.findById(req.user.id);
 
-    if (!name || name.trim() === "") {
-      return res.status(400).json({ message: "Name is required" });
-    }
-
-    let user;
-
-    if (req.user.role === "FACULTY") {
-      user = await Faculty.findById(req.user.id);
-    } else if (req.user.role === "HOD") {
-      user = await HOD.findById(req.user.id);
-    }
-
-    user.name = name.trim();
-    await user.save();
-
-    res.json({
-      message: "Profile updated successfully",
-      name: user.name
-    });
-
-  } catch (err) {
-    console.error("PROFILE UPDATE ERROR:", err);
-    res.status(500).json({ message: "Profile update failed" });
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
-};
 
-/* =====================================================
-   UPDATE PROFILE IMAGE
-===================================================== */
+  if (name) user.name = name.trim();
+  if (email) user.email = email.trim().toLowerCase();
+  if (designation && "designation" in user) user.designation = designation.trim();
+  if ("googleScholar" in user) user.googleScholar = googleScholar?.trim() || "";
+  if ("scopusId" in user) user.scopusId = scopusId?.trim() || "";
+  if ("vidwanId" in user) user.vidwanId = vidwanId?.trim() || "";
+
+  await user.save();
+
+  res.json({
+    message: "Profile updated successfully",
+    profile: buildAuthPayload(user),
+  });
+};
 
 exports.updateProfileImage = async (req, res) => {
-  try {
-
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
-    }
-
-    let user;
-
-    if (req.user.role === "FACULTY") {
-      user = await Faculty.findById(req.user.id);
-    } else if (req.user.role === "HOD") {
-      user = await HOD.findById(req.user.id);
-    } else {
-      return res.status(403).json({ message: "Not allowed" });
-    }
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    user.profileImage = req.file.filename;
-    await user.save();
-
-    res.json({
-      message: "Profile image updated successfully",
-      profileImage: user.profileImage
-    });
-
-  } catch (err) {
-
-    console.error("UPDATE PROFILE IMAGE ERROR:", err);
-
-    res.status(500).json({
-      message: "Failed to update profile image"
-    });
-
+  if (!req.file) {
+    throw new AppError("Image is required", 400);
   }
+
+  const targetModel = req.user.role === ROLES.FACULTY ? Faculty : req.user.role === ROLES.HOD ? HOD : User;
+  const user = await targetModel.findById(req.user.id);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.profileImage = req.file.filename;
+  await user.save();
+
+  res.json({
+    message: "Profile image updated successfully",
+    profileImage: user.profileImage,
+  });
 };
-
-
-/* =====================================================
-   GET FACULTY PROFILE (FOR HOD DASHBOARD)
-===================================================== */
 
 exports.getFacultyProfile = async (req, res) => {
-  try {
-
-    const { id } = req.params;
-
-    const faculty = await Faculty.findById(id).select("-password");
-
-    if (!faculty) {
-      return res.status(404).json({
-        message: "Faculty not found"
-      });
-    }
-
-    res.json(faculty);
-
-  } catch (error) {
-
-    console.error("GET FACULTY PROFILE ERROR:", error);
-
-    res.status(500).json({
-      message: "Server error"
-    });
-
+  if (req.user.role === ROLES.FACULTY && req.user.id !== req.params.id) {
+    throw new AppError("Access denied", 403);
   }
-};
 
+  const faculty = await Faculty.findById(req.params.id).select("-password");
+
+  if (!faculty) {
+    throw new AppError("Faculty not found", 404);
+  }
+
+  if (req.user.role === ROLES.HOD && faculty.department !== req.user.department) {
+    throw new AppError("Access denied", 403);
+  }
+
+  res.json(faculty);
+};

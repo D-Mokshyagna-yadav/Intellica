@@ -1,4 +1,5 @@
 import collegeLogo from "../../assets/logo-mic.png";
+import NotificationBell from "../../components/NotificationBell";
 
 function FacultyHeader({ user, readOnly }) {
 
@@ -20,8 +21,11 @@ function FacultyHeader({ user, readOnly }) {
         </p>
       </div>
 
-      <div style={logoWrapper}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        {!readOnly && <NotificationBell />}
+        <div style={logoWrapper}>
         <img src={collegeLogo} alt="College Logo" style={logoStyle} />
+        </div>
       </div>
 
     </div>

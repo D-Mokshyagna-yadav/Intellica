@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import API_BASE from "/src/api";
+import { apiFetch } from "../../../../../api";
+import { showToast } from "../../../../../utils/toast";
+import LoadingState from "../../../../../components/LoadingState";
 
 function CreditConfigViewer() {
 
@@ -7,13 +9,12 @@ function CreditConfigViewer() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch(`${API_BASE}/credit-config/all`)
-      .then(res => res.json())
+    apiFetch("/credit-config/all")
       .then(setData)
-      .catch(console.error);
+      .catch((error) => showToast({ type: "error", message: error.message || "Failed to load credit rules" }));
   }, []);
 
-  if (!data) return <p>Loading credit rules...</p>;
+  if (!data) return <LoadingState message="Loading credit rules..." />;
 
   return (
     <div style={{ marginTop: 30 }}>

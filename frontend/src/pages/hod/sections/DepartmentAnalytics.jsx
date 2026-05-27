@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { buildYearOptions } from "../../../constants/years";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // ✅ 1900 నుండి 3000 వరకు అన్ని years
-const ALL_YEARS = Array.from({ length: 1101 }, (_, i) => (1900 + i).toString());
+const ALL_YEARS = buildYearOptions(2000);
 
 function DepartmentAnalytics({ uploads = [] }) {
 
@@ -16,9 +17,9 @@ function DepartmentAnalytics({ uploads = [] }) {
     "Conference", "Publication", "Workshops", "FDP",
     "Book", "NPTEL", "Seminar", "Webinar",
     "GuestLecture", "HonorsAwards", "Certification",
-    "ResearchPolicy", "Membership", "IPR",
-    "Consultancy", "Incubation", "ResearchProjects",
-    "DoctoralThesis", "MOUs", "Others"
+    "ResearchPolicy", "ProfessionalMembership", "IPR",
+    "Consultancy", "Incubation", "ResearchProject",
+    "DoctoralThesis", "MOU", "Others"
   ];
 
   // ✅ Actual uploads నుండి వచ్చే years — highlight కోసం

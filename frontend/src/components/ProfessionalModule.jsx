@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import ReusableTable from "./ReusableTable";
+import { getFileUrl } from "../api";
+import { showToast } from "../utils/toast";
 
 function ProfessionalModule({
 title,
@@ -116,8 +118,7 @@ displayTitle
 setData(formatted);
 
 }catch(err){
-
-console.error("Fetch error:",err);
+showToast({ type:"error", message:err.message || "Failed to load activity data" });
 setData([]);
 
 }
@@ -297,7 +298,7 @@ borderRadius:4
 {selectedRow.filePath && (
 
 <a
-href={`http://localhost:5000/${selectedRow.filePath}`}
+href={getFileUrl(selectedRow.filePath)}
 target="_blank"
 rel="noreferrer"
 style={pdfBtn}

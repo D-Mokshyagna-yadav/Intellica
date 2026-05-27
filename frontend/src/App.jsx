@@ -1,54 +1,85 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FacultyDashboard from "./pages/faculty/FacultyDashboard";
 import HodDashboard from "./pages/hod/HodDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import Leaderboard from "./pages/Leaderboard";
+import ToastViewport from "./components/ToastViewport";
+
+const PATH_TO_PAGE = {
+  "/": "login",
+  "/register": "register",
+  "/faculty": "faculty",
+  "/hod": "hod",
+  "/admin": "admin-dashboard",
+  "/leaderboard": "leaderboard",
+};
+
+const PAGE_TO_PATH = {
+  login: "/",
+  register: "/register",
+  faculty: "/faculty",
+  hod: "/hod",
+  "admin-dashboard": "/admin",
+  leaderboard: "/leaderboard",
+};
+
+function getAuthenticatedLandingPage() {
+  const role = localStorage.getItem("user_role");
+  if (role === "ADMIN") return "admin-dashboard";
+  if (role === "HOD") return "hod";
+  if (role === "FACULTY") return "faculty";
+  return "login";
+}
+
+function resolvePageFromPath(pathname) {
+  return PATH_TO_PAGE[pathname] || "login";
+}
 
 function App() {
+  const [page, setPageState] = useState(resolvePageFromPath(window.location.pathname));
 
-  const [page, setPage] = useState("login");
-  const [error, setError] = useState(null);
-
-  console.log("🟢 App component loaded, current page:", page);
-
-  /* ✅ RESTORE SESSION ON REFRESH */
   useEffect(() => {
-  try {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("user_role");
-
-    console.log("🟡 Checking stored token & role:", token, role);
-
-    if (token && role) {
-      if (role === "ADMIN") {
-        setPage("admin-dashboard");
-      } else if (role === "HOD") {
-        setPage("hod");
-      } else if (role === "FACULTY") {
-        setPage("faculty");
+    const syncPageWithLocation = () => {
+      const currentPage = resolvePageFromPath(window.location.pathname);
+      if (currentPage === "login" && localStorage.getItem("token") && window.location.pathname === "/") {
+        setPageState(getAuthenticatedLandingPage());
+        return;
       }
-    } else {
-      setPage("login");
-    }
 
-  } catch (err) {
-    console.error("🔴 Error in useEffect:", err);
-    setError(err.message);
-  }
-}, []);
+      if (!localStorage.getItem("token") && ["faculty", "hod", "admin-dashboard"].includes(currentPage)) {
+        setPageState("login");
+        window.history.replaceState({}, "", "/");
+        return;
+      }
 
-  if (error) {
-    return <div style={{ color: "red", fontSize: "20px", padding: "20px" }}>Error: {error}</div>;
-  }
+      setPageState(currentPage);
+    };
+
+    syncPageWithLocation();
+    window.addEventListener("popstate", syncPageWithLocation);
+    return () => window.removeEventListener("popstate", syncPageWithLocation);
+  }, []);
+
+  const setPage = (nextPage, options = {}) => {
+    const path = PAGE_TO_PATH[nextPage] || "/";
+    const method = options.replace ? "replaceState" : "pushState";
+    window.history[method]({}, "", path);
+    setPageState(nextPage);
+  };
+
+  const currentPage = page === "login" && localStorage.getItem("token") ? getAuthenticatedLandingPage() : page;
 
   return (
     <>
-      {page === "login" && <Login setPage={setPage} />}
-      {page === "register" && <Register setPage={setPage} />}
-      {page === "faculty" && <FacultyDashboard setPage={setPage} />}
-      {page === "hod" && <HodDashboard setPage={setPage} />}
-      {page === "admin-dashboard" && <AdminDashboard setPage={setPage} />}
+      {currentPage === "login" && <Login setPage={setPage} />}
+      {currentPage === "register" && <Register setPage={setPage} />}
+      {currentPage === "faculty" && <FacultyDashboard setPage={setPage} />}
+      {currentPage === "hod" && <HodDashboard setPage={setPage} />}
+      {currentPage === "admin-dashboard" && <AdminDashboard setPage={setPage} />}
+      {currentPage === "leaderboard" && <Leaderboard setPage={setPage} />}
+      <ToastViewport />
     </>
   );
 }

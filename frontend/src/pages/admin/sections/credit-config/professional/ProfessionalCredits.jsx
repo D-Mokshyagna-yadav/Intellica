@@ -1,6 +1,8 @@
 import Page from "../common/Page";
 import Row from "../common/Row";
 import { useState, useEffect } from "react";
+import { apiFetch } from "../../../../../api";
+import { showToast } from "../../../../../utils/toast";
 
 function ProfessionalCredits({ onBack, initialCategory }) {
 
@@ -172,8 +174,7 @@ others: {
 
 useEffect(() => {
 
-fetch("http://localhost:5000/api/credit-config/professional")
-.then(res => res.json())
+apiFetch("/credit-config/professional")
 .then(data => {
 
 if (data?.config && Object.keys(data.config).length > 0) {
@@ -184,7 +185,7 @@ setCredits(prev => ({
 }
 
 })
-.catch(err => console.error(err));
+.catch((error) => showToast({ type: "error", message: error.message || "Failed to load professional credits" }));
 
 }, []);
 
@@ -211,18 +212,16 @@ const handleSave = async () => {
 
 try {
 
-await fetch("http://localhost:5000/api/credit-config/professional", {
+await apiFetch("/credit-config/professional", {
 method: "POST",
-headers: { "Content-Type": "application/json" },
 body: JSON.stringify({ config: credits })
 });
 
-alert("Professional credit configuration saved");
+showToast({ type: "success", message: "Professional credit configuration saved" });
 
 } catch (error) {
 
-console.error(error);
-alert("Failed to save credits");
+showToast({ type: "error", message: error.message || "Failed to save credits" });
 
 }
 

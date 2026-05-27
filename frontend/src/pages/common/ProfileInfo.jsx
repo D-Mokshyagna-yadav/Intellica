@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API_BASE from "../../api";
+import { showToast } from "../../utils/toast";
 
 function ProfileInfo({ user }) {
 
@@ -60,12 +61,13 @@ const res = await fetch(endpoint,  {
         // ✅ update UI without reload
         Object.assign(user, editData);
         setShowEdit(false);
+        showToast({ type: "success", message: "Profile updated successfully" });
       } else {
-        alert(data.message || "Update failed");
+        showToast({ type: "error", message: data.message || "Update failed" });
       }
 
     } catch (err) {
-      console.error(err);
+      showToast({ type: "error", message: err.message || "Update failed" });
     }
   };
 

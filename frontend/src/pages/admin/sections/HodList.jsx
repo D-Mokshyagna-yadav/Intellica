@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API_BASE from "../../../api";
+import { showToast } from "../../../utils/toast";
 
 export default function HodList() {
   const [hods, setHods] = useState([]);
@@ -19,7 +20,6 @@ export default function HodList() {
       });
 
       const data = await res.json();
-      console.log("PENDING HODS:", data);
 
       if (Array.isArray(data)) {
         setHods(data);
@@ -30,7 +30,7 @@ export default function HodList() {
       setLoading(false);
 
     } catch (err) {
-      console.error("Error fetching HODs", err);
+      showToast({ type: "error", message: err.message || "Failed to load HODs" });
       setLoading(false);
     }
   };
@@ -45,6 +45,7 @@ export default function HodList() {
     });
 
     fetchHods();
+    showToast({ type: "success", message: "HOD approved successfully" });
   };
 
   const callDiscussion = async (id) => {
@@ -66,8 +67,7 @@ export default function HodList() {
     }
 
   } catch (err) {
-
-    console.error("Discussion request failed", err);
+    showToast({ type: "error", message: err.message || "Discussion request failed" });
 
   }
 

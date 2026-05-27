@@ -1,126 +1,27 @@
 const router = require("express").Router();
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 const hodController = require("../controllers/hodController");
 const uploadController = require("../controllers/uploadController");
+const { updateProfile } = require("../controllers/authController");
+const asyncHandler = require("../utils/asyncHandler");
+const ROLES = require("../constants/roles");
 
-/* =====================================================
-   HOD PROFILE
-===================================================== */
+router.use(authMiddleware, roleMiddleware(ROLES.HOD));
 
-router.get(
-  "/profile",
-  authMiddleware,
-  hodController.getHodProfile
-);
+router.get("/profile", asyncHandler(hodController.getHodProfile));
 
-/* =====================================================
-   FACULTY MANAGEMENT
-===================================================== */
+router.get("/pending-faculty", asyncHandler(hodController.getPendingFaculty));
+router.get("/faculty-list", asyncHandler(hodController.getApprovedFaculty));
+router.put("/approve-faculty/:id", asyncHandler(hodController.approveFaculty));
+router.put("/discussion-faculty/:id", asyncHandler(hodController.discussionFaculty));
 
-// GET PENDING FACULTY
-router.get(
-  "/pending-faculty",
-  authMiddleware,
-  hodController.getPendingFaculty
-);
+router.get("/pending-uploads", asyncHandler(uploadController.getPendingUploadsForHOD));
+router.put("/approve-upload/:id", asyncHandler(uploadController.approveUploadByHOD));
+router.put("/discussion/:id", asyncHandler(uploadController.callForDiscussion));
 
-// GET APPROVED FACULTY (FOR VIEW DASHBOARD)
-router.get(
-  "/faculty-list",
-  authMiddleware,
-  hodController.getApprovedFaculty
-);
+router.get("/faculty-uploads/:facultyId", asyncHandler(hodController.getFacultyUploads));
+router.get("/department-uploads", asyncHandler(uploadController.getDepartmentUploads));
+router.put("/update-profile", asyncHandler(updateProfile));
 
-// APPROVE FACULTY
-router.put(
-  "/approve-faculty/:id",
-  authMiddleware,
-  hodController.approveFaculty
-);
-
-// CALL FACULTY FOR DISCUSSION
-router.put(
-  "/discussion-faculty/:id",
-  authMiddleware,
-  hodController.discussionFaculty
-);
-
-
-/* =====================================================
-   RESEARCH UPLOAD MANAGEMENT
-===================================================== */
-
-// GET PENDING UPLOADS FOR HOD
-router.get(
-  "/pending-uploads",
-  authMiddleware,
-  uploadController.getPendingUploadsForHOD
-);
-
-// APPROVE UPLOAD
-router.put(
-  "/approve-upload/:id",
-  authMiddleware,
-  uploadController.approveUploadByHOD
-);
-
-// CALL FOR DISCUSSION (UPLOAD)
-router.put(
-  "/discussion/:id",
-  authMiddleware,
-  uploadController.callForDiscussion
-);
-
-/* =====================================================
-   GET FACULTY DASHBOARD DATA
-===================================================== */
-
-router.get(
-  "/faculty-uploads/:facultyId",
-  authMiddleware,
-  hodController.getFacultyUploads
-);
-router.get(
-  "/department-uploads",
-  authMiddleware,
-  uploadController.getDepartmentUploads
-);
-/* =====================================================
-   UPDATE HOD PROFILE (NEW)
-===================================================== */
-
-const HOD = require("../models/HOD");
-
-router.put(
-  "/update-profile",
-  authMiddleware,
-  async (req, res) => {
-    try {
-
-      const hod = await HOD.findById(req.user.id);
-
-      if (!hod) {
-        return res.status(404).json({ message: "HOD not found" });
-      }
-
-      hod.name = req.body.name || hod.name;
-      hod.email = req.body.email || hod.email;
-      hod.designation = req.body.designation || hod.designation;
-      hod.googleScholar = req.body.googleScholar?.trim() || "";
-      hod.scopusId = req.body.scopusId?.trim() || "";
-      hod.vidwanId = req.body.vidwanId?.trim() || "";
-
-      await hod.save();
-
-      res.json({
-        message: "HOD profile updated successfully",
-        hod
-      });
-
-    } catch (err) {
-      console.error("HOD UPDATE ERROR:", err);
-      res.status(500).json({ message: "Update failed" });
-    }
-  }
-);
 module.exports = router;

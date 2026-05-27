@@ -1,41 +1,27 @@
 const Faculty = require("../models/Faculty");
+const ROLES = require("../constants/roles");
+const { AppError } = require("../utils/errors");
 
 exports.getProfile = async (req, res) => {
-  try {
-    const faculty = await Faculty.findById(req.user.id).select("-password");
+  const faculty = await Faculty.findById(req.user.id).select("-password");
 
-    if (!faculty) {
-      return res.status(404).json({ message: "Faculty not found" });
-    }
-
-    res.status(200).json(faculty);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+  if (!faculty) {
+    throw new AppError("Faculty not found", 404);
   }
+
+  res.status(200).json(faculty);
 };
+
 exports.getFacultyById = async (req, res) => {
-  try {
+  const faculty = await Faculty.findById(req.params.id).select("-password");
 
-    const faculty = await Faculty
-      .findById(req.params.id)
-      .select("-password");
-
-    if (!faculty) {
-      return res.status(404).json({
-        message: "Faculty not found"
-      });
-    }
-
-    res.status(200).json(faculty);
-
-  } catch (error) {
-
-    console.log(error);
-
-    res.status(500).json({
-      message: "Server error"
-    });
-
+  if (!faculty) {
+    throw new AppError("Faculty not found", 404);
   }
+
+  if (req.user.role === ROLES.HOD && faculty.department !== req.user.department) {
+    throw new AppError("Access denied", 403);
+  }
+
+  res.status(200).json(faculty);
 };

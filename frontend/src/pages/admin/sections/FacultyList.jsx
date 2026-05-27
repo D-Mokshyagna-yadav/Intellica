@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API_BASE from "../../../api";
+import { showToast } from "../../../utils/toast";
 
 import FacultyDashboard from "../../faculty/FacultyDashboard";
 import HodDashboard from "../../hod/HodDashboard";
@@ -43,7 +44,7 @@ try {
   setUsers(data);
 
 } catch(err) {
-  console.error("Failed to fetch users",err);
+  showToast({ type: "error", message: err.message || "Failed to fetch users" });
 }
 
 
@@ -60,14 +61,14 @@ Authorization:`Bearer ${localStorage.getItem("token")}`
 })
 .then(res=>res.json())
 .then(data=>setAnalytics(data))
-.catch(console.error);
+.catch((error)=>showToast({ type: "error", message: error.message || "Failed to load department analytics" }));
 
 },[selectedDept]);
 
 const deleteUser = async (userId) => {
 
   if(selectedUser){
-    alert("Go back to user list before deleting");
+    showToast({ type: "error", message: "Go back to user list before deleting" });
     return;
   }
 
@@ -85,15 +86,14 @@ const deleteUser = async (userId) => {
     const data = await res.json();
 
     if(res.ok){
-      alert("User removed successfully");
+      showToast({ type: "success", message: "User removed successfully" });
       fetchUsers(); // refresh list
     }else{
-      alert(data.message || "Delete failed");
+      showToast({ type: "error", message: data.message || "Delete failed" });
     }
 
   }catch(err){
-    console.error(err);
-    alert("Server error while deleting user");
+    showToast({ type: "error", message: err.message || "Server error while deleting user" });
   }
 
 };
@@ -121,15 +121,14 @@ body:JSON.stringify({ department:newDept })
 const data = await res.json();
 
 if(res.ok){
-alert("Department updated successfully");
+showToast({ type: "success", message: "Department updated successfully" });
 fetchUsers();
 }else{
-alert(data.message || "Update failed");
+showToast({ type: "error", message: data.message || "Update failed" });
 }
 
 }catch(err){
-console.error(err);
-alert("Server error");
+showToast({ type: "error", message: err.message || "Failed to update department" });
 }
 
 };

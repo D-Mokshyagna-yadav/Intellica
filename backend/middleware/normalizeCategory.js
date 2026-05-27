@@ -1,21 +1,20 @@
-const CATEGORY_MAP = require("../constants/categoryMap");
+const { normalizeCategory } = require("../constants/categories");
 
-function normalizeCategory(req, res, next) {
+module.exports = function normalizeCategoryMiddleware(req, res, next) {
+  const rawCategory = req.params.category || req.body.category || req.query.category;
 
-  if (!req.body.category) {
+  if (!rawCategory) {
     return next();
   }
 
-  let key = req.body.category
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/-/g, "");
+  const normalizedCategory = normalizeCategory(rawCategory);
 
-  if (CATEGORY_MAP[key]) {
-    req.body.category = CATEGORY_MAP[key];
+  if (!normalizedCategory) {
+    return res.status(400).json({ message: "Unsupported category" });
   }
 
+  req.normalizedCategory = normalizedCategory;
+  req.body.category = normalizedCategory;
+  req.query.category = normalizedCategory;
   next();
-}
-
-module.exports = normalizeCategory;
+};

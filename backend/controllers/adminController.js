@@ -1,778 +1,284 @@
-const mongoose = require("mongoose");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
-const Notification = require("../models/Notification");
-const createUserFolder = require("../utils/createUserFolder");
+const User = require("../models/User");
 const Upload = require("../models/Upload");
+const DEPARTMENTS = require("../constants/departments");
+const ROLES = require("../constants/roles");
 const { sendApprovalEmailToFaculty, sendApprovalEmailToHod } = require("../utils/emailService");
+const { createNotification } = require("../utils/notificationService");
+const createUserFolder = require("../utils/createUserFolder");
+const { AppError } = require("../utils/errors");
 
+async function findManagedUser(userId) {
+  const faculty = await Faculty.findById(userId);
+  if (faculty) return faculty;
 
-/* =========================
-   GET PENDING FACULTY
-========================= */
-exports.getPendingFaculty = async (req, res) => {
-  try {
+  const hod = await HOD.findById(userId);
+  if (hod) return hod;
 
-    if (req.user.role !== "HOD") {
-      return res.status(403).json({ message: "Only HOD can view pending faculty" });
-    }
+  const admin = await User.findById(userId);
+  if (admin) return admin;
 
-    const faculty = await Faculty.find({ isApproved: false });
+  return null;
+}
 
-    res.status(200).json(faculty);
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-
-/* =========================
-   APPROVE FACULTY
-========================= */
-exports.approveFaculty = async (req, res) => {
-  try {
-
-    if (req.user.role !== "HOD") {
-      return res.status(403).json({ message: "Only HOD can approve faculty" });
-    }
-
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid Faculty ID" });
-    }
-
-    const faculty = await Faculty.findByIdAndUpdate(
-      id,
-      {
-        isApproved: true,
-        status: "APPROVED"
-      },
-      { new: true }
-    );
-
-    if (!faculty) {
-      return res.status(404).json({ message: "Faculty not found" });
-    }
-
-    if (faculty.employeeId) {
-      createUserFolder("faculty", faculty.employeeId);
-    }
-
-    await Notification.create({
-      message: `HOD approved Faculty ${faculty.name}`,
-      role: "HOD",
-    });
-
-    // email to faculty about approval
-    try {
-      await sendApprovalEmailToFaculty(faculty);
-    } catch (err) {
-      console.error('Failed to send faculty approval email:', err);
-    }
-
-    res.status(200).json({
-      message: "Faculty approved successfully",
-      faculty,
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-/* =========================
-   GET ALL HODS
-========================= */
 exports.getAllHods = async (req, res) => {
-  try {
-
-    if (req.user.role !== "ADMIN") {
-      return res.status(403).json({ message: "Only Admin can view HODs" });
-    }
-
-    const hods = await HOD.find();
-
-    res.status(200).json(hods);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch HODs" });
-  }
+  const hods = await HOD.find().sort({ createdAt: -1 });
+  res.status(200).json(hods);
 };
 
-
-/* =========================
-   GET PENDING HODS
-========================= */
 exports.getPendingHods = async (req, res) => {
-  try {
-
-    if (req.user.role !== "ADMIN") {
-      return res.status(403).json({ message: "Only Admin can view pending HODs" });
-    }
-
-    const hods = await HOD.find({
-      isApproved: false
-    });
-
-    res.status(200).json(hods);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch pending HODs" });
-  }
+  const hods = await HOD.find({ isApproved: false }).sort({ createdAt: -1 });
+  res.status(200).json(hods);
 };
 
-
-/* =========================
-   APPROVE HOD
-========================= */
 exports.approveHod = async (req, res) => {
-  try {
+  const hod = await HOD.findById(req.params.id);
 
-    if (req.user.role !== "ADMIN") {
-      return res.status(403).json({ message: "Only Admin can approve HOD" });
-    }
-
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid HOD ID" });
-    }
-
-    const hod = await HOD.findByIdAndUpdate(
-  id,
-  {
-    isApproved: true,
-    status: "APPROVED",   // ⭐ THIS LINE IS MISSING
-    discussionComment: ""
-  },
-  { new: true }
-);
-
-    if (!hod) {
-      return res.status(404).json({ message: "HOD not found" });
-    }
-
-    if (hod.employeeId) {
-      createUserFolder("hod", hod.employeeId);
-    }
-
-    await Notification.create({
-      message: `Admin approved HOD ${hod.name}`,
-      role: "ADMIN"
-    });
-
-    // email to HOD about approval
-    try {
-      await sendApprovalEmailToHod(hod);
-    } catch (err) {
-      console.error('Failed to send HOD approval email:', err);
-    }
-
-    res.status(200).json({
-      message: "HOD approved successfully",
-      hod,
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Approval failed" });
+  if (!hod) {
+    throw new AppError("HOD not found", 404);
   }
+
+  hod.isApproved = true;
+  hod.status = "APPROVED";
+  hod.discussionComment = "";
+  await hod.save();
+
+  if (hod.employeeId) {
+    createUserFolder("hod", hod.employeeId);
+  }
+
+  await createNotification({
+    message: `Admin approved HOD ${hod.name}`,
+    audienceRoles: [ROLES.HOD, ROLES.ADMIN],
+    audienceDepartment: hod.department,
+  });
+
+  sendApprovalEmailToHod(hod).catch(() => null);
+
+  res.status(200).json({
+    message: "HOD approved successfully",
+    hod,
+  });
 };
 
+exports.hodDiscussion = async (req, res) => {
+  const hod = await HOD.findById(req.params.id);
 
-/* =========================
-   CALL DISCUSSION FOR HOD
-========================= */
-/* =========================
-   CALL DISCUSSION FOR HOD
-========================= */
-exports.hodDiscussion = async (req,res)=>{
+  if (!hod) {
+    throw new AppError("HOD not found", 404);
+  }
 
-try{
+  const comment = String(req.body.comment || "Admin requested discussion").trim();
+  hod.discussionComment = comment;
+  hod.status = "DISCUSSION";
+  hod.isApproved = false;
+  await hod.save();
 
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Only Admin can request discussion"});
-}
+  await createNotification({
+    message: `${hod.name} was marked for discussion by Admin`,
+    audienceRoles: [ROLES.ADMIN, ROLES.HOD],
+    audienceDepartment: hod.department,
+    audienceUserId: hod._id.toString(),
+  });
 
-const { id } = req.params;
-
-if(!mongoose.Types.ObjectId.isValid(id)){
-return res.status(400).json({message:"Invalid HOD ID"});
-}
-
-const hod = await HOD.findById(id);
-
-if(!hod){
-return res.status(404).json({message:"HOD not found"});
-}
-
-/* DEFAULT DISCUSSION MESSAGE */
-
-hod.discussionComment = "Admin requested discussion";
-hod.status = "DISCUSSION";     // ⭐ IMPORTANT FIX
-hod.isApproved = false;
-
-await hod.save();
-
-res.json({
-message:"Discussion requested successfully"
-});
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Discussion failed"
-});
-
-}
-
+  res.json({ message: "Discussion requested successfully" });
 };
 
-/* =========================
-   REMOVE APPROVED HOD
-========================= */
-exports.removeApprovedHod = async (req,res)=>{
+exports.removeApprovedHod = async (req, res) => {
+  const hod = await HOD.findByIdAndDelete(req.params.id);
 
-try{
+  if (!hod) {
+    throw new AppError("HOD not found", 404);
+  }
 
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Only Admin can remove HOD"});
-}
+  await Upload.deleteMany({ faculty: hod._id });
 
-const { id } = req.params;
-
-if(!mongoose.Types.ObjectId.isValid(id)){
-return res.status(400).json({message:"Invalid HOD ID"});
-}
-
-const hod = await HOD.findByIdAndDelete(id);
-
-if(!hod){
-return res.status(404).json({message:"HOD not found"});
-}
-
-res.json({
-message:"HOD removed successfully"
-});
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to remove HOD"
-});
-
-}
-
+  res.json({ message: "HOD removed successfully" });
 };
 
-
-/* =========================
-   GET PENDING HOD UPLOADS
-========================= */
 exports.getPendingUploadsForAdmin = async (req, res) => {
+  const uploads = await Upload.find({
+    status: { $in: ["HOD_SUBMITTED", "ADMIN_COMMENT"] },
+  })
+    .populate("faculty", "name employeeId department role")
+    .sort({ createdAt: -1 });
 
-try {
-
-if (req.user.role !== "ADMIN") {
-return res.status(403).json({ message: "Only Admin can view uploads" });
-}
-
-const uploads = await Upload.find({
-status: "HOD_SUBMITTED"
-}).sort({ createdAt: -1 });
-
-const formatted = await Promise.all(
-
-uploads.map(async (u) => {
-
-let faculty = null;
-
-if (u.createdByRole === "HOD") {
-faculty = await HOD.findById(u.faculty).select("name employeeId department");
-}
-
-return {
-...u._doc,
-faculty
+  res.status(200).json(uploads);
 };
 
-})
-
-);
-
-res.status(200).json(formatted);
-
-} catch (error) {
-
-console.error(error);
-
-res.status(500).json({
-message: "Failed to fetch uploads"
-});
-
-}
-
-};
-
-
-/* =========================
-   ADMIN APPROVE HOD UPLOAD
-========================= */
 exports.approveUploadByAdmin = async (req, res) => {
-  try {
+  const upload = await Upload.findById(req.params.id);
 
-    if (req.user.role !== "ADMIN") {
-      return res.status(403).json({ message: "Only Admin can approve uploads" });
-    }
-
-    const upload = await Upload.findById(req.params.id);
-
-    if (!upload) {
-      return res.status(404).json({ message: "Upload not found" });
-    }
-
-    upload.status = "ADMIN_APPROVED";
-
-    await upload.save();
-
-    res.status(200).json({
-      message: "Upload approved by Admin"
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Approval failed" });
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
   }
+
+  upload.status = "ADMIN_APPROVED";
+  await upload.save();
+
+  res.status(200).json({ message: "Upload approved by Admin" });
 };
 
-
-/* =========================
-   ADMIN DISCUSSION
-========================= */
 exports.adminDiscussion = async (req, res) => {
-  try {
+  const upload = await Upload.findById(req.params.id);
 
-    if (req.user.role !== "ADMIN") {
-      return res.status(403).json({ message: "Only Admin can call discussion" });
-    }
-
-    const upload = await Upload.findById(req.params.id);
-
-    if (!upload) {
-      return res.status(404).json({ message: "Upload not found" });
-    }
-
-    upload.status = "ADMIN_COMMENT";
-    upload.adminComment = req.body.comment || "";
-
-    await upload.save();
-
-    res.status(200).json({
-      message: "Discussion requested",
-      upload
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      message: "Discussion failed"
-    });
-
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
   }
+
+  const comment = String(req.body.comment || "").trim();
+  if (!comment) {
+    throw new AppError("Discussion comment is required", 400);
+  }
+
+  upload.status = "ADMIN_COMMENT";
+  upload.adminComment = comment;
+  await upload.save();
+
+  res.status(200).json({
+    message: "Discussion requested",
+    upload,
+  });
 };
 
-
-/* =========================
-   GET DEPARTMENT STATUS
-========================= */
 exports.getDepartmentStatus = async (req, res) => {
+  const result = await Promise.all(
+    DEPARTMENTS.map(async (department) => {
+      const hod = await HOD.findOne({
+        department,
+        isApproved: true,
+        status: "APPROVED",
+      }).select("name employeeId");
 
-try {
+      const facultyCount = await Faculty.countDocuments({
+        department,
+        isApproved: true,
+        status: "APPROVED",
+      });
 
-if (req.user.role !== "ADMIN") {
-return res.status(403).json({ message: "Only Admin can view departments" });
-}
+      return {
+        department,
+        hodName: hod?.name || null,
+        facultyCount,
+      };
+    })
+  );
 
-const departments = ["CSE","ECE","MECH","CIVIL","EEE","IT","AIML","AIDS","CHEM"];
-
-const result = await Promise.all(
-
-departments.map(async(dep)=>{
-
-const hod = await HOD.findOne({
-department:dep,
-isApproved:true
-}).select("name employeeId");
-
-const facultyCount = await Faculty.countDocuments({
-department:dep,
-isApproved:true
-});
-
-return {
-department:dep,
-hodName: hod ? hod.name : null,
-facultyCount
+  res.status(200).json(result);
 };
 
-})
+exports.getTopDepartments = async (req, res) => {
+  const result = await Upload.aggregate([
+    { $match: { status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] } } },
+    { $group: { _id: "$department", totalCredits: { $sum: "$credits" } } },
+    { $sort: { totalCredits: -1 } },
+    { $limit: 4 },
+  ]);
 
-);
-
-res.status(200).json(result);
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to fetch departments"
-});
-
-}
-
+  res.json(
+    result.map((item) => ({
+      department: item._id,
+      credits: item.totalCredits,
+    }))
+  );
 };
 
+exports.getActivityStats = async (req, res) => {
+  const result = await Upload.aggregate([
+    { $match: { status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] } } },
+    { $group: { _id: "$category", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 8 },
+  ]);
 
-/* =========================
-   TOP DEPARTMENTS BY CREDITS
-========================= */
-exports.getTopDepartments = async (req,res)=>{
-
-try{
-
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
-
-const result = await Upload.aggregate([
-
-{
-$match:{
-status:{ $in:["HOD_APPROVED","ADMIN_APPROVED"] }
-}
-},
-
-{
-$group:{
-_id:"$department",
-totalCredits:{ $sum:"$credits" }
-}
-},
-
-{
-$sort:{ totalCredits:-1 }
-},
-
-{
-$limit:4
-}
-
-]);
-
-const formatted = result.map(r=>({
-department:r._id,
-credits:r.totalCredits
-}));
-
-res.json(formatted);
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to fetch top departments"
-});
-
-}
-
+  res.json(
+    result.map((item) => ({
+      category: item._id,
+      count: item.count,
+    }))
+  );
 };
 
+exports.getAllUsers = async (req, res) => {
+  const [faculty, hods, admins] = await Promise.all([
+    Faculty.find().select("-password").lean(),
+    HOD.find().select("-password").lean(),
+    User.find().select("-password").lean(),
+  ]);
 
-/* =========================
-   MOST POPULAR ACTIVITIES
-========================= */
-exports.getActivityStats = async (req,res)=>{
+  const normalizedAdmins = admins.map((admin) => ({
+    ...admin,
+    employeeId: admin.regId,
+    department: admin.department || "",
+    name: admin.name || admin.regId,
+  }));
 
-try{
-
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
-
-const result = await Upload.aggregate([
-
-{
-$match:{
-status:{ $in:["HOD_APPROVED","ADMIN_APPROVED"] }
-}
-},
-
-{
-$group:{
-_id:"$category",
-count:{ $sum:1 }
-}
-},
-
-{
-$sort:{ count:-1 }
-},
-
-{
-$limit:5
-}
-
-]);
-
-const formatted = result.map(r=>({
-category:r._id,
-count:r.count
-}));
-
-res.json(formatted);
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to fetch activity stats"
-});
-
-}
-
+  res.json([...faculty, ...hods, ...normalizedAdmins]);
 };
 
-/* =========================
-   GET ALL FACULTY + HODS
-========================= */
+exports.deleteUser = async (req, res) => {
+  const user = await findManagedUser(req.params.id);
 
-exports.getAllUsers = async (req,res)=>{
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
-try{
+  if (user.role === ROLES.ADMIN) {
+    throw new AppError("Admin accounts cannot be removed from the UI", 403);
+  }
 
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
+  await Upload.deleteMany({ faculty: user._id });
+  await user.deleteOne();
 
-/* APPROVED FACULTY */
-const faculty = await Faculty.find({
-  isApproved:true
-}).select("_id employeeId name department role");
-
-const hods = await HOD.find({
-  isApproved:true
-}).select("_id employeeId name department role");
-
-/* MERGE BOTH */
-
-const users = [...faculty,...hods];
-
-res.json(users);
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to fetch users"
-});
-
-}
-
+  res.json({ message: "User removed successfully" });
 };
 
-/* =========================
-   DELETE FACULTY OR HOD
-========================= */
+exports.changeDepartment = async (req, res) => {
+  const nextDepartment = String(req.body.department || "").trim().toUpperCase();
 
-exports.deleteUser = async (req,res)=>{
+  if (!DEPARTMENTS.includes(nextDepartment)) {
+    throw new AppError("Invalid department", 400);
+  }
 
-try{
+  const user = await findManagedUser(req.params.id);
 
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Only Admin can delete users"});
-}
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
-const { id } = req.params;
+  if (!("department" in user)) {
+    throw new AppError("This account does not support department changes", 400);
+  }
 
-if(!mongoose.Types.ObjectId.isValid(id)){
-return res.status(400).json({message:"Invalid User ID"});
-}
+  const previousDepartment = user.department;
+  user.department = nextDepartment;
+  await user.save();
 
-/* DELETE FACULTY */
+  await Upload.updateMany({ faculty: user._id }, { $set: { department: nextDepartment } });
 
-const faculty = await Faculty.findById(id);
-
-if(faculty){
-
-await Upload.deleteMany({ faculty:id });
-
-await Faculty.findByIdAndDelete(id);
-
-return res.json({
-message:"Faculty removed successfully"
-});
-
-}
-
-/* DELETE HOD */
-
-const hod = await HOD.findById(id);
-
-if(hod){
-
-await Upload.deleteMany({ faculty:id });
-
-await HOD.findByIdAndDelete(id);
-
-return res.json({
-message:"HOD removed successfully"
-});
-
-}
-
-res.status(404).json({
-message:"User not found"
-});
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Delete failed"
-});
-
-}
-
+  res.json({
+    message: "Department updated successfully",
+    previousDepartment,
+    department: nextDepartment,
+  });
 };
-exports.changeDepartment = async (req,res)=>{
 
-try{
+exports.getDepartmentAnalytics = async (req, res) => {
+  const department = String(req.params.department || "").trim().toUpperCase();
 
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Only Admin can change department"});
-}
+  if (!DEPARTMENTS.includes(department)) {
+    throw new AppError("Invalid department", 400);
+  }
 
-const { id } = req.params;
-const { department } = req.body;
+  const uploads = await Upload.find({
+    department,
+    status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] },
+  }).lean();
 
-/* UPDATE FACULTY */
-
-let faculty = await Faculty.findById(id);
-
-if(faculty){
-
-await Faculty.findByIdAndUpdate(
-id,
-{ department },
-{ new:true }
-);
-
-return res.json({
-message:"Faculty department updated"
-});
-
-}
-
-/* UPDATE HOD */
-
-let hod = await HOD.findById(id);
-
-if(hod){
-
-await HOD.findByIdAndUpdate(
-id,
-{ department },
-{ new:true }
-);
-
-return res.json({
-message:"HOD department updated"
-});
-
-}
-
-res.status(404).json({message:"User not found"});
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({message:"Update failed"});
-
-}
-
-};
-/* =========================
-   GET DEPARTMENT ANALYTICS
-========================= */
-
-exports.getDepartmentAnalytics = async (req,res)=>{
-
-try{
-
-if(req.user.role !== "ADMIN"){
-return res.status(403).json({message:"Access denied"});
-}
-
-const { department } = req.params;
-
-/* GET APPROVED ACTIVITIES */
-
-const uploads = await Upload.find({
-department,
-status:{ $in:["HOD_APPROVED","ADMIN_APPROVED"] },
-createdByRole:{ $in:["FACULTY","HOD"] }
-});
-
-/* TOTAL CREDITS */
-
-const totalCredits = uploads.reduce(
-(sum,u)=>sum + (u.credits || 0),
-0
-);
-
-/* TOTAL ACTIVITIES */
-
-const totalActivities = uploads.length;
-
-/* TOTAL FACULTY */
-
-const facultyCount = await Faculty.countDocuments({
-department,
-isApproved:true
-});
-
-res.json({
-totalCredits,
-totalActivities,
-facultyCount
-});
-
-}catch(err){
-
-console.error(err);
-
-res.status(500).json({
-message:"Failed to fetch department analytics"
-});
-
-}
-
+  res.json({
+    department,
+    totalActivities: uploads.length,
+    totalCredits: uploads.reduce((sum, upload) => sum + Number(upload.credits || 0), 0),
+  });
 };

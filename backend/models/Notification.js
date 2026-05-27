@@ -4,16 +4,33 @@ const notificationSchema = new mongoose.Schema(
   {
     message: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
     },
-    role: {
+    audienceRoles: {
+      type: [String],
+      default: [],
+    },
+    audienceDepartment: {
       type: String,
-      required: true // admin / hod / faculty
-    }
+      default: null,
+      trim: true,
+    },
+    audienceUserId: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    readBy: {
+      type: [String],
+      default: [],
+    },
   },
   {
-    timestamps: true // automatically adds createdAt & updatedAt
+    timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Notification", notificationSchema);
+notificationSchema.index({ audienceRoles: 1, audienceDepartment: 1, createdAt: -1 });
+
+module.exports = mongoose.models.Notification || mongoose.model("Notification", notificationSchema);

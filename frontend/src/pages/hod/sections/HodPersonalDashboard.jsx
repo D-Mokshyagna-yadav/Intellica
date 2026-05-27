@@ -1,5 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
-import API_BASE from "../../../api";
+import { apiFetch } from "../../../api";
+import { buildYearOptions } from "../../../constants/years";
+import { CATEGORY_FILTER_OPTIONS } from "../../../constants/categories";
+import LoadingState from "../../../components/LoadingState";
+import { showToast } from "../../../utils/toast";
 
 import Conferences from "../../faculty/categories/Conferences";
 import Workshops from "../../faculty/categories/Workshops";
@@ -22,13 +26,6 @@ import Incubation from "../../faculty/categories/Incubation";
 import Consultancy from "../../faculty/categories/Consultancy";
 import MOUs from "../../faculty/categories/MOUs";
 
-const ALL_CATEGORIES = [
-  "Publications", "Conferences", "Workshops", "FDP", "Books",
-  "NPTEL", "Seminars", "Webinars", "GuestLectures", "HonorsAwards",
-  "Certifications", "ResearchPolicy", "Memberships", "IPR",
-  "Consultancy", "Incubation", "ResearchProjects", "DoctoralThesis", "MOUs", "Other"
-];
-
 const categoryComponents = {
   conferences: Conferences, workshops: Workshops, fdp: FDP,
   books: Books, nptel: NPTEL, seminars: Seminars, webinars: Webinars,
@@ -48,43 +45,38 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [rankData, setRankData] = useState(null);
-
-  const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(!uploads);
 
   useEffect(() => {
     if (uploads && uploads.length > 0) {
       setLocalUploads(uploads);
+      setLoading(false);
       return;
     }
-    const url = hodId
-      ? `${API_BASE}/hod/faculty-uploads/${hodId}`
-      : `${API_BASE}/uploads/department`;
-    fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setLocalUploads(data);
-        else setLocalUploads([]);
-      })
-      .catch(console.error);
-  }, [uploads, hodId, token]);
+    const loadUploads = async () => {
+      try {
+        setLoading(true);
+        const data = await apiFetch(hodId ? `/hod/faculty-uploads/${hodId}` : "/uploads/department");
+        setLocalUploads(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setLocalUploads([]);
+        showToast({ type: "error", message: error.message || "Failed to load uploads" });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUploads();
+  }, [uploads, hodId]);
 
   useEffect(() => {
     const fetchRank = async () => {
       try {
-        const res = await fetch(`${API_BASE}/ranking`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const userId = payload.id;
-        const targetId = hodId || userId;
-        const myData = data.find(f => f.facultyId === targetId);
-        console.log("HOD PERSONAL RANK:", myData);
+        const targetId = hodId || localStorage.getItem("userId");
+        const myData = await apiFetch(`/ranking/${targetId}`);
         if (myData) {
           setRankData({
-            departmentRank: myData.rank,
+            departmentRank: myData.departmentRank,
             departmentTotal: myData.departmentTotal,
             collegeRank: myData.collegeRank,
             collegeTotal: myData.collegeTotal,
@@ -92,11 +84,11 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
           });
         }
       } catch (err) {
-        console.error("RANK ERROR:", err);
+        showToast({ type: "error", message: err.message || "Failed to load rank" });
       }
     };
     fetchRank();
-  }, [hodId, token]);
+  }, [hodId]);
 
   const approvedUploads = useMemo(() =>
     localUploads.filter(u =>
@@ -130,16 +122,9 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
     });
   }, [approvedUploads, selectedCategory, selectedYear]);
 
-  const availableCategories = ALL_CATEGORIES;
+  const availableCategories = CATEGORY_FILTER_OPTIONS;
 
-  // ✅ 1900-3000 year dropdown
-  const availableYears = useMemo(() => {
-    const years = [];
-    for (let year = 1900; year <= 3000; year++) {
-      years.push(year);
-    }
-    return years;
-  }, []);
+  const availableYears = useMemo(() => buildYearOptions(2000), []);
 
   const totalCredits = filteredApprovedUploads.reduce((sum, u) => sum + (u.credits || 0), 0);
   const approvedCount = approvedUploads.length;
@@ -165,12 +150,12 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
     certification: byCategory("certification"),
     others: byCategory("others"),
     researchpolicy: byCategory("researchpolicy"),
-    membership: byCategory("membership"),
+    membership: byCategory("professionalmembership"),
     ipr: byCategory("ipr"),
     consultancy: byCategory("consultancy"),
     incubation: byCategory("incubation"),
-    doctoralThesis: byCategory("doctoralThesis"),
-    researchProjects: byCategory("researchProjects"),
+    doctoralThesis: byCategory("doctoralthesis"),
+    researchProjects: byCategory("researchproject"),
     mou: byCategory("mou")
   };
 
@@ -181,7 +166,7 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
 
   const handleDownload = async () => {
     try {
-      let url = `${API_BASE}/reports/faculty-excel`;
+      let url = "/api/reports/faculty-excel";
       const params = new URLSearchParams();
       const loggedInUserId = localStorage.getItem("userId");
       if (hodId && hodId !== loggedInUserId) {
@@ -196,12 +181,9 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
       if ([...params].length > 0) {
         url += `?${params.toString()}`;
       }
-      console.log("DOWNLOAD URL:", url);
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       if (!res.ok) {
-        console.error("Download failed:", res.status);
+        showToast({ type: "error", message: "Download failed" });
         return;
       }
       const blob = await res.blob();
@@ -210,9 +192,13 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
       link.download = "hod_activities.xlsx";
       link.click();
     } catch (err) {
-      console.error("DOWNLOAD ERROR:", err);
+      showToast({ type: "error", message: err.message || "Download failed" });
     }
   };
+
+  if (loading) {
+    return <LoadingState message="Loading personal dashboard..." />;
+  }
 
   const ActiveCategory = categoryComponents[view];
 

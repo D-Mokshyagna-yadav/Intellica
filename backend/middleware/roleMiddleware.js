@@ -1,16 +1,14 @@
-module.exports = (requiredRole) => {
-  return (req, res, next) => {
+module.exports = function roleMiddleware(...allowedRoles) {
+  const normalizedRoles = allowedRoles.flat().map((role) => String(role).toUpperCase());
 
-    // ✅ Check if user exists
-    if (!req.user || !req.user.role) {
-      return res.status(401).json({ message: "Unauthorized - No user data" });
+  return (req, res, next) => {
+    const userRole = String(req.user?.role || "").toUpperCase();
+
+    if (!userRole) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
-    // ✅ Normalize both roles to uppercase (avoid HOD vs hod issues)
-    const userRole = req.user.role.toUpperCase();
-    const expectedRole = requiredRole.toUpperCase();
-
-    if (userRole !== expectedRole) {
+    if (!normalizedRoles.includes(userRole)) {
       return res.status(403).json({ message: "Access denied" });
     }
 

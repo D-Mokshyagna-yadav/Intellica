@@ -1,83 +1,31 @@
 const express = require("express");
-const router = express.Router();
 const adminController = require("../controllers/adminController");
-
-const {
-  getPendingFaculty,
-  approveFaculty,
-  getAllHods,
-  getPendingHods,
-  approveHod,
-  hodDiscussion,
-  getPendingUploadsForAdmin,
-  approveUploadByAdmin,
-  adminDiscussion
-} = require("../controllers/adminController");
-
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
+const asyncHandler = require("../utils/asyncHandler");
+const ROLES = require("../constants/roles");
 
-/* ===============================
-   FACULTY APPROVAL ROUTES
-=============================== */
+const router = express.Router();
 
-router.get("/pending-faculty", authMiddleware, getPendingFaculty);
-router.put("/approve/faculty/:id", authMiddleware, approveFaculty);
+router.use(authMiddleware, roleMiddleware(ROLES.ADMIN));
 
-/* ===============================
-   HOD MANAGEMENT ROUTES
-=============================== */
+router.get("/hods", asyncHandler(adminController.getAllHods));
+router.get("/pending-hods", asyncHandler(adminController.getPendingHods));
+router.put("/approve-hod/:id", asyncHandler(adminController.approveHod));
+router.post("/hod-discussion/:id", asyncHandler(adminController.hodDiscussion));
+router.delete("/remove-hod/:id", asyncHandler(adminController.removeApprovedHod));
 
-router.get("/hods", authMiddleware, getAllHods);
-router.get("/pending-hods", authMiddleware, getPendingHods); // ⭐ IMPORTANT
-router.put("/approve-hod/:id", authMiddleware, approveHod);
-router.post(
-"/hod-discussion/:id",
-authMiddleware,
-hodDiscussion
-);
-/* ===============================
-   HOD UPLOAD APPROVAL
-=============================== */
-router.get(
-"/departments",
-authMiddleware,
-adminController.getDepartmentStatus
-);
-router.delete(
-"/remove-hod/:id",
-authMiddleware,
-adminController.removeApprovedHod
-);
-router.get(
-"/top-departments",
-authMiddleware,
-adminController.getTopDepartments
-);
+router.get("/departments", asyncHandler(adminController.getDepartmentStatus));
+router.get("/top-departments", asyncHandler(adminController.getTopDepartments));
+router.get("/activity-stats", asyncHandler(adminController.getActivityStats));
 
-router.get(
-"/activity-stats",
-authMiddleware,
-adminController.getActivityStats
-);
-router.get("/pending-uploads", authMiddleware, getPendingUploadsForAdmin);
+router.get("/pending-uploads", asyncHandler(adminController.getPendingUploadsForAdmin));
+router.post("/approve-upload/:id", asyncHandler(adminController.approveUploadByAdmin));
+router.post("/discussion/:id", asyncHandler(adminController.adminDiscussion));
 
-router.post("/approve-upload/:id", authMiddleware, approveUploadByAdmin);
+router.get("/all-users", asyncHandler(adminController.getAllUsers));
+router.delete("/delete-user/:id", asyncHandler(adminController.deleteUser));
+router.put("/change-department/:id", asyncHandler(adminController.changeDepartment));
+router.get("/department-analytics/:department", asyncHandler(adminController.getDepartmentAnalytics));
 
-router.post("/discussion/:id", authMiddleware, adminDiscussion);
-router.get("/all-users", authMiddleware, adminController.getAllUsers);
-router.delete(
-"/delete-user/:id",
-authMiddleware,
-adminController.deleteUser
-);
-router.put(
-"/change-department/:id",
-authMiddleware,
-adminController.changeDepartment
-);
-router.get(
-"/department-analytics/:department",
-authMiddleware,
-adminController.getDepartmentAnalytics
-);
 module.exports = router;

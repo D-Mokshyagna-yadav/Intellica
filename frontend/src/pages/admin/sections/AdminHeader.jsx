@@ -1,4 +1,5 @@
 import collegeLogo from "../../../assets/logo-mic.png";
+import NotificationBell from "../../../components/NotificationBell";
 
 function AdminHeader() {
 
@@ -11,8 +12,11 @@ function AdminHeader() {
         </p>
       </div>
 
-      <div style={logoWrapper}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <NotificationBell />
+        <div style={logoWrapper}>
         <img src={collegeLogo} alt="College Logo" style={logoStyle} />
+        </div>
       </div>
 
     </div>

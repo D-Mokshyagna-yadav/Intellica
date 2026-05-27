@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import * as XLSX from "xlsx";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -10,6 +9,11 @@ import {
   Legend,
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
+import { apiFetch } from "../../../api";
+import { buildYearOptions } from "../../../constants/years";
+import { DEPARTMENTS } from "../../../constants/departments";
+import LoadingState from "../../../components/LoadingState";
+import { showToast } from "../../../utils/toast";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -18,11 +22,8 @@ const COLORS = [
   "#ef4444bc", "#0ea5e9", "#f59e0b", "#10b981a8"
 ];
 
-const ALL_YEARS = Array.from({ length: 1101 }, (_, i) => (1900 + i).toString());
-
-const ALL_DEPARTMENTS = [
-  "CIVIL", "EEE", "MECH", "ECE", "CSE", "IT", "AIML", "AIDS", "DIPLOMA"
-];
+const ALL_YEARS = buildYearOptions(2000);
+const ALL_DEPARTMENTS = DEPARTMENTS.filter((department) => department !== "CHEM");
 
 export default function DepartmentAnalytics() {
   const [uploads, setUploads] = useState([]);
@@ -32,17 +33,13 @@ export default function DepartmentAnalytics() {
   const [selectedDepartment, setSelectedDepartment] = useState("All");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("/api/uploads/department", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
+    apiFetch("/uploads/department")
       .then(data => {
         setUploads(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
-        console.error("Fetch error:", err);
+        showToast({ type: "error", message: err.message || "Failed to load analytics" });
         setLoading(false);
       });
   }, []);
@@ -210,13 +207,20 @@ export default function DepartmentAnalytics() {
       Year: selectedYear,
       Category: selectedCategory
     }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Dept Analytics");
-    XLSX.writeFile(wb, `Department_Analytics_${selectedYear}.xlsx`);
+    const csv = [
+      Object.keys(rows[0]).join(","),
+      ...rows.map((row) => Object.values(row).join(",")),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Department_Analytics_${selectedYear}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
-  if (loading) return <div style={{ padding: 40 }}>Loading analytics...</div>;
+  if (loading) return <LoadingState message="Loading analytics..." />;
 
   return (
     <div style={{ padding: "0 10px" }}>

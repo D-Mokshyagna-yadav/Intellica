@@ -1,15 +1,16 @@
 // src/pages/hod/sections/FacultyProfiles.jsx
 
 import { useState, useEffect } from "react";
-import API_BASE from "../../../api";
+import { apiFetch } from "../../../api";
 import FacultyDashboard from "../../faculty/FacultyDashboard";
+import LoadingState from "../../../components/LoadingState";
+import { showToast } from "../../../utils/toast";
 
 function FacultyProfiles() {
   const [viewFacultyId, setViewFacultyId] = useState(null);
   const [facultyList, setFacultyList] = useState([]);
   const [search, setSearch] = useState("");
-
-  const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(true);
 
   // ✅ GET REAL DEPARTMENT (FIX)
   const userDept = localStorage.getItem("user_department");
@@ -21,35 +22,19 @@ function FacultyProfiles() {
     const fetchFaculty = async () => {
 
       try {
-
-        const res = await fetch(
-          `${API_BASE}/hod/faculty-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch faculty");
-        }
-
+        const data = await apiFetch("/hod/faculty-list");
         setFacultyList(data);
-
       } catch (error) {
-
-        console.error("FETCH FACULTY LIST ERROR:", error);
-
+        showToast({ type: "error", message: error.message || "Failed to fetch faculty" });
+      } finally {
+        setLoading(false);
       }
 
     };
 
     fetchFaculty();
 
-  }, [token]);
+  }, []);
 
   /* ================= VIEW FACULTY DASHBOARD ================= */
 
@@ -66,6 +51,10 @@ function FacultyProfiles() {
         />
       </>
     );
+  }
+
+  if (loading) {
+    return <LoadingState message="Loading faculty profiles..." />;
   }
 
   /* ================= FILTER BY DEPARTMENT ================= */

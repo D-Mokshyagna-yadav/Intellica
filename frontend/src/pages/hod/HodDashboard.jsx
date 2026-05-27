@@ -29,7 +29,8 @@ import Consultancy from "../faculty/categories/Consultancy";
 import MOUs from "../faculty/categories/MOUs";
 
 import HodHeader from "./HodHeader";
-import API_BASE from "../../api";
+import API_BASE, { getFileUrl } from "../../api";
+import { showToast } from "../../utils/toast";
 
 /* ================= PROFILE INFO ================= */
 
@@ -114,7 +115,7 @@ const extraMenuItems = readOnly
       setUser(data);
 
     } catch (err) {
-      console.error(err);
+      showToast({ type: "error", message: err.message || "Failed to load profile" });
     }
 
   };
@@ -122,11 +123,6 @@ const extraMenuItems = readOnly
   fetchProfile();
 
 }, [token, readOnly, hodUser]);
-useEffect(() => {
-  console.log("HOD USER:", user);
-  console.log("PROFILE IMAGE:", user?.profileImage);
-}, [user]);
-
 useEffect(() => {
   if (view === "faculty-profiles") {
     setIsSidebarOpen(false); // collapse
@@ -162,7 +158,7 @@ useEffect(() => {
       }
 
     } catch (err) {
-      console.error(err);
+      showToast({ type: "error", message: err.message || "Failed to update profile image" });
     }
 
   };
@@ -188,7 +184,7 @@ useEffect(() => {
       if (res.ok) setUploads(data);
 
     } catch (err) {
-      console.error(err);
+      showToast({ type: "error", message: err.message || "Failed to load department uploads" });
     }
 
     setLoading(false);
@@ -265,9 +261,9 @@ const hodId = hodUser?._id || user?._id;
   key={profileImage || user?.profileImage || "default"}
   src={
     profileImage
-      ? `/uploads/${profileImage}`
+      ? getFileUrl(`uploads/${profileImage}`)
       : user?.profileImage
-      ? `/uploads/${user.profileImage}`
+      ? getFileUrl(`uploads/${user.profileImage}`)
       : "https://via.placeholder.com/240x200"
   }
   alt="Profile"
