@@ -1,0 +1,71 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+*/node_modules/
+package-lock.json
+*/package-lock.json
+yarn.lock
+*/yarn.lock
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+.next
+.nuxt
+out/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.log
+
+# Development
+.cache/
+.pytest_cache/
+.eslintcache
+
+# Git
+.git/
+
+# NOTE: Dockerfile, docker-compose.yml, and .dockerignore ARE committed to git!
+# They are production deployment files and must be in the repository.
+
+# Uploads (development/test)
+backend/uploads/temp/*
+!backend/uploads/
+!backend/uploads/.gitkeep
+
+# Testing
+coverage/
+.nyc_output/
+dist/
+
+# Node
+pids/
+*.pid
+*.seed
+*.pid.lock
