@@ -20,6 +20,10 @@ build/
 .nuxt
 out/
 
+# Ignore backend/frontend build artifacts
+/backend/dist/
+/frontend/dist/
+
 # IDE/Editor
 .vscode/
 .idea/
