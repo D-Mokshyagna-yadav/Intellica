@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const Upload = require("../models/Upload");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
@@ -6,12 +7,14 @@ const User = require("../models/User");
 const calculateCredits = require("../services/creditCalculator");
 const ROLES = require("../constants/roles");
 const { AppError } = require("../utils/errors");
+const moveUploadFile = require("../utils/moveUploadFile");
 
 const APPROVED_STATUSES = ["HOD_APPROVED", "ADMIN_APPROVED"];
 const DEPARTMENT_VISIBLE_STATUSES = ["FACULTY_SUBMITTED", "HOD_SUBMITTED", "HOD_APPROVED", "ADMIN_APPROVED", "HOD_COMMENT", "ADMIN_COMMENT"];
 
 function getRelativeFilePath(filePath) {
-  return path.relative(path.join(__dirname, ".."), filePath).replace(/\\/g, "/");
+  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
+  return path.relative(basePath, filePath).replace(/\\/g, "/");
 }
 
 function unwrapBody(body = {}) {
@@ -252,7 +255,7 @@ exports.getPendingUploadsForHOD = async (req, res) => {
 };
 
 exports.approveUploadByHOD = async (req, res) => {
-  const upload = await Upload.findById(req.params.id);
+  const upload = await Upload.findById(req.params.id).populate("faculty", "name email");
 
   if (!upload) {
     throw new AppError("Upload not found", 404);
@@ -264,6 +267,12 @@ exports.approveUploadByHOD = async (req, res) => {
 
   upload.status = "HOD_APPROVED";
   await upload.save();
+  await moveUploadFile(upload);
+
+  const faculty = upload.faculty;
+  if (faculty && faculty.email) {
+    sendUploadApprovalEmail(faculty, upload.title || upload.category, "HOD").catch(() => null);
+  }
 
   res.json({ message: "Approved by HOD" });
 };
@@ -294,6 +303,7 @@ exports.approveUploadByAdmin = async (req, res) => {
 
   upload.status = "ADMIN_APPROVED";
   await upload.save();
+  await moveUploadFile(upload);
 
   res.json({ message: "Upload approved by admin" });
 };

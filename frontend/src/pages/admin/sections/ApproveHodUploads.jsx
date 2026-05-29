@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
-import { API_BASE } from "../../../api";
+import { API_BASE, getFileUrl } from "../../../api";
 import { showToast } from "../../../utils/toast";
+import { DEPARTMENTS } from "../../../constants/departments";
+import { CATEGORY_FILTER_OPTIONS, CATEGORY_LABELS } from "../../../constants/categories";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 function ApproveHodUploads() {
 
@@ -10,21 +13,10 @@ const [deptFilter,setDeptFilter] = useState("");
 const [categoryFilter,setCategoryFilter] = useState("");
 const [empFilter,setEmpFilter] = useState("");
 const [nameFilter,setNameFilter] = useState("");
+const [discussionModalOpen, setDiscussionModalOpen] = useState(false);
+const [discussionUploadId, setDiscussionUploadId] = useState(null);
 
 const token = localStorage.getItem("token");
-
-/* ================= FILE URL FIX ================= */
-
-const getFileUrl = (path) => {
-  if(!path) return "";
-  if(path.startsWith("http")) return path;
-
-  if(!path.startsWith("uploads")){
-    return `/uploads/${path}`;   // ✅ fixed
-  }
-
-  return `/${path}`;             // ✅ fixed
-};
 
 /* ================= FETCH PENDING ================= */
 
@@ -77,30 +69,32 @@ const approveUpload = async(id)=>{
 
 /* ================= DISCUSSION ================= */
 
-const callDiscussion = async(id)=>{
+const openDiscussionModal = (id) => {
+  setDiscussionUploadId(id);
+  setDiscussionModalOpen(true);
+};
 
-  const comment = prompt("Enter discussion comment");
-  if(!comment) return;
+const handleDiscussionConfirm = async (comment) => {
+  if (!comment) return;
+  setDiscussionModalOpen(false);
 
-  try{
-
+  try {
     const res = await fetch(
-      `${API_BASE}/admin/discussion/${id}`,   // ✅ fixed
+      `${API_BASE}/admin/discussion/${discussionUploadId}`,
       {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          Authorization:`Bearer ${token}`
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
-        body:JSON.stringify({comment})
+        body: JSON.stringify({ comment })
       }
     );
 
-    if(res.ok){
+    if (res.ok) {
       fetchUploads();
     }
-
-  }catch(err){
+  } catch (err) {
     showToast({ type: "error", message: err.message || "Discussion failed" });
   }
 };
@@ -151,7 +145,7 @@ return false;
 
 /* CATEGORY FILTER */
 
-if(categoryFilter && (item.category || "").toLowerCase() !== categoryFilter.toLowerCase())
+if(categoryFilter && (item.category || "").toLowerCase() !== categoryFilter.trim().toLowerCase())
 return false;
 
 /* EMPLOYEE ID FILTER */
@@ -209,10 +203,9 @@ onChange={e=>setDeptFilter(e.target.value)}
 style={filterInput}
 >
 <option value="">All Departments</option>
-<option value="CSE">CSE</option>
-<option value="ECE">ECE</option>
-<option value="MECH">MECH</option>
-<option value="CIVIL">CIVIL</option>
+{DEPARTMENTS.map(dept => (
+  <option key={dept} value={dept}>{dept}</option>
+))}
 </select>
 
 <select
@@ -221,24 +214,11 @@ onChange={e=>setCategoryFilter(e.target.value)}
 style={filterInput}
 >
 <option value="">All Categories</option>
-<option value="publication">Publication</option>
-<option value="conference">Conference</option>
-<option value="workshop">Workshop</option>
-<option value="fdp">FDP</option>
-<option value="book">Book</option>
-<option value="nptel">NPTEL</option>
-<option value="seminar">Seminar</option>
-<option value="webinar">Webinar</option>
-<option value="guestlecture">Guest Lecture</option>
-<option value="honorsawards">Awards</option>
-<option value="certification">Certification</option>
-<option value="researchpolicy">Research Policy</option>
-<option value="membership">Membership</option>
-<option value="ipr">IPR</option>
-<option value="consultancy">Consultancy</option>
-<option value="incubation">Incubation</option>
-<option value="researchprojects">Projects</option>
-<option value="doctoralthesis">Doctoral Thesis</option>
+{CATEGORY_FILTER_OPTIONS.map((category) => (
+  <option key={category} value={category}>
+    {CATEGORY_LABELS[category] || category}
+  </option>
+))}
 </select>
 
 </div>
@@ -303,7 +283,7 @@ Approve
 
 <button
 style={discussionBtn}
-onClick={()=>callDiscussion(item._id)}
+onClick={()=>openDiscussionModal(item._id)}
 onMouseEnter={(e)=>{e.target.style.transform="scale(1.05)";e.target.style.boxShadow="0 4px 12px rgba(245,158,11,0.4)"}}
 onMouseLeave={(e)=>{e.target.style.transform="scale(1)";e.target.style.boxShadow="none"}}
 >
@@ -413,7 +393,7 @@ let guided = [];
 
 try{
 guided = JSON.parse(selectedUpload.metadata.guidedDetails);
-}catch(e){}
+}catch{}
 
 if(!guided.length) return null;
 
@@ -461,7 +441,7 @@ let guiding = [];
 
 try{
 guiding = JSON.parse(selectedUpload.metadata.guidingDetails);
-}catch(e){}
+}catch{}
 
 if(!guiding.length) return null;
 
@@ -551,6 +531,16 @@ Close
 </div>
 
 )}
+
+<ConfirmModal
+  isOpen={discussionModalOpen}
+  title="Request Discussion"
+  message="Enter discussion comment for HOD upload:"
+  type="prompt"
+  placeholder="Reason for discussion"
+  onConfirm={handleDiscussionConfirm}
+  onCancel={() => setDiscussionModalOpen(false)}
+/>
 
 </div>
 

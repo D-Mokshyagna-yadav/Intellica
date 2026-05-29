@@ -311,7 +311,7 @@ return(
 <img
 src={
   user?.profileImage
-    ? getFileUrl(`uploads/${user.profileImage}`)
+    ? getFileUrl(user.profileImage)
     : "https://via.placeholder.com/260x220"
 }
 alt="Profile"

@@ -4,9 +4,13 @@ const User = require("../models/User");
 const Upload = require("../models/Upload");
 const DEPARTMENTS = require("../constants/departments");
 const ROLES = require("../constants/roles");
-const { sendApprovalEmailToFaculty, sendApprovalEmailToHod } = require("../utils/emailService");
+const { sendApprovalEmailToFaculty, sendApprovalEmailToHod, sendUploadApprovalEmail } = require("../utils/emailService");
 const { createNotification } = require("../utils/notificationService");
 const createUserFolder = require("../utils/createUserFolder");
+const moveProfileImage = require("../utils/moveProfileImage");
+const moveUserFolder = require("../utils/moveUserFolder");
+const deleteUserFolder = require("../utils/deleteUserFolder");
+const moveUploadFile = require("../utils/moveUploadFile");
 const { AppError } = require("../utils/errors");
 
 async function findManagedUser(userId) {
@@ -44,9 +48,8 @@ exports.approveHod = async (req, res) => {
   hod.discussionComment = "";
   await hod.save();
 
-  if (hod.employeeId) {
-    createUserFolder("hod", hod.employeeId);
-  }
+  createUserFolder(hod);
+  await moveProfileImage(hod);
 
   await createNotification({
     message: `Admin approved HOD ${hod.name}`,
@@ -108,7 +111,7 @@ exports.getPendingUploadsForAdmin = async (req, res) => {
 };
 
 exports.approveUploadByAdmin = async (req, res) => {
-  const upload = await Upload.findById(req.params.id);
+  const upload = await Upload.findById(req.params.id).populate("faculty", "name email");
 
   if (!upload) {
     throw new AppError("Upload not found", 404);
@@ -116,6 +119,12 @@ exports.approveUploadByAdmin = async (req, res) => {
 
   upload.status = "ADMIN_APPROVED";
   await upload.save();
+  await moveUploadFile(upload);
+
+  const faculty = upload.faculty;
+  if (faculty && faculty.email) {
+    sendUploadApprovalEmail(faculty, upload.title || upload.category, "ADMIN").catch(() => null);
+  }
 
   res.status(200).json({ message: "Upload approved by Admin" });
 };
@@ -229,6 +238,7 @@ exports.deleteUser = async (req, res) => {
   }
 
   await Upload.deleteMany({ faculty: user._id });
+  deleteUserFolder(user);
   await user.deleteOne();
 
   res.json({ message: "User removed successfully" });
@@ -255,6 +265,7 @@ exports.changeDepartment = async (req, res) => {
   user.department = nextDepartment;
   await user.save();
 
+  await moveUserFolder(user, previousDepartment);
   await Upload.updateMany({ faculty: user._id }, { $set: { department: nextDepartment } });
 
   res.json({

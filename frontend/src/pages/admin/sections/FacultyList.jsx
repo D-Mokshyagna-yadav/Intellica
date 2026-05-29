@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import API_BASE from "../../../api";
 import { showToast } from "../../../utils/toast";
+import { DEPARTMENTS } from "../../../constants/departments";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 import FacultyDashboard from "../../faculty/FacultyDashboard";
 import HodDashboard from "../../hod/HodDashboard";
@@ -11,7 +13,13 @@ const [users, setUsers] = useState([]);
 const [selectedUser, setSelectedUser] = useState(null);
 const [search,setSearch] = useState("");
 const [selectedDept, setSelectedDept] = useState(null);
-const departments = ["CIVIL","EEE","MECH","ECE","CSE","IT","AIML","AIDS","DIPLOMA"];
+const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [deleteUserId, setDeleteUserId] = useState(null);
+const [deptModalOpen, setDeptModalOpen] = useState(false);
+const [deptUserId, setDeptUserId] = useState(null);
+const [deptUserCurrent, setDeptUserCurrent] = useState("");
+
+const departments = DEPARTMENTS;
 const departmentUsers = users.filter(
 u => u.department?.toUpperCase() === selectedDept
 );
@@ -29,7 +37,7 @@ useEffect(() => {
 fetchUsers();
 }, []);
 
-const fetchUsers = async () => {
+async function fetchUsers() {
 
 
 try {
@@ -65,15 +73,19 @@ Authorization:`Bearer ${localStorage.getItem("token")}`
 
 },[selectedDept]);
 
-const deleteUser = async (userId) => {
-
+const openDeleteModal = (userId) => {
   if(selectedUser){
     showToast({ type: "error", message: "Go back to user list before deleting" });
     return;
   }
+  setDeleteUserId(userId);
+  setDeleteModalOpen(true);
+};
 
-  const confirmDelete = window.confirm("Are you sure you want to remove this user?");
-  if(!confirmDelete) return;
+const confirmDeleteUser = async () => {
+  setDeleteModalOpen(false);
+  const userId = deleteUserId;
+  setDeleteUserId(null);
 
   try{
     const res = await fetch(`${API_BASE}/admin/delete-user/${userId}`,{
@@ -87,7 +99,7 @@ const deleteUser = async (userId) => {
 
     if(res.ok){
       showToast({ type: "success", message: "User removed successfully" });
-      fetchUsers(); // refresh list
+      fetchUsers();
     }else{
       showToast({ type: "error", message: data.message || "Delete failed" });
     }
@@ -95,42 +107,44 @@ const deleteUser = async (userId) => {
   }catch(err){
     showToast({ type: "error", message: err.message || "Server error while deleting user" });
   }
-
 };
 
 
-const changeDepartment = async (userId,currentDept)=>{
+const openDeptModal = (userId, currentDept) => {
+  setDeptUserId(userId);
+  setDeptUserCurrent(currentDept || "");
+  setDeptModalOpen(true);
+};
 
-const newDept = prompt(
-`Enter new department (Current: ${currentDept})\nExample: CSE, ECE, MECH, CIVIL, EEE, IT`
-);
+const confirmChangeDepartment = async (newDept) => {
+  setDeptModalOpen(false);
+  const userId = deptUserId;
+  setDeptUserId(null);
+  setDeptUserCurrent("");
 
-if(!newDept) return;
+  if(!newDept) return;
 
-try{
+  try{
+    const res = await fetch(`${API_BASE}/admin/change-department/${userId}`,{
+      method:"PUT",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:`Bearer ${localStorage.getItem("token")}`
+      },
+      body:JSON.stringify({ department: newDept })
+    });
 
-const res = await fetch(`${API_BASE}/admin/change-department/${userId}`,{
-method:"PUT",
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${localStorage.getItem("token")}`
-},
-body:JSON.stringify({ department:newDept })
-});
+    const data = await res.json();
 
-const data = await res.json();
-
-if(res.ok){
-showToast({ type: "success", message: "Department updated successfully" });
-fetchUsers();
-}else{
-showToast({ type: "error", message: data.message || "Update failed" });
-}
-
-}catch(err){
-showToast({ type: "error", message: err.message || "Failed to update department" });
-}
-
+    if(res.ok){
+      showToast({ type: "success", message: "Department updated successfully" });
+      fetchUsers();
+    }else{
+      showToast({ type: "error", message: data.message || "Update failed" });
+    }
+  }catch(err){
+    showToast({ type: "error", message: err.message || "Failed to update department" });
+  }
 };
 
 /* ================= OPEN DASHBOARD ================= */
@@ -340,7 +354,7 @@ onClick={()=>setSelectedDept(null)}
 
                     <HoverButton
                     style={deptBtn}
-                    onClick={()=>changeDepartment(user._id,user.department)}
+                    onClick={()=>openDeptModal(user._id,user.department)}
                     >
                     Change
                     </HoverButton>
@@ -355,7 +369,7 @@ onClick={()=>setSelectedDept(null)}
                     cursor: user.role === "ADMIN" ? "not-allowed" : "pointer"
                   }}
                   disabled={user.role === "ADMIN"}
-                  onClick={()=>deleteUser(user._id)}
+                  onClick={()=>openDeleteModal(user._id)}
                 >
                   Remove
                 </HoverButton>
@@ -371,6 +385,26 @@ onClick={()=>setSelectedDept(null)}
     </table>
 
   </div>
+
+  <ConfirmModal
+    isOpen={deleteModalOpen}
+    title="Remove User"
+    message="Are you sure you want to remove this user? This action cannot be undone."
+    type="confirm"
+    onConfirm={confirmDeleteUser}
+    onCancel={() => { setDeleteModalOpen(false); setDeleteUserId(null); }}
+  />
+
+  <ConfirmModal
+    isOpen={deptModalOpen}
+    title="Change Department"
+    message={`Select new department (Current: ${deptUserCurrent})`}
+    type="select"
+    options={departments}
+    defaultValue={deptUserCurrent}
+    onConfirm={confirmChangeDepartment}
+    onCancel={() => { setDeptModalOpen(false); setDeptUserId(null); setDeptUserCurrent(""); }}
+  />
 
 </div>
 

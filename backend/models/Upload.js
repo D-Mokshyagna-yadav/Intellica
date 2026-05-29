@@ -95,4 +95,8 @@ const uploadSchema = new mongoose.Schema(
 { timestamps: true }
 );
 
+uploadSchema.index({ faculty: 1 });
+uploadSchema.index({ department: 1, status: 1 });
+uploadSchema.index({ year: -1 });
+
 module.exports = mongoose.model("Upload", uploadSchema);

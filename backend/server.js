@@ -58,11 +58,18 @@ app.use(express.urlencoded({ extended: true, limit: process.env.JSON_LIMIT || "1
 app.use(mongoSanitize());
 app.use(requestSanitizer);
 
-const uploadsPath = path.join(__dirname, "uploads");
+const uploadsPath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "uploads");
 app.use("/uploads", express.static(uploadsPath, { index: false }));
 
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+  const dbStatus = mongoose.connection.readyState === 1 ? "up" : "down";
+  const statusCode = dbStatus === "up" ? 200 : 503;
+  res.status(statusCode).json({
+    status: dbStatus === "up" ? "ok" : "error",
+    services: {
+      database: dbStatus,
+    },
+  });
 });
 
 app.use("/api/auth", authRoutes);
@@ -100,9 +107,31 @@ mongoose
   .then(async () => {
     logger.info("MongoDB connected");
     await bootstrapAdmin();
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       logger.info({ port }, "Server started");
     });
+
+    const gracefulShutdown = (signal) => {
+      logger.info(`Received ${signal}. Starting graceful shutdown...`);
+      server.close(() => {
+        logger.info("HTTP server closed.");
+        mongoose.connection.close().then(() => {
+          logger.info("MongoDB connection closed.");
+          process.exit(0);
+        }).catch((err) => {
+          logger.error({ err }, "Error closing MongoDB connection.");
+          process.exit(1);
+        });
+      });
+
+      setTimeout(() => {
+        logger.error("Could not close connections in time, forcefully shutting down");
+        process.exit(1);
+      }, 10000);
+    };
+
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
   })
   .catch((error) => {
     logger.error({ err: error }, "MongoDB connection failed");

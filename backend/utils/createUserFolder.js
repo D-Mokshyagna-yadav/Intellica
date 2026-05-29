@@ -1,29 +1,33 @@
 const fs = require("fs");
 const path = require("path");
 
-function createUserFolder(role, userId) {
+function createUserFolder(user) {
+  if (!user) return null;
 
-  const basePath = path.join(__dirname, "../uploads");
+  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "../uploads");
+  const dept = String(user.department || "COMMON").trim().toUpperCase();
+  const role = String(user.role || "FACULTY").trim().toLowerCase();
+  const employeeId = String(user.employeeId || user.regId || user._id || "unknown").trim();
+  const name = String(user.name || "user").trim().replace(/[^a-zA-Z0-9]/g, "_");
+  
+  const empIdName = `${employeeId}_${name}`;
+  const userFolderPath = path.join(basePath, "departments", dept, role, empIdName);
 
-  let folderPath;
+  const profilePath = path.join(userFolderPath, "profile");
+  const uploadsPath = path.join(userFolderPath, "uploads");
 
-  if (role === "faculty") {
-    folderPath = path.join(basePath, "faculty", `faculty_${userId}`);
+  if (!fs.existsSync(profilePath)) {
+    fs.mkdirSync(profilePath, { recursive: true });
+  }
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
   }
 
-  if (role === "hod") {
-    folderPath = path.join(basePath, "hod", `hod_${userId}`);
-  }
-
-  if (role === "admin") {
-    folderPath = path.join(basePath, "admin");
-  }
-
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true });
-  }
-
-  return folderPath;
+  return {
+    base: userFolderPath,
+    profile: profilePath,
+    uploads: uploadsPath,
+  };
 }
 
 module.exports = createUserFolder;

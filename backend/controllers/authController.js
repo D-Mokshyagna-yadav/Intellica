@@ -7,6 +7,7 @@ const ROLES = require("../constants/roles");
 const { sendOTP, sendRegistrationNotification } = require("../utils/emailService");
 const { AppError } = require("../utils/errors");
 const logger = require("../utils/logger");
+const moveProfileImage = require("../utils/moveProfileImage");
 
 function normalizeIdentifier(identifier) {
   return String(identifier || "").trim();
@@ -351,6 +352,7 @@ exports.updateProfileImage = async (req, res) => {
 
   user.profileImage = req.file.filename;
   await user.save();
+  await moveProfileImage(user);
 
   res.json({
     message: "Profile image updated successfully",

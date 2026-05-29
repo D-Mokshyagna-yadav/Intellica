@@ -1,8 +1,5 @@
-const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
-
-const isLocalhost = typeof window !== "undefined" && LOCAL_HOSTS.has(window.location.hostname);
 const configuredOrigin = import.meta.env.VITE_API_ORIGIN?.replace(/\/$/, "");
-const fallbackOrigin = isLocalhost ? `http://localhost:${import.meta.env.VITE_BACKEND_PORT || 5000}` : "";
+const fallbackOrigin = typeof window !== "undefined" ? window.location.origin : "";
 
 export const API_ORIGIN = configuredOrigin || fallbackOrigin;
 export const API_BASE = `${API_ORIGIN}/api`.replace(/([^:]\/)\/+/g, "$1");
@@ -17,8 +14,14 @@ export function getFileUrl(filePath) {
     return "";
   }
 
-  const normalizedPath = String(filePath).replace(/^\/+/, "");
-  return API_ORIGIN ? `${API_ORIGIN}/${normalizedPath}` : `/${normalizedPath}`;
+  const rawPath = String(filePath).trim();
+  if (rawPath.startsWith("http://") || rawPath.startsWith("https://")) {
+    return rawPath;
+  }
+
+  const normalizedPath = rawPath.replace(/^\/+/, "");
+  const resolvedPath = normalizedPath.startsWith("uploads/") ? normalizedPath : `uploads/${normalizedPath}`;
+  return API_ORIGIN ? `${API_ORIGIN}/${resolvedPath}` : `/${resolvedPath}`;
 }
 
 export async function readApiResponse(response) {
@@ -41,6 +44,14 @@ export async function apiFetch(endpoint, options = {}) {
       ...(options.headers || {}),
     },
   });
+
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_role");
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+  }
 
   const data = await readApiResponse(response);
 

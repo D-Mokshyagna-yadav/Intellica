@@ -92,5 +92,7 @@ const facultySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+facultySchema.index({ department: 1, status: 1 });
+
 module.exports = mongoose.model("Faculty", facultySchema);
 

@@ -4,17 +4,17 @@ const fs = require("fs");
 
 /* ================= BASE UPLOAD FOLDER ================= */
 
-const baseUploadDir = path.join(__dirname, "..", "uploads");
+const baseUploadDir = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
 const tempDir = path.join(baseUploadDir, "temp");
 
 /* ================= CREATE FOLDERS IF NOT EXIST ================= */
 
 if (!fs.existsSync(baseUploadDir)) {
-fs.mkdirSync(baseUploadDir, { recursive: true });
+  fs.mkdirSync(baseUploadDir, { recursive: true });
 }
 
 if (!fs.existsSync(tempDir)) {
-fs.mkdirSync(tempDir, { recursive: true });
+  fs.mkdirSync(tempDir, { recursive: true });
 }
 
 /* ================= STORAGE CONFIG ================= */

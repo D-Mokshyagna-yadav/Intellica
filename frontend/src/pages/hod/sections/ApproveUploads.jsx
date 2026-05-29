@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { apiFetch, getFileUrl } from "../../../api";
 import LoadingState from "../../../components/LoadingState";
 import { showToast } from "../../../utils/toast";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 function ApproveUploads() {
   const [uploads, setUploads] = useState([]);
@@ -10,6 +11,8 @@ function ApproveUploads() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [facultyFilter, setFacultyFilter] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
+  const [discussionModalOpen, setDiscussionModalOpen] = useState(false);
+  const [discussionUploadId, setDiscussionUploadId] = useState(null);
 
   const fetchPendingUploads = async () => {
     try {
@@ -55,15 +58,20 @@ function ApproveUploads() {
     }
   };
 
-  const handleDiscussion = async (id) => {
-    const comment = window.prompt("Enter discussion comment for faculty:");
+  const openDiscussionModal = (id) => {
+    setDiscussionUploadId(id);
+    setDiscussionModalOpen(true);
+  };
+
+  const handleDiscussionConfirm = async (comment) => {
     if (!comment?.trim()) {
       showToast({ type: "error", message: "Comment required" });
       return;
     }
+    setDiscussionModalOpen(false);
 
     try {
-      await apiFetch(`/uploads/discussion/${id}`, {
+      await apiFetch(`/uploads/discussion/${discussionUploadId}`, {
         method: "PUT",
         body: JSON.stringify({ comment }),
       });
@@ -133,7 +141,7 @@ function ApproveUploads() {
                   <div style={actionWrapper}>
                     <button style={viewBtn} onClick={() => setSelectedUpload(upload)}>View Details</button>
                     <button style={approveBtn} onClick={() => handleApprove(upload._id)}>Approve</button>
-                    <button style={discussionBtn} onClick={() => handleDiscussion(upload._id)}>Call for Discussion</button>
+                    <button style={discussionBtn} onClick={() => openDiscussionModal(upload._id)}>Call for Discussion</button>
                   </div>
                 </td>
               </tr>
@@ -187,6 +195,15 @@ function ApproveUploads() {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={discussionModalOpen}
+        title="Request Discussion"
+        message="Enter discussion comment for faculty upload:"
+        type="prompt"
+        placeholder="Reason for discussion"
+        onConfirm={handleDiscussionConfirm}
+        onCancel={() => setDiscussionModalOpen(false)}
+      />
     </div>
   );
 }

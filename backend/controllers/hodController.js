@@ -3,6 +3,8 @@ const HOD = require("../models/HOD");
 const Upload = require("../models/Upload");
 const ROLES = require("../constants/roles");
 const createUserFolder = require("../utils/createUserFolder");
+const moveProfileImage = require("../utils/moveProfileImage");
+const { sendApprovalEmailToFaculty } = require("../utils/emailService");
 const { createNotification } = require("../utils/notificationService");
 const { AppError } = require("../utils/errors");
 
@@ -30,9 +32,8 @@ exports.approveFaculty = async (req, res) => {
   faculty.isApproved = true;
   await faculty.save();
 
-  if (faculty.employeeId) {
-    createUserFolder("faculty", faculty.employeeId);
-  }
+  createUserFolder(faculty);
+  await moveProfileImage(faculty);
 
   await createNotification({
     message: `${req.user.name} approved faculty ${faculty.name}`,
@@ -40,6 +41,8 @@ exports.approveFaculty = async (req, res) => {
     audienceDepartment: req.user.department,
     audienceUserId: faculty._id.toString(),
   });
+
+  sendApprovalEmailToFaculty(faculty).catch(() => null);
 
   res.status(200).json({
     message: "Faculty approved successfully",

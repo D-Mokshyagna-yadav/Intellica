@@ -261,9 +261,9 @@ const hodId = hodUser?._id || user?._id;
   key={profileImage || user?.profileImage || "default"}
   src={
     profileImage
-      ? getFileUrl(`uploads/${profileImage}`)
+      ? getFileUrl(profileImage)
       : user?.profileImage
-      ? getFileUrl(`uploads/${user.profileImage}`)
+      ? getFileUrl(user.profileImage)
       : "https://via.placeholder.com/240x200"
   }
   alt="Profile"

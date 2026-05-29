@@ -99,4 +99,6 @@ default:null
 {timestamps:true}
 );
 
+hodSchema.index({ department: 1 });
+
 module.exports = mongoose.model("HOD", hodSchema);

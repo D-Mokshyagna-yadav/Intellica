@@ -79,12 +79,39 @@ export default function NotificationBell() {
                 style={{
                   ...itemStyle,
                   background: notification.isRead ? "#f8fafc" : "#eff6ff",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  borderLeft: notification.isRead ? "none" : "4px solid #3b82f6",
+                  paddingLeft: notification.isRead ? 12 : 8,
                 }}
               >
-                <strong style={{ display: "block", marginBottom: 4 }}>
-                  {notification.isRead ? "Read" : "Unread"}
-                </strong>
-                <span>{notification.message}</span>
+                <div style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                  <span style={{ fontSize: 11, color: "#64748b" }}>
+                    {new Date(notification.createdAt).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  {!notification.isRead && (
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "#3b82f6",
+                        display: "inline-block",
+                      }}
+                      title="Unread"
+                    />
+                  )}
+                </div>
+                <span style={{ fontSize: 13, fontWeight: notification.isRead ? 400 : 600 }}>
+                  {notification.message}
+                </span>
               </button>
             ))
           )}

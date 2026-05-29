@@ -166,9 +166,30 @@ async function sendApprovalEmailToHod(hod) {
   });
 }
 
+async function sendUploadApprovalEmail(faculty, uploadTitle, approverRole) {
+  const approverName = approverRole === "HOD" ? "HOD" : "Admin";
+  await sendMail({
+    from: process.env.EMAIL_USER,
+    to: faculty.email,
+    subject: `Your Upload "${uploadTitle}" Has Been Approved`,
+    html: baseHeader(
+      `
+        <h2 style="color:#1a3a52;margin:0 0 20px 0;font-size:18px;">Upload Approved!</h2>
+        <p style="color:#4a5568;margin:0 0 16px 0;line-height:1.6;">Dear ${faculty.name},</p>
+        <p style="color:#4a5568;margin:0 0 16px 0;line-height:1.6;">Your upload <strong>"${uploadTitle}"</strong> has been approved by ${approverName}.</p>
+        <p style="color:#4a5568;margin:0 0 16px 0;line-height:1.6;">You can now view your credits and rankings on the Intellica portal.</p>
+        <p style="color:#4a5568;margin:0;line-height:1.6;">Best regards,<br/>Intellica Team</p>
+      `,
+      "Upload Approval Notification"
+    ) + baseFooter,
+    skipLogo: false,
+  });
+}
+
 module.exports = {
   sendOTP,
   sendRegistrationNotification,
   sendApprovalEmailToFaculty,
   sendApprovalEmailToHod,
+  sendUploadApprovalEmail,
 };
