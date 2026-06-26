@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useResponsive } from "../hooks/useResponsive";
+import { useDepartments } from "../hooks/useDepartments";
 import "../styles/responsiveDashboard.css";
 import collegeImg from "../assets/college_logo.png";
 import { apiFetch } from "../api";
-import { DEPARTMENTS } from "../constants/departments";
 import { showToast } from "../utils/toast";
 
 function Register({ setPage }) {
@@ -21,6 +21,7 @@ function Register({ setPage }) {
   });
   const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { departments, loading: departmentsLoading } = useDepartments();
 
   const handleChange = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -44,7 +45,7 @@ function Register({ setPage }) {
 
     try {
       setLoading(true);
-      const endpoint = form.role === "Faculty" ? "/auth/faculty/register" : "/auth/hod/register";
+      const endpoint = form.role === "FACULTY" ? "/auth/faculty/register" : "/auth/hod/register";
       const formData = new FormData();
       Object.entries(form).forEach(([key, value]) => formData.append(key, value));
       formData.append("profileImage", profileImage);
@@ -93,16 +94,16 @@ function Register({ setPage }) {
           <StyledInput name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email Address" />
 
           <StyledSelect name="role" value={form.role} onChange={handleChange}>
-            <option value="">Select Role</option>
-            <option value="Faculty">Faculty</option>
-            <option value="HOD">HOD</option>
-          </StyledSelect>
+          <option value="">Select Role</option>
+          <option value="FACULTY">Faculty</option>
+          <option value="HOD">HOD</option>
+        </StyledSelect>
 
-          <StyledSelect name="department" value={form.department} onChange={handleChange}>
+          <StyledSelect name="department" value={form.department} onChange={handleChange} disabled={departmentsLoading}>
             <option value="">Select Department</option>
-            {DEPARTMENTS.map((department) => (
-              <option key={department} value={department}>
-                {department}
+            {departments.map((department) => (
+              <option key={department.code} value={department.code}>
+                {department.name}
               </option>
             ))}
           </StyledSelect>

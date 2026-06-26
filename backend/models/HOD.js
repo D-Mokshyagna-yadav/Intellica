@@ -25,10 +25,10 @@ const hodSchema = new mongoose.Schema(
       default: null,
     },
     department: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
+      type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     departmentName: {
       type: String,

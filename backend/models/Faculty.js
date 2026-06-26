@@ -25,9 +25,9 @@ const facultySchema = new mongoose.Schema(
       default: null,
     },
     department: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
+      type: String,
       required: true,
+      trim: true,
     },
     departmentName: {
       type: String,

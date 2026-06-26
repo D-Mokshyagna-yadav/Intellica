@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API_BASE from "../../../api";
 import { showToast } from "../../../utils/toast";
-import { DEPARTMENTS } from "../../../constants/departments";
+import { useDepartments } from "../../../hooks/useDepartments";
 import ConfirmModal from "../../../components/ConfirmModal";
 
 import FacultyDashboard from "../../faculty/FacultyDashboard";
@@ -18,11 +18,12 @@ const [deleteUserId, setDeleteUserId] = useState(null);
 const [deptModalOpen, setDeptModalOpen] = useState(false);
 const [deptUserId, setDeptUserId] = useState(null);
 const [deptUserCurrent, setDeptUserCurrent] = useState("");
+const { departments } = useDepartments();
 
-const departments = DEPARTMENTS;
 const departmentUsers = users.filter(
 u => u.department?.toUpperCase() === selectedDept
 );
+const departmentNameByCode = Object.fromEntries(departments.map((department) => [department.code, department.name]));
 /* ================= DEPARTMENT ANALYTICS ================= */
 
 const totalFaculty = departmentUsers.filter(
@@ -223,16 +224,16 @@ return(
 {departments.map(dep => (
 
 <div
-key={dep}
+key={dep.code}
 style={{
 ...deptCard,
-background: selectedDept === dep ? "#4f46e5" : "white",
-color: selectedDept === dep ? "white" : "#1e293b"
+background: selectedDept === dep.code ? "#4f46e5" : "white",
+color: selectedDept === dep.code ? "white" : "#1e293b"
 }}
-onClick={()=>setSelectedDept(dep)}
+onClick={()=>setSelectedDept(dep.code)}
 >
 
-{dep}
+{dep.name}
 
 </div>
 
@@ -240,12 +241,12 @@ onClick={()=>setSelectedDept(dep)}
 
 </div>
   </div>
-  {selectedDept && (
+{selectedDept && (
 
 <div style={analyticsBox}>
 
 <h2 style={{marginBottom:15}}>
-{selectedDept} Department
+{departmentNameByCode[selectedDept] || selectedDept} Department
 </h2>
 
 <div style={analyticsGrid}>
@@ -325,9 +326,9 @@ onClick={()=>setSelectedDept(null)}
   }
 >
 
-            <td style={td}>{user.employeeId}</td>
-            <td style={td}>{user.name}</td>
-            <td style={td}>{user.department}</td>
+    <td style={td}>{user.employeeId}</td>
+    <td style={td}>{user.name}</td>
+    <td style={td}>{departmentNameByCode[user.department] || user.department}</td>
             <td
   style={{
     ...td,
@@ -398,9 +399,9 @@ onClick={()=>setSelectedDept(null)}
   <ConfirmModal
     isOpen={deptModalOpen}
     title="Change Department"
-    message={`Select new department (Current: ${deptUserCurrent})`}
+    message={`Select new department (Current: ${departmentNameByCode[deptUserCurrent] || deptUserCurrent})`}
     type="select"
-    options={departments}
+    options={departments.map((department) => department.code)}
     defaultValue={deptUserCurrent}
     onConfirm={confirmChangeDepartment}
     onCancel={() => { setDeptModalOpen(false); setDeptUserId(null); setDeptUserCurrent(""); }}

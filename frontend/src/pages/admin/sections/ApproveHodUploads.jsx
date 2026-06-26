@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { API_BASE, getFileUrl } from "../../../api";
 import { showToast } from "../../../utils/toast";
-import { DEPARTMENTS } from "../../../constants/departments";
 import { CATEGORY_FILTER_OPTIONS, CATEGORY_LABELS } from "../../../constants/categories";
 import ConfirmModal from "../../../components/ConfirmModal";
+import { useDepartments } from "../../../hooks/useDepartments";
 
 function ApproveHodUploads() {
 
@@ -15,6 +15,7 @@ const [empFilter,setEmpFilter] = useState("");
 const [nameFilter,setNameFilter] = useState("");
 const [discussionModalOpen, setDiscussionModalOpen] = useState(false);
 const [discussionUploadId, setDiscussionUploadId] = useState(null);
+const { departments } = useDepartments();
 
 const token = localStorage.getItem("token");
 
@@ -203,8 +204,8 @@ onChange={e=>setDeptFilter(e.target.value)}
 style={filterInput}
 >
 <option value="">All Departments</option>
-{DEPARTMENTS.map(dept => (
-  <option key={dept} value={dept}>{dept}</option>
+{departments.map(department => (
+  <option key={department.code} value={department.code}>{department.name}</option>
 ))}
 </select>
 

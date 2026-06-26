@@ -2,7 +2,7 @@ const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
 const Upload = require("../models/Upload");
-const DEPARTMENTS = require("../constants/departments");
+const Department = require("../models/Department");
 const ROLES = require("../constants/roles");
 const { sendApprovalEmailToFaculty, sendApprovalEmailToHod, sendUploadApprovalEmail } = require("../utils/emailService");
 const { createNotification } = require("../utils/notificationService");
@@ -11,6 +11,7 @@ const moveProfileImage = require("../utils/moveProfileImage");
 const moveUserFolder = require("../utils/moveUserFolder");
 const deleteUserFolder = require("../utils/deleteUserFolder");
 const moveUploadFile = require("../utils/moveUploadFile");
+const { resolveDepartment } = require("../utils/departmentLookup");
 const { AppError } = require("../utils/errors");
 
 async function findManagedUser(userId) {
@@ -152,22 +153,28 @@ exports.adminDiscussion = async (req, res) => {
 };
 
 exports.getDepartmentStatus = async (req, res) => {
+  const departments = await Department.find({ isActive: true, isArchived: false })
+    .select("name code")
+    .sort({ sortOrder: 1, name: 1 })
+    .lean();
+
   const result = await Promise.all(
-    DEPARTMENTS.map(async (department) => {
+    departments.map(async (department) => {
       const hod = await HOD.findOne({
-        department,
+        department: department.code,
         isApproved: true,
         status: "APPROVED",
       }).select("name employeeId");
 
       const facultyCount = await Faculty.countDocuments({
-        department,
+        department: department.code,
         isApproved: true,
         status: "APPROVED",
       });
 
       return {
-        department,
+        department: department.code,
+        departmentName: department.name,
         hodName: hod?.name || null,
         facultyCount,
       };
@@ -178,6 +185,11 @@ exports.getDepartmentStatus = async (req, res) => {
 };
 
 exports.getTopDepartments = async (req, res) => {
+  const departments = await Department.find({ isActive: true, isArchived: false })
+    .select("name code")
+    .lean();
+  const departmentNames = new Map(departments.map((department) => [department.code, department.name]));
+
   const result = await Upload.aggregate([
     { $match: { status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] } } },
     { $group: { _id: "$department", totalCredits: { $sum: "$credits" } } },
@@ -188,6 +200,7 @@ exports.getTopDepartments = async (req, res) => {
   res.json(
     result.map((item) => ({
       department: item._id,
+      departmentName: departmentNames.get(item._id) || item._id,
       credits: item.totalCredits,
     }))
   );
@@ -245,9 +258,9 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.changeDepartment = async (req, res) => {
-  const nextDepartment = String(req.body.department || "").trim().toUpperCase();
+  const resolvedDepartment = await resolveDepartment(req.body.department);
 
-  if (!DEPARTMENTS.includes(nextDepartment)) {
+  if (!resolvedDepartment) {
     throw new AppError("Invalid department", 400);
   }
 
@@ -262,33 +275,38 @@ exports.changeDepartment = async (req, res) => {
   }
 
   const previousDepartment = user.department;
-  user.department = nextDepartment;
+  user.department = resolvedDepartment.code;
+  if ("departmentName" in user) {
+    user.departmentName = resolvedDepartment.name;
+  }
   await user.save();
 
   await moveUserFolder(user, previousDepartment);
-  await Upload.updateMany({ faculty: user._id }, { $set: { department: nextDepartment } });
+  await Upload.updateMany({ faculty: user._id }, { $set: { department: resolvedDepartment.code } });
 
   res.json({
     message: "Department updated successfully",
     previousDepartment,
-    department: nextDepartment,
+    department: resolvedDepartment.code,
+    departmentName: resolvedDepartment.name,
   });
 };
 
 exports.getDepartmentAnalytics = async (req, res) => {
-  const department = String(req.params.department || "").trim().toUpperCase();
+  const resolvedDepartment = await resolveDepartment(req.params.department);
 
-  if (!DEPARTMENTS.includes(department)) {
+  if (!resolvedDepartment) {
     throw new AppError("Invalid department", 400);
   }
 
   const uploads = await Upload.find({
-    department,
+    department: resolvedDepartment.code,
     status: { $in: ["HOD_APPROVED", "ADMIN_APPROVED"] },
   }).lean();
 
   res.json({
-    department,
+    department: resolvedDepartment.code,
+    departmentName: resolvedDepartment.name,
     totalActivities: uploads.length,
     totalCredits: uploads.reduce((sum, upload) => sum + Number(upload.credits || 0), 0),
   });

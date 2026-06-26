@@ -127,14 +127,24 @@ async function seedAchievementCategories() {
     return;
   }
 
+  const toCanonicalName = (name) =>
+    name
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_|_$/g, "");
+
   const categories = defaultCategories.map((cat) => ({
     name: cat.name,
-    subcategories: cat.subcategories,
-    basePoints: cat.basePoints,
-    maxPointsPerSemester: cat.maxPoints,
+    canonicalName: toCanonicalName(cat.name),
+    aliases: cat.subcategories,
+    section: "professional",
+    points: cat.basePoints,
+    maxPointsPerYear: cat.maxPoints,
     requiresEvidence: cat.requiresEvidence,
     requiresApproval: cat.requiresApproval,
     weightage: cat.weightage,
+    description: cat.subcategories.join(", "),
     isActive: true,
   }));
 
@@ -166,50 +176,52 @@ async function seedPermissions() {
     return;
   }
 
-  const permissions = [
-    // Admin permissions
-    { resource: "department", action: "create", role: "ADMIN" },
-    { resource: "department", action: "edit", role: "ADMIN" },
-    { resource: "department", action: "delete", role: "ADMIN" },
-    { resource: "department", action: "view", role: "ADMIN" },
-    { resource: "faculty", action: "create", role: "ADMIN" },
-    { resource: "faculty", action: "edit", role: "ADMIN" },
-    { resource: "faculty", action: "delete", role: "ADMIN" },
-    { resource: "faculty", action: "view", role: "ADMIN" },
-    { resource: "hod", action: "create", role: "ADMIN" },
-    { resource: "hod", action: "edit", role: "ADMIN" },
-    { resource: "hod", action: "delete", role: "ADMIN" },
-    { resource: "role", action: "manage", role: "ADMIN" },
-    { resource: "permission", action: "manage", role: "ADMIN" },
-    { resource: "settings", action: "manage", role: "ADMIN" },
-    { resource: "category", action: "manage", role: "ADMIN" },
-    { resource: "academic_year", action: "manage", role: "ADMIN" },
-    { resource: "semester", action: "manage", role: "ADMIN" },
-    { resource: "notification", action: "manage", role: "ADMIN" },
-    { resource: "report", action: "generate", role: "ADMIN" },
-    { resource: "audit_log", action: "view", role: "ADMIN" },
-    { resource: "backup", action: "manage", role: "ADMIN" },
+  const permissionDefinitions = [
+    { role: "ADMIN", resource: "department", action: "create", scope: "system" },
+    { role: "ADMIN", resource: "department", action: "update", scope: "system" },
+    { role: "ADMIN", resource: "department", action: "delete", scope: "system" },
+    { role: "ADMIN", resource: "faculty", action: "create", scope: "system" },
+    { role: "ADMIN", resource: "faculty", action: "update", scope: "system" },
+    { role: "ADMIN", resource: "faculty", action: "delete", scope: "system" },
+    { role: "ADMIN", resource: "hod", action: "create", scope: "system" },
+    { role: "ADMIN", resource: "hod", action: "update", scope: "system" },
+    { role: "ADMIN", resource: "hod", action: "delete", scope: "system" },
+    { role: "ADMIN", resource: "role", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "permission", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "setting", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "category", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "academic_year", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "semester", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "notification", action: "manage", scope: "system" },
+    { role: "ADMIN", resource: "report", action: "view_all", scope: "system" },
+    { role: "ADMIN", resource: "audit_log", action: "read", scope: "system" },
+    { role: "ADMIN", resource: "user", action: "manage", scope: "system" },
 
-    // HOD permissions
-    { resource: "faculty", action: "create", role: "HOD" },
-    { resource: "faculty", action: "edit", role: "HOD" },
-    { resource: "faculty", action: "view", role: "HOD" },
-    { resource: "achievement", action: "approve", role: "HOD" },
-    { resource: "achievement", action: "reject", role: "HOD" },
-    { resource: "achievement", action: "view", role: "HOD" },
-    { resource: "department_report", action: "generate", role: "HOD" },
-    { resource: "department_analytics", action: "view", role: "HOD" },
-    { resource: "notification", action: "view", role: "HOD" },
+    { role: "HOD", resource: "faculty", action: "create", scope: "department" },
+    { role: "HOD", resource: "faculty", action: "update", scope: "department" },
+    { role: "HOD", resource: "faculty", action: "read", scope: "department" },
+    { role: "HOD", resource: "achievement", action: "approve", scope: "department" },
+    { role: "HOD", resource: "achievement", action: "reject", scope: "department" },
+    { role: "HOD", resource: "achievement", action: "read", scope: "department" },
+    { role: "HOD", resource: "report", action: "view_all", scope: "department" },
+    { role: "HOD", resource: "notification", action: "read", scope: "department" },
 
-    // Faculty permissions
-    { resource: "profile", action: "edit", role: "FACULTY" },
-    { resource: "achievement", action: "submit", role: "FACULTY" },
-    { resource: "achievement", action: "view", role: "FACULTY" },
-    { resource: "upload", action: "create", role: "FACULTY" },
-    { resource: "upload", action: "view", role: "FACULTY" },
-    { resource: "report", action: "view", role: "FACULTY" },
-    { resource: "notification", action: "view", role: "FACULTY" },
+    { role: "FACULTY", resource: "achievement", action: "create", scope: "personal" },
+    { role: "FACULTY", resource: "achievement", action: "read", scope: "personal" },
+    { role: "FACULTY", resource: "achievement", action: "create", scope: "personal", nameSuffix: "upload" },
+    { role: "FACULTY", resource: "achievement", action: "read", scope: "personal", nameSuffix: "upload" },
+    { role: "FACULTY", resource: "report", action: "read", scope: "personal" },
+    { role: "FACULTY", resource: "notification", action: "read", scope: "personal" },
   ];
+
+  const permissions = permissionDefinitions.map(({ role, resource, action, scope, nameSuffix }) => ({
+    name: `${role}_${nameSuffix || resource}_${action}`,
+    description: `${role} permission to ${action} ${resource}`,
+    resource,
+    action,
+    scope,
+    isSystem: true,
+  }));
 
   await Permission.insertMany(permissions);
   logger.info(`Seeded ${permissions.length} permissions`);
@@ -223,50 +235,57 @@ async function seedSettings() {
   }
 
   const settings = new Settings({
-    collegeName: "Sample College of Engineering",
-    collegeCode: "SCE",
-    logoUrl: "",
-    theme: {
-      primaryColor: "#4F46E5",
-      secondaryColor: "#7C3AED",
-      darkMode: false,
+    key: "app_config",
+    value: {
+      collegeName: "Sample College of Engineering",
+      collegeCode: "SCE",
+      logoUrl: "",
+      theme: {
+        primaryColor: "#4F46E5",
+        secondaryColor: "#7C3AED",
+        darkMode: false,
+      },
+      email: {
+        enabled: false,
+        smtpHost: "",
+        smtpPort: 587,
+        smtpUser: "",
+        smtpPass: "",
+        fromEmail: "noreply@example.com",
+        fromName: "FPMS System",
+      },
+      scoring: {
+        enableWeightage: true,
+        enableMaxPoints: true,
+        autoApprove: false,
+      },
+      approvalWorkflow: {
+        requireHODApproval: true,
+        requireAdminApproval: false,
+        autoApproveThreshold: 0,
+      },
+      registration: {
+        allowSelfRegistration: false,
+        requireEmailVerification: true,
+        requireOTPVerification: true,
+      },
+      notifications: {
+        enableEmail: false,
+        enableInApp: true,
+        enablePush: false,
+      },
+      featureFlags: {
+        enableLeaderboard: true,
+        enableAnalytics: true,
+        enableReports: true,
+        enableBulkOperations: true,
+        enableImportExport: true,
+      },
     },
-    email: {
-      enabled: false,
-      smtpHost: "",
-      smtpPort: 587,
-      smtpUser: "",
-      smtpPass: "",
-      fromEmail: "noreply@example.com",
-      fromName: "FPMS System",
-    },
-    scoring: {
-      enableWeightage: true,
-      enableMaxPoints: true,
-      autoApprove: false,
-    },
-    approvalWorkflow: {
-      requireHODApproval: true,
-      requireAdminApproval: false,
-      autoApproveThreshold: 0,
-    },
-    registration: {
-      allowSelfRegistration: false,
-      requireEmailVerification: true,
-      requireOTPVerification: true,
-    },
-    notifications: {
-      enableEmail: false,
-      enableInApp: true,
-      enablePush: false,
-    },
-    featureFlags: {
-      enableLeaderboard: true,
-      enableAnalytics: true,
-      enableReports: true,
-      enableBulkOperations: true,
-      enableImportExport: true,
-    },
+    category: "general",
+    description: "Default application configuration",
+    isSystem: true,
+    isEditable: false,
   });
 
   await settings.save();
@@ -284,20 +303,21 @@ async function seedApprovalWorkflows() {
     {
       name: "Standard Achievement Approval",
       description: "Default workflow for achievement approvals",
+      resourceType: "achievement",
       steps: [
-        { order: 1, role: "HOD", action: "approve", required: true },
-        { order: 2, role: "ADMIN", action: "review", required: false },
+        { order: 1, approverRole: "HOD", approverField: "department", requiresComment: true },
+        { order: 2, approverRole: "ADMIN", approverField: "college", requiresComment: false },
       ],
       isActive: true,
-      isDefault: true,
+      isSystem: true,
     },
     {
       name: "Quick Approval",
       description: "Fast-track approval for low-point achievements",
-      steps: [{ order: 1, role: "HOD", action: "approve", required: true }],
+      resourceType: "achievement",
+      steps: [{ order: 1, approverRole: "HOD", approverField: "department", requiresComment: false }],
       isActive: true,
-      isDefault: false,
-      conditions: { maxPoints: 10 },
+      isSystem: true,
     },
   ];
 
@@ -323,7 +343,7 @@ async function seedAcademicYears() {
       startDate: new Date(`${startYear}-07-01`),
       endDate: new Date(`${endYear}-06-30`),
       isActive: i === 0,
-      isCurrent: i === 0,
+      description: i === 0 ? "Current academic year" : "",
     });
   }
 
@@ -338,9 +358,28 @@ async function seedSemesters() {
     return;
   }
 
+  const academicYear = await AcademicYear.findOne({ isActive: true }) || (await AcademicYear.findOne());
+  if (!academicYear) {
+    throw new Error("Cannot seed semesters without an academic year");
+  }
+
   const semesters = [
-    { name: "Odd Semester", code: "ODD", startDate: new Date(new Date().getFullYear(), 6, 1), endDate: new Date(new Date().getFullYear() + 1, 0, 31), isActive: true },
-    { name: "Even Semester", code: "EVEN", startDate: new Date(new Date().getFullYear(), 0, 1), endDate: new Date(new Date().getFullYear(), 5, 30), isActive: true },
+    {
+      name: "Odd Semester",
+      academicYear: academicYear._id,
+      order: 1,
+      startDate: new Date(new Date().getFullYear(), 6, 1),
+      endDate: new Date(new Date().getFullYear() + 1, 0, 31),
+      isActive: true,
+    },
+    {
+      name: "Even Semester",
+      academicYear: academicYear._id,
+      order: 2,
+      startDate: new Date(new Date().getFullYear(), 0, 1),
+      endDate: new Date(new Date().getFullYear(), 5, 30),
+      isActive: false,
+    },
   ];
 
   await Semester.insertMany(semesters);
@@ -357,18 +396,14 @@ async function seedCollege() {
   const college = new College({
     name: "Sample College of Engineering",
     code: "SCE",
-    address: {
-      street: "123 Education Street",
-      city: "Sample City",
-      state: "Sample State",
-      country: "India",
-      pincode: "123456",
-    },
-    contact: {
-      phone: "+91-1234567890",
-      email: "info@samplecollege.edu",
-      website: "https://www.samplecollege.edu",
-    },
+    address: "123 Education Street",
+    city: "Sample City",
+    state: "Sample State",
+    country: "India",
+    pincode: "123456",
+    phone: "+91-1234567890",
+    email: "info@samplecollege.edu",
+    website: "https://www.samplecollege.edu",
     isActive: true,
   });
 
@@ -386,37 +421,47 @@ async function seedNotificationTemplates() {
   const templates = [
     {
       name: "faculty_created_by_admin",
+      key: "faculty_created_by_admin",
       subject: "New Faculty Account Created",
       body: "Admin has created a faculty account for {{facultyName}} in department {{departmentName}}.",
       type: "in_app",
+      category: "account_created",
       isActive: true,
     },
     {
       name: "achievement_submitted",
+      key: "achievement_submitted",
       subject: "Achievement Submitted for Approval",
       body: "{{facultyName}} has submitted an achievement: {{achievementTitle}}",
       type: "in_app",
+      category: "notification",
       isActive: true,
     },
     {
       name: "achievement_approved",
+      key: "achievement_approved",
       subject: "Achievement Approved",
       body: "Your achievement '{{achievementTitle}}' has been approved by {{approverName}}.",
       type: "in_app",
+      category: "approval",
       isActive: true,
     },
     {
       name: "achievement_rejected",
+      key: "achievement_rejected",
       subject: "Achievement Rejected",
       body: "Your achievement '{{achievementTitle}}' has been rejected. Reason: {{rejectionReason}}",
       type: "in_app",
+      category: "rejection",
       isActive: true,
     },
     {
       name: "welcome_faculty",
+      key: "welcome_faculty",
       subject: "Welcome to FPMS",
       body: "Welcome {{facultyName}}! Your account has been created. Please login to get started.",
       type: "in_app",
+      category: "welcome",
       isActive: true,
     },
   ];
@@ -432,21 +477,27 @@ async function seedCreditConfig() {
     return;
   }
 
-  const config = new CreditConfig({
-    researchPaper: { min: 5, max: 50 },
-    patent: { min: 10, max: 100 },
-    conference: { min: 3, max: 30 },
-    workshop: { min: 2, max: 20 },
-    certification: { min: 1, max: 15 },
-    bookChapter: { min: 5, max: 40 },
-    mooc: { min: 2, max: 20 },
-    researchGrant: { min: 10, max: 150 },
-    guestLecture: { min: 2, max: 15 },
-    industryCollaboration: { min: 5, max: 50 },
-  });
+  const categories = await AchievementCategory.find({ isActive: true });
+  if (categories.length === 0) {
+    throw new Error("Cannot seed credit configuration without achievement categories");
+  }
 
-  await config.save();
-  logger.info("Seeded credit configuration");
+  const configDocuments = categories.map((category) => ({
+    category: category._id,
+    categoryName: category.name,
+    type: category.section || "professional",
+    basePoints: category.points || 0,
+    maxPointsPerYear: category.maxPointsPerYear ?? null,
+    maxPointsPerSemester: null,
+    weightage: category.weightage ?? 1,
+    requiresEvidence: category.requiresEvidence,
+    requiresApproval: category.requiresApproval,
+    description: category.description || "",
+    isActive: true,
+  }));
+
+  await CreditConfig.insertMany(configDocuments);
+  logger.info(`Seeded ${configDocuments.length} credit configurations`);
 }
 
 async function seedAll() {

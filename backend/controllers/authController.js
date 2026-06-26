@@ -4,7 +4,7 @@ const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
 const ROLES = require("../constants/roles");
-const DEPARTMENTS = require("../constants/departments");
+const { normalizeDepartmentCode, resolveDepartment } = require("../utils/departmentLookup");
 const { isEmailConfigured, sendOTP, sendRegistrationNotification } = require("../utils/emailService");
 const { AppError } = require("../utils/errors");
 const logger = require("../utils/logger");
@@ -74,6 +74,7 @@ function buildAuthPayload(user) {
     name: user.name || user.regId || "",
     email: user.email || "",
     department: user.department || "",
+    departmentName: user.departmentName || "",
     designation: user.designation || "",
     googleScholar: user.googleScholar || "",
     vidwanId: user.vidwanId || "",
@@ -82,18 +83,14 @@ function buildAuthPayload(user) {
   };
 }
 
-function normalizeDepartment(department) {
-  return String(department || "").trim().toUpperCase();
-}
+async function assertDepartmentIsValid(department) {
+  const resolvedDepartment = await resolveDepartment(department);
 
-function assertDepartmentIsValid(department) {
-  const normalizedDepartment = normalizeDepartment(department);
-
-  if (!normalizedDepartment || !DEPARTMENTS.includes(normalizedDepartment)) {
+  if (!resolvedDepartment) {
     throw new AppError("Invalid department selected", 400);
   }
 
-  return normalizedDepartment;
+  return resolvedDepartment;
 }
 
 async function sendOtpForIdentifier(identifier) {
@@ -145,7 +142,7 @@ exports.registerFaculty = async (req, res) => {
     throw new AppError("At least one research ID is required", 400);
   }
 
-  const normalizedDept = assertDepartmentIsValid(department);
+  const departmentRecord = await assertDepartmentIsValid(department);
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedEmployeeId = employeeId.trim();
 
@@ -171,7 +168,8 @@ exports.registerFaculty = async (req, res) => {
     employeeId: normalizedEmployeeId,
     name: name.trim(),
     email: normalizedEmail,
-    department: normalizedDept,
+    department: departmentRecord.code,
+    departmentName: departmentRecord.name,
     designation: designation.trim(),
     googleScholar: googleScholar?.trim() || "",
     vidwanId: vidwanId?.trim() || "",
@@ -186,11 +184,11 @@ exports.registerFaculty = async (req, res) => {
     name: faculty.name,
     email: faculty.email,
     role: ROLES.FACULTY,
-    department: faculty.department,
+    department: faculty.departmentName,
   }).catch((error) => logger.warn({ err: error }, "Failed to send faculty registration notification"));
 
   res.status(201).json({
-    message: `Faculty registered under ${normalizedDept}. Waiting for HOD approval.`,
+    message: `Faculty registered under ${departmentRecord.name}. Waiting for HOD approval.`,
   });
 };
 
@@ -209,12 +207,12 @@ exports.registerHOD = async (req, res) => {
     throw new AppError("Profile image is required", 400);
   }
 
-  const normalizedDept = assertDepartmentIsValid(department);
+  const departmentRecord = await assertDepartmentIsValid(department);
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedEmployeeId = employeeId.trim();
 
   const existingHod = await HOD.findOne({
-    $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }, { department: normalizedDept }],
+    $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }, { department: departmentRecord.code }],
   });
 
   if (existingHod) {
@@ -225,7 +223,8 @@ exports.registerHOD = async (req, res) => {
     employeeId: normalizedEmployeeId,
     name: name.trim(),
     email: normalizedEmail,
-    department: normalizedDept,
+    department: departmentRecord.code,
+    departmentName: departmentRecord.name,
     designation: designation.trim(),
     googleScholar: googleScholar?.trim() || "",
     vidwanId: vidwanId?.trim() || "",
@@ -240,11 +239,11 @@ exports.registerHOD = async (req, res) => {
     name: hod.name,
     email: hod.email,
     role: ROLES.HOD,
-    department: hod.department,
+    department: hod.departmentName,
   }).catch((error) => logger.warn({ err: error }, "Failed to send HOD registration notification"));
 
   res.status(201).json({
-    message: `HOD registered for ${normalizedDept}. Waiting for Admin approval.`,
+    message: `HOD registered for ${departmentRecord.name}. Waiting for Admin approval.`,
   });
 };
 

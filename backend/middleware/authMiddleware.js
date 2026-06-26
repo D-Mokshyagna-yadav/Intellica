@@ -42,7 +42,8 @@ module.exports = async function authMiddleware(req, res, next) {
       id: user._id.toString(),
       employeeId: user.employeeId || user.regId || null,
       role: normalizedRole,
-      department: user.department || null,
+      department: user.department ? String(user.department) : null,
+      departmentName: user.departmentName || null,
       name: user.name || user.regId || "User",
       email: user.email || null,
     };

@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const mongoSanitize = require("express-mongo-sanitize");
 const pinoHttp = require("pino-http");
+const portfinder = require("portfinder");
 
 require("dotenv").config();
 const logger = require("./utils/logger");
@@ -13,7 +14,6 @@ require("./utils/validateEnv");
 const { securityMiddleware, apiLimiter, authLimiter } = require("./middleware/securityMiddleware");
 const requestSanitizer = require("./middleware/requestSanitizer");
 const { errorHandler, notFoundHandler } = require("./middleware/errorMiddleware");
-const bootstrapAdmin = require("./utils/bootstrapAdmin");
 
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -24,6 +24,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const creditConfigRoutes = require("./routes/creditConfigRoutes");
 const rankingRoutes = require("./routes/rankingroutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const departmentRoutes = require("./routes/departmentRoutes");
 
 const app = express();
 
@@ -102,6 +103,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/credit-config", creditConfigRoutes);
 app.use("/api/ranking", rankingRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/departments", departmentRoutes);
 
 // Frontend static files and SPA routing
 const frontendDistCandidates = [path.join(__dirname, "dist"), path.join(__dirname, "..", "frontend", "dist")];
@@ -124,13 +126,19 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Server startup
-const port = Number(process.env.PORT || 5000);
+const preferredPort = Number(process.env.PORT || 5000);
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(async () => {
     logger.info("MongoDB connected");
-    await bootstrapAdmin();
+    portfinder.basePort = Number.isFinite(preferredPort) ? preferredPort : 5000;
+
+    const port = await portfinder.getPortPromise();
+    if (port !== preferredPort) {
+      logger.warn({ preferredPort, port }, "Preferred port unavailable, using next free port");
+    }
+
     const server = app.listen(port, () => {
       logger.info({ port }, "Server started");
     });

@@ -11,9 +11,9 @@ import {
 import { Doughnut, Bar } from "react-chartjs-2";
 import { apiFetch } from "../../../api";
 import { buildYearOptions } from "../../../constants/years";
-import { DEPARTMENTS } from "../../../constants/departments";
 import LoadingState from "../../../components/LoadingState";
 import { showToast } from "../../../utils/toast";
+import { useDepartments } from "../../../hooks/useDepartments";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -23,7 +23,6 @@ const COLORS = [
 ];
 
 const ALL_YEARS = buildYearOptions(2000);
-const ALL_DEPARTMENTS = DEPARTMENTS;
 
 export default function DepartmentAnalytics() {
   const [uploads, setUploads] = useState([]);
@@ -31,6 +30,9 @@ export default function DepartmentAnalytics() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
+  const { departments } = useDepartments();
+  const departmentLabelByCode = Object.fromEntries(departments.map((department) => [department.code, department.name]));
+  const departmentCodes = departments.map((department) => department.code);
 
   useEffect(() => {
     apiFetch("/uploads/department")
@@ -75,7 +77,7 @@ export default function DepartmentAnalytics() {
   // ✅ Credits per ALL departments (for rank + share calculation)
   const allDeptTotals = useMemo(() => {
     const totals = {};
-    ALL_DEPARTMENTS.forEach(dept => { totals[dept] = 0; });
+    departmentCodes.forEach(dept => { totals[dept] = 0; });
     baseFilteredUploads.forEach(u => {
       const dept = (u.department || "").toUpperCase();
       if (totals[dept] !== undefined) {
@@ -83,18 +85,18 @@ export default function DepartmentAnalytics() {
       }
     });
     return totals;
-  }, [baseFilteredUploads]);
+  }, [baseFilteredUploads, departmentCodes]);
 
   // ✅ Sort ALL departments by credits — for rank calculation
   const sortedAllDepts = useMemo(() => {
-    return ALL_DEPARTMENTS
+    return departmentCodes
       .map((dept, i) => ({
         dept,
         total: Math.round((allDeptTotals[dept] || 0) * 100) / 100,
         color: COLORS[i % COLORS.length]
       }))
       .sort((a, b) => b.total - a.total);
-  }, [allDeptTotals]);
+  }, [allDeptTotals, departmentCodes]);
 
   // ✅ Grand total from ALL departments
   const grandTotal = Math.round(
@@ -127,7 +129,7 @@ export default function DepartmentAnalytics() {
 
   // ✅ Bar chart data
   const barData = selectedDepartment === "All" ? {
-    labels: displayDepts.map(d => d.dept),
+    labels: displayDepts.map(d => departmentLabelByCode[d.dept] || d.dept),
     datasets: [{
       label: "Total Credits",
       data: displayDepts.map(d => d.total),
@@ -170,7 +172,7 @@ export default function DepartmentAnalytics() {
 
   // ✅ Doughnut data
   const doughnutData = {
-    labels: displayDepts.map(d => d.dept),
+    labels: displayDepts.map(d => departmentLabelByCode[d.dept] || d.dept),
     datasets: [{
       data: displayDepts.map(d => d.total > 0 ? d.total : 0),
       backgroundColor: displayDepts.map(d => d.color),
@@ -285,13 +287,17 @@ export default function DepartmentAnalytics() {
             style={styles.select}
           >
             <option value="All">All</option>
-            {ALL_DEPARTMENTS.map(dept => <option key={dept}>{dept}</option>)}
+            {departments.map(department => (
+              <option key={department.code} value={department.code}>
+                {department.name}
+              </option>
+            ))}
           </select>
         </div>
 
         <div style={{ marginLeft: "auto", textAlign: "right" }}>
           <div style={{ fontSize: 14, color: "#475569" }}>
-            {selectedDepartment === "All" ? "Total Credits" : `${selectedDepartment} Credits`}
+            {selectedDepartment === "All" ? "Total Credits" : `${departmentLabelByCode[selectedDepartment] || selectedDepartment} Credits`}
           </div>
           <div style={{ fontSize: 24, fontWeight: 700, color: "#2563eb" }}>
             {selectedDepartment === "All"
@@ -313,7 +319,7 @@ export default function DepartmentAnalytics() {
             <h3 style={styles.cardTitle}>
               {selectedDepartment === "All"
                 ? "All Departments — Ranked by Credits"
-                : `${selectedDepartment} — Activities Breakdown`}
+                : `${departmentLabelByCode[selectedDepartment] || selectedDepartment} — Activities Breakdown`}
             </h3>
             <div style={{ height: 380 }}>
               <Bar data={barData} options={barOptions} />
@@ -387,7 +393,7 @@ export default function DepartmentAnalytics() {
                               background: row.color,
                               marginRight: 8
                             }} />
-                            {row.dept}
+                            {departmentLabelByCode[row.dept] || row.dept}
                           </td>
                           <td style={{ ...styles.td, fontWeight: 700, color: "#2563eb" }}>
                             {row.total.toFixed(2)}

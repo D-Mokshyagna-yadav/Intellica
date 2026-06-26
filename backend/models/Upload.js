@@ -17,9 +17,9 @@ const uploadSchema = new mongoose.Schema(
       required: true,
     },
     department: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
+      type: String,
       required: true,
+      trim: true,
     },
     departmentName: {
       type: String,
