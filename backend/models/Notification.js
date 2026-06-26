@@ -7,30 +7,90 @@ const notificationSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    title: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    type: {
+      type: String,
+      enum: ["info", "success", "warning", "error"],
+      default: "info",
+    },
     audienceRoles: {
       type: [String],
       default: [],
     },
     audienceDepartment: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
       default: null,
-      trim: true,
     },
     audienceUserId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       default: null,
-      trim: true,
     },
     readBy: {
-      type: [String],
+      type: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+          },
+          readAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
       default: [],
     },
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
+    archivedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+    archivedAt: {
+      type: Date,
+      default: null,
+    },
+    actionUrl: {
+      type: String,
+      default: "",
+    },
+    metadata: {
+      type: Object,
+      default: {},
+    },
+    relatedResourceType: {
+      type: String,
+      default: "",
+    },
+    relatedResourceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+    expiresAt: {
+      type: Date,
+      default: null,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
+notificationSchema.index({ audienceUserId: 1, isRead: 1, createdAt: -1 });
 notificationSchema.index({ audienceRoles: 1, audienceDepartment: 1, createdAt: -1 });
+notificationSchema.index({ isArchived: 1, createdAt: -1 });
 
-module.exports = mongoose.models.Notification || mongoose.model("Notification", notificationSchema);
+module.exports = mongoose.model("Notification", notificationSchema);

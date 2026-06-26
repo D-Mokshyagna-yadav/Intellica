@@ -6,9 +6,43 @@
     "start": "node start.js",
     "dev": "node start.js",
     "backend": "cd backend && node server.js",
-    "frontend": "cd frontend && npm run dev"
+    "frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && node scripts/seed.js",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
   },
-  "keywords": ["faculty", "research", "management"],
+  "keywords": [
+    "faculty",
+    "research",
+    "management"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@vitest/ui": "^4.1.9",
+    "concurrently": "^9.2.3",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "playwright": "^1.61.1",
+    "prettier": "^3.8.4",
+    "vitest": "^4.1.9",
+    "wait-on": "^9.0.10"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "csurf": "^1.11.0",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0"
+  }
 }

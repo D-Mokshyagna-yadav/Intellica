@@ -10,7 +10,7 @@ require("dotenv").config();
 const logger = require("./utils/logger");
 require("./utils/validateEnv");
 
-const securityMiddleware = require("./middleware/securityMiddleware");
+const { securityMiddleware, apiLimiter, authLimiter } = require("./middleware/securityMiddleware");
 const requestSanitizer = require("./middleware/requestSanitizer");
 const { errorHandler, notFoundHandler } = require("./middleware/errorMiddleware");
 const bootstrapAdmin = require("./utils/bootstrapAdmin");
@@ -33,6 +33,8 @@ const allowedOrigins = (process.env.FRONTEND_ORIGINS || process.env.CORS_ORIGIN 
   .filter(Boolean);
 
 app.disable("x-powered-by");
+
+// CORS configuration
 app.use(
   cors({
     origin(origin, callback) {
@@ -46,21 +48,39 @@ app.use(
     credentials: true,
   })
 );
+
+// Security middleware (Helmet with enhanced CSP)
 app.use(securityMiddleware);
+
+// Rate limiting for general API endpoints
+app.use("/api", apiLimiter);
+
+// Stricter rate limiting for authentication endpoints
+app.use("/api/auth", authLimiter);
+
+// Logging
 app.use(
   pinoHttp({
     logger,
     autoLogging: process.env.NODE_ENV === "production",
   })
 );
+
+// Body parsing with size limits
 app.use(express.json({ limit: process.env.JSON_LIMIT || "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: process.env.JSON_LIMIT || "1mb" }));
+
+// NoSQL injection protection
 app.use(mongoSanitize());
+
+// Request sanitization
 app.use(requestSanitizer);
 
+// Static files for uploads
 const uploadsPath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "uploads");
 app.use("/uploads", express.static(uploadsPath, { index: false }));
 
+// Health check endpoint
 app.get("/api/health", (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? "up" : "down";
   const statusCode = dbStatus === "up" ? 200 : 503;
@@ -72,6 +92,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/uploads", uploadRoutes);
@@ -82,6 +103,7 @@ app.use("/api/credit-config", creditConfigRoutes);
 app.use("/api/ranking", rankingRoutes);
 app.use("/api/notifications", notificationRoutes);
 
+// Frontend static files and SPA routing
 const frontendDistCandidates = [path.join(__dirname, "dist"), path.join(__dirname, "..", "frontend", "dist")];
 const frontendDistPath = frontendDistCandidates.find((candidatePath) => fs.existsSync(candidatePath));
 
@@ -97,9 +119,11 @@ if (frontendDistPath) {
   });
 }
 
+// Error handling
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+// Server startup
 const port = Number(process.env.PORT || 5000);
 
 mongoose
@@ -111,6 +135,7 @@ mongoose
       logger.info({ port }, "Server started");
     });
 
+    // Graceful shutdown
     const gracefulShutdown = (signal) => {
       logger.info(`Received ${signal}. Starting graceful shutdown...`);
       server.close(() => {

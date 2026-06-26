@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const ROLES = require("../constants/roles");
 
 const userSchema = new mongoose.Schema(
   {
@@ -27,8 +26,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: Object.values(ROLES),
-      default: ROLES.ADMIN,
+      default: "ADMIN",
     },
     isApproved: {
       type: Boolean,
@@ -42,8 +40,50 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    college: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "College",
+      default: null,
+    },
+    departments: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Department",
+      default: [],
+    },
+    permissions: {
+      type: [String],
+      default: [],
+    },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
+    archivedAt: {
+      type: Date,
+      default: null,
+    },
+    metadata: {
+      type: Object,
+      default: {},
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.models.User || mongoose.model("User", userSchema);
+userSchema.index({ email: 1, isArchived: 1 });
+userSchema.index({ regId: 1, isArchived: 1 });
+userSchema.index({ role: 1, isActive: 1 });
+
+module.exports = mongoose.model("User", userSchema);
