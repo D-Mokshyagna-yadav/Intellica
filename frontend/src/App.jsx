@@ -43,12 +43,20 @@ function App() {
   useEffect(() => {
     const syncPageWithLocation = () => {
       const currentPage = resolvePageFromPath(window.location.pathname);
+      const hasToken = Boolean(localStorage.getItem("token"));
+
+      if (currentPage === "leaderboard" && !hasToken) {
+        setPageState("login");
+        window.history.replaceState({}, "", "/");
+        return;
+      }
+
       if (currentPage === "login" && localStorage.getItem("token") && window.location.pathname === "/") {
         setPageState(getAuthenticatedLandingPage());
         return;
       }
 
-      if (!localStorage.getItem("token") && ["faculty", "hod", "admin-dashboard"].includes(currentPage)) {
+      if (!hasToken && ["faculty", "hod", "admin-dashboard"].includes(currentPage)) {
         setPageState("login");
         window.history.replaceState({}, "", "/");
         return;
@@ -69,7 +77,12 @@ function App() {
     setPageState(nextPage);
   };
 
-  const currentPage = page === "login" && localStorage.getItem("token") ? getAuthenticatedLandingPage() : page;
+  const hasToken = Boolean(localStorage.getItem("token"));
+  const currentPage = page === "login" && hasToken ? getAuthenticatedLandingPage() : page;
+
+  if (currentPage === "leaderboard" && !hasToken) {
+    return <Login setPage={setPage} />;
+  }
 
   return (
     <>

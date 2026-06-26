@@ -100,7 +100,7 @@ function Register({ setPage }) {
 
           <StyledSelect name="department" value={form.department} onChange={handleChange}>
             <option value="">Select Department</option>
-            {DEPARTMENTS.filter((department) => department !== "CHEM").map((department) => (
+            {DEPARTMENTS.map((department) => (
               <option key={department} value={department}>
                 {department}
               </option>

@@ -96,8 +96,7 @@ headers:{Authorization:`Bearer ${token}`}
 useEffect(() => {
   const fetchRank = async () => {
     try {
-      const targetId = facultyId || localStorage.getItem("userId");
-      const myData = await apiFetch(`/ranking/${targetId}`);
+      const myData = await apiFetch(`/ranking/me`);
       if (myData) {
         setRankData({
           departmentRank:  myData.departmentRank,
@@ -452,7 +451,7 @@ Download All
 
 </div>
 
-<div style={{display:"flex",gap:20,marginTop:30}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(150px, 1fr))",gap:"20px",marginTop:"30px"}}>
 <SummaryCard title="Total Credits" value={totalCredits}/>
 
 <SummaryCard 
@@ -615,9 +614,9 @@ onMouseLeave={()=>setHover(false)}
 
 const wrapper={minHeight:"100vh",background:"linear-gradient(180deg,#c7d2fe 0%,#e9d5ff 100%)",paddingTop:"100px"};
 
-const layout={display:"flex"};
+const layout={display:"flex",flexWrap:"wrap",gap:0};
 
-const sidebar={width:260,padding:20,borderRight:"1px solid rgba(0,0,0,0.08)"};
+const sidebar={width:260,padding:20,borderRight:"1px solid rgba(0,0,0,0.08)",overflowY:"auto",maxHeight:"calc(100vh - 100px)"};
 
 const profileSection={marginBottom:30,display:"flex",flexDirection:"column",alignItems:"center"};
 
@@ -637,30 +636,30 @@ transition:"all 0.2s ease"
 
 const activeItem={background:"rgba(255,255,255,0.5)",borderLeft:"4px solid #4f46e5"};
 
-const content={flex:1,padding:40};
+const content={flex:1,padding:"40px",overflowY:"auto",maxHeight:"calc(100vh - 100px)"};
 
-const cardGrid={display:"flex",gap:20,flexWrap:"wrap"};
+const cardGrid={display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(180px, 1fr))",gap:"20px",marginTop:"30px"};
 
 const summaryCard={
-width:200,
-height:100,
+minWidth:"150px",
+minHeight:"100px",
 background:"white",
-borderRadius:12,
+borderRadius:"12px",
 display:"flex",
 flexDirection:"column",
 justifyContent:"center",
 alignItems:"center",
+padding:"16px",
 transition:"all 0.25s ease",
 boxShadow:"0 4px 10px rgba(0,0,0,0.08)"
 };
 
 const categoryCard={
-width:220,
-height:120,
+minWidth:"150px",
+minHeight:"110px",
 background:"white",
-borderRadius:12,
-padding:20,
-marginTop:20,
+borderRadius:"12px",
+padding:"16px",
 cursor:"pointer",
 boxShadow:"0 4px 10px rgba(0,0,0,0.08)",
 transition:"all 0.25s ease"
@@ -669,7 +668,9 @@ const dashboardHeader={
 display:"flex",
 justifyContent:"space-between",
 alignItems:"center",
-marginBottom:10
+marginBottom:"10px",
+flexWrap:"wrap",
+gap:"10px"
 };
 
 const downloadBtn={

@@ -369,7 +369,7 @@ exports.getFacultyUploads = async (req, res) => {
 
 exports.getDepartmentUploads = async (req, res) => {
   const query = {
-    status: { $in: DEPARTMENT_VISIBLE_STATUSES },
+    status: { $in: APPROVED_STATUSES },
   };
 
   if (req.user.role === ROLES.HOD) {

@@ -23,7 +23,7 @@ const COLORS = [
 ];
 
 const ALL_YEARS = buildYearOptions(2000);
-const ALL_DEPARTMENTS = DEPARTMENTS.filter((department) => department !== "CHEM");
+const ALL_DEPARTMENTS = DEPARTMENTS;
 
 export default function DepartmentAnalytics() {
   const [uploads, setUploads] = useState([]);

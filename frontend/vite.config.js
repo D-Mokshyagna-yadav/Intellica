@@ -33,12 +33,12 @@ export default defineConfig({
     strictPort: false,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_PROXY_TARGET || 'http://intellica-app:5000',
+        target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
       '/uploads': {
-        target: process.env.VITE_API_PROXY_TARGET || 'http://intellica-app:5000',
+        target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       }

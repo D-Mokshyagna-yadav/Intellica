@@ -4,19 +4,29 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User");
 const logger = require("./logger");
 
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
-  },
-});
+function isEmailConfigured() {
+  return Boolean(process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD);
+}
+
+const transporter = isEmailConfigured()
+  ? nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE || "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD,
+      },
+    })
+  : null;
 
 function getLogoSrc() {
   return process.env.EMAIL_LOGO_URL || "cid:mic_logo";
 }
 
 async function sendMail(mailOptions) {
+  if (!transporter) {
+    throw new Error("Email service is not configured. Set EMAIL_USER and EMAIL_APP_PASSWORD to enable email notifications.");
+  }
+
   if (mailOptions.attachments?.length) {
     mailOptions.attachments = mailOptions.attachments.filter(
       (attachment) => attachment && (attachment.cid || attachment.contentDisposition === "inline")
@@ -187,6 +197,7 @@ async function sendUploadApprovalEmail(faculty, uploadTitle, approverRole) {
 }
 
 module.exports = {
+  isEmailConfigured,
   sendOTP,
   sendRegistrationNotification,
   sendApprovalEmailToFaculty,

@@ -4,7 +4,8 @@ const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
 const ROLES = require("../constants/roles");
-const { sendOTP, sendRegistrationNotification } = require("../utils/emailService");
+const DEPARTMENTS = require("../constants/departments");
+const { isEmailConfigured, sendOTP, sendRegistrationNotification } = require("../utils/emailService");
 const { AppError } = require("../utils/errors");
 const logger = require("../utils/logger");
 const moveProfileImage = require("../utils/moveProfileImage");
@@ -81,6 +82,20 @@ function buildAuthPayload(user) {
   };
 }
 
+function normalizeDepartment(department) {
+  return String(department || "").trim().toUpperCase();
+}
+
+function assertDepartmentIsValid(department) {
+  const normalizedDepartment = normalizeDepartment(department);
+
+  if (!normalizedDepartment || !DEPARTMENTS.includes(normalizedDepartment)) {
+    throw new AppError("Invalid department selected", 400);
+  }
+
+  return normalizedDepartment;
+}
+
 async function sendOtpForIdentifier(identifier) {
   const { user, role } = await findUserByIdentifier(identifier);
 
@@ -98,6 +113,10 @@ async function sendOtpForIdentifier(identifier) {
   user.otp = otp;
   user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
   await user.save();
+
+  if (!isEmailConfigured()) {
+    throw new AppError("Email service is not configured. OTP login is temporarily unavailable.", 503);
+  }
 
   await sendOTP(user.email, otp);
 
@@ -126,7 +145,7 @@ exports.registerFaculty = async (req, res) => {
     throw new AppError("At least one research ID is required", 400);
   }
 
-  const normalizedDept = department.trim().toUpperCase();
+  const normalizedDept = assertDepartmentIsValid(department);
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedEmployeeId = employeeId.trim();
 
@@ -190,7 +209,7 @@ exports.registerHOD = async (req, res) => {
     throw new AppError("Profile image is required", 400);
   }
 
-  const normalizedDept = department.trim().toUpperCase();
+  const normalizedDept = assertDepartmentIsValid(department);
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedEmployeeId = employeeId.trim();
 

@@ -72,8 +72,7 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
   useEffect(() => {
     const fetchRank = async () => {
       try {
-        const targetId = hodId || localStorage.getItem("userId");
-        const myData = await apiFetch(`/ranking/${targetId}`);
+        const myData = await apiFetch(`/ranking/me`);
         if (myData) {
           setRankData({
             departmentRank: myData.departmentRank,
@@ -240,7 +239,7 @@ function HodPersonalDashboard({ uploads = null, hodId = null }) {
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 20, marginTop: 30 }}>
             <SummaryCard title="Total Credits" value={totalCredits} />
             <SummaryCard
               title="Dept Rank"
@@ -316,9 +315,9 @@ function CategoryCard({ title, value, onClick }) {
 }
 
 const wrapper = { width: "100%" };
-const cardGrid = { display: "flex", gap: 20, flexWrap: "wrap" };
-const summaryCard = { width: 200, height: 100, background: "white", borderRadius: 12, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" };
-const categoryCard = { width: 220, height: 120, background: "white", borderRadius: 12, padding: 20, marginTop: 20, cursor: "pointer", transition: "0.25s", boxShadow: "0 4px 10px rgba(0,0,0,0.08)" };
-const dashboardHeader = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 };
+const cardGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 20, marginTop: 30 };
+const summaryCard = { minWidth: 150, minHeight: 100, background: "white", borderRadius: 12, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: 16 };
+const categoryCard = { minWidth: 150, minHeight: 110, background: "white", borderRadius: 12, padding: 16, cursor: "pointer", transition: "0.25s", boxShadow: "0 4px 10px rgba(0,0,0,0.08)" };
+const dashboardHeader = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 10 };
 const downloadBtn = { padding: "8px 14px", background: "#2563eb", color: "white", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 };
 const downloadSelect = { padding: "8px 14px", borderRadius: 6, border: "1px solid #cbd5e1", cursor: "pointer", fontSize: 13, fontWeight: 500, backgroundColor: "white", minWidth: "120px" };

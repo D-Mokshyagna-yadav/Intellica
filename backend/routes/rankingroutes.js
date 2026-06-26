@@ -5,7 +5,7 @@ const asyncHandler = require("../utils/asyncHandler");
 
 const router = express.Router();
 
-router.get("/", asyncHandler(getRanking));
+router.get("/", authMiddleware, asyncHandler(getRanking));
 router.get("/me", authMiddleware, asyncHandler(getMyRank));
 router.get("/:id", authMiddleware, asyncHandler(getMyRank));
 

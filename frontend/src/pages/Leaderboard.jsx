@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../api";
-import { DEPARTMENTS } from "../constants/departments";
 import LoadingState from "../components/LoadingState";
 import { showToast } from "../utils/toast";
 
@@ -10,13 +9,19 @@ export default function Leaderboard({ setPage }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      setPage("login", { replace: true });
+    }
+  }, [setPage]);
+
+  useEffect(() => {
     let isMounted = true;
 
     const loadLeaderboard = async () => {
       try {
         setLoading(true);
         const query = department !== "All" ? `?department=${encodeURIComponent(department)}` : "";
-        const data = await apiFetch(`/ranking${query}`, { headers: {} });
+        const data = await apiFetch(`/ranking${query}`);
         if (isMounted) {
           setEntries(Array.isArray(data) ? data : []);
           const search = department !== "All" ? `?department=${encodeURIComponent(department)}` : "";
@@ -41,6 +46,10 @@ export default function Leaderboard({ setPage }) {
   }, [department]);
 
   const rows = useMemo(() => entries.slice().sort((a, b) => a.collegeRank - b.collegeRank), [entries]);
+  const departmentOptions = useMemo(
+    () => Array.from(new Set(rows.map((row) => row.department).filter(Boolean))).sort(),
+    [rows]
+  );
 
   return (
     <div style={pageStyle}>
@@ -48,11 +57,12 @@ export default function Leaderboard({ setPage }) {
         <div>
           <h1 style={{ margin: 0, color: "#0f172a" }}>Leaderboard</h1>
           <p style={{ color: "#475569", marginTop: 8 }}>Shareable rankings across faculty and HOD contributors.</p>
+          <p style={{ color: "#475569", marginTop: 8 }}>Department-only ranking, available after login.</p>
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <select value={department} onChange={(event) => setDepartment(event.target.value)} style={selectStyle}>
             <option value="All">All Departments</option>
-            {DEPARTMENTS.map((item) => (
+            {departmentOptions.map((item) => (
               <option key={item} value={item}>
                 {item}
               </option>
@@ -71,25 +81,33 @@ export default function Leaderboard({ setPage }) {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={thStyle}>College Rank</th>
-                <th style={thStyle}>Department Rank</th>
-                <th style={thStyle}>Name</th>
-                <th style={thStyle}>Role</th>
                 <th style={thStyle}>Department</th>
-                <th style={thStyle}>Credits</th>
-                <th style={thStyle}>Score</th>
+                <th style={thStyle}>Rank</th>
+                <th style={thStyle}>Monthly</th>
+                <th style={thStyle}>Semester</th>
+                <th style={thStyle}>Yearly</th>
+                <th style={thStyle}>Overall</th>
+                <th style={thStyle}>Faculty Count</th>
+                <th style={thStyle}>Progress</th>
+                <th style={thStyle}>Trend</th>
+                <th style={thStyle}>Medal</th>
+                <th style={thStyle}>Top Categories</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.facultyId}>
-                  <td style={tdStyle}>#{row.collegeRank}</td>
-                  <td style={tdStyle}>#{row.rank}</td>
-                  <td style={tdStyle}>{row.name}</td>
-                  <td style={tdStyle}>{row.createdByRole}</td>
+                <tr key={row.department}>
                   <td style={tdStyle}>{row.department}</td>
-                  <td style={tdStyle}>{row.totalCredits}</td>
-                  <td style={tdStyle}>{row.score}</td>
+                  <td style={tdStyle}>#{row.rank}</td>
+                  <td style={tdStyle}>{row.monthlyScore}</td>
+                  <td style={tdStyle}>{row.semesterScore}</td>
+                  <td style={tdStyle}>{row.yearlyScore}</td>
+                  <td style={tdStyle}>{row.overallScore}</td>
+                  <td style={tdStyle}>{row.facultyCount}</td>
+                  <td style={tdStyle}>{row.progress}%</td>
+                  <td style={tdStyle}>{row.trend >= 0 ? `+${row.trend}` : row.trend}</td>
+                  <td style={tdStyle}>{row.medal || "-"}</td>
+                  <td style={tdStyle}>{(row.topCategories || []).map((item) => `${item.name} (${item.score})`).join(", ") || "-"}</td>
                 </tr>
               ))}
             </tbody>
