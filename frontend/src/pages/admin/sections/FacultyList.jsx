@@ -391,7 +391,9 @@ onClick={()=>setSelectedDept(null)}
     isOpen={deleteModalOpen}
     title="Remove User"
     message="Are you sure you want to remove this user? This action cannot be undone."
-    type="confirm"
+    type="prompt"
+    placeholder="Type DELETE to confirm"
+    confirmationPhrase="DELETE"
     onConfirm={confirmDeleteUser}
     onCancel={() => { setDeleteModalOpen(false); setDeleteUserId(null); }}
   />

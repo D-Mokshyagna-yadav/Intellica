@@ -36,6 +36,7 @@ headers:{ Authorization:`Bearer ${token}` }
 );
 
 const depData = await depRes.json();
+const departmentCount = Array.isArray(depData) ? depData.length : 0;
 
 /* FETCH TOP DEPARTMENTS */
 
@@ -100,7 +101,7 @@ const pendingCount = Array.isArray(uploadData)
 /* SET DASHBOARD STATS */
 
 setStats({
-  departments: 9,
+  departments: departmentCount,
   faculties: totalFacultyAndHOD,
   pendingUploads: pendingCount
 });
@@ -129,6 +130,41 @@ Welcome, Admin 👋
 <p style={{opacity:0.7,fontSize:"14px"}}>
 System overview at a glance
 </p>
+
+<button
+type="button"
+onClick={()=>setView("users")}
+style={{
+  marginTop: 12,
+  padding: "10px 16px",
+  borderRadius: 12,
+  border: "none",
+  background: "#0f172a",
+  color: "#fff",
+  fontWeight: 700,
+  cursor: "pointer"
+}}
+>
+Add Users
+</button>
+
+<button
+type="button"
+onClick={()=>setView("departments")}
+style={{
+  marginTop: 12,
+  marginLeft: 12,
+  padding: "10px 16px",
+  borderRadius: 12,
+  border: "none",
+  background: "#1d4ed8",
+  color: "#fff",
+  fontWeight: 700,
+  cursor: "pointer"
+}}
+>
+Manage Departments
+</button>
 
 {/* ================= STATS CARDS ================= */}
 
@@ -165,7 +201,7 @@ onClick={()=>setView("approve")}
 <div key={i} className="dept-row">
 
 <span>
-{i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}.`} {d.department}
+{i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}.`} {d.departmentName || d.department}
 </span>
 
 <span style={{marginLeft:8}}>—</span>

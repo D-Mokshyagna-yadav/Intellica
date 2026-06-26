@@ -3,8 +3,10 @@ import { useResponsive } from "../../hooks/useResponsive";
 import "../../styles/responsiveDashboard.css";
 
 import AdminHome from "./sections/AdminHome";
+import DepartmentManagement from "./sections/DepartmentManagement";
 import FacultyList from "./sections/FacultyList";
 import HodList from "./sections/HodList";
+import ManualUsers from "./sections/ManualUsers";
 import ApproveHodUploads from "./sections/ApproveHodUploads";
 import DepartmentAnalytics from "./sections/DepartmentAnalytics";
 import CreditConfig from "./sections/credit-config/CreditConfig";
@@ -121,6 +123,8 @@ Logout
 <AdminHome setView={setView} />
 )}
 
+{view === "departments" && <DepartmentManagement />}
+{view === "users" && <ManualUsers />}
 {view === "faculty" && <FacultyList />}
 {view === "hod" && <HodList />}
 {view === "approve" && <ApproveHodUploads />}
@@ -145,6 +149,8 @@ export default AdminDashboard;
 
 const menuItems = [
 { key:"home", label:"Dashboard"},
+{ key:"departments", label:"Departments"},
+{ key:"users", label:"Add Users"},
 { key:"faculty", label:"Faculty & HOD Profiles"},
 { key:"hod", label:"Approve HOD Accounts"},
 { key:"approve", label:"Approve HOD Uploads"},

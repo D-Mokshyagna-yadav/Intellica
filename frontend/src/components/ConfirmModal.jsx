@@ -8,6 +8,7 @@ export default function ConfirmModal({
   placeholder = "",
   options = [],
   defaultValue = "",
+  confirmationPhrase = "",
   onConfirm,
   onCancel,
 }) {
@@ -18,6 +19,11 @@ export default function ConfirmModal({
       setInputValue(defaultValue || (type === "select" ? options[0] || "" : ""));
     }
   }, [isOpen, defaultValue, type, options]);
+
+  const requiresTypedConfirmation = Boolean(confirmationPhrase);
+  const typedConfirmationSatisfied =
+    !requiresTypedConfirmation ||
+    String(inputValue || "").trim().toUpperCase() === String(confirmationPhrase).trim().toUpperCase();
 
   if (!isOpen) return null;
 
@@ -53,14 +59,24 @@ export default function ConfirmModal({
           </select>
         )}
 
+        {requiresTypedConfirmation && (
+          <p style={confirmNoteStyle}>
+            Type <span style={confirmPhraseStyle}>{confirmationPhrase}</span> to confirm.
+          </p>
+        )}
+
         <div style={actionsStyle}>
           <button type="button" onClick={onCancel} style={cancelBtnStyle}>
             Cancel
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(inputValue)}
-            style={confirmBtnStyle}
+            onClick={() => typedConfirmationSatisfied && onConfirm(inputValue)}
+            disabled={!typedConfirmationSatisfied}
+            style={{
+              ...confirmBtnStyle,
+              ...(typedConfirmationSatisfied ? {} : disabledConfirmBtnStyle),
+            }}
           >
             Confirm
           </button>
@@ -135,6 +151,17 @@ const selectStyle = {
   color: "#0f172a",
 };
 
+const confirmNoteStyle = {
+  margin: "0 0 16px 0",
+  fontSize: 13,
+  color: "#475569",
+};
+
+const confirmPhraseStyle = {
+  fontWeight: 700,
+  color: "#0f172a",
+};
+
 const actionsStyle = {
   display: "flex",
   justifyContent: "flex-end",
@@ -161,4 +188,10 @@ const confirmBtnStyle = {
   fontSize: 14,
   fontWeight: 600,
   cursor: "pointer",
+};
+
+const disabledConfirmBtnStyle = {
+  background: "#94a3b8",
+  cursor: "not-allowed",
+  opacity: 0.75,
 };

@@ -31,6 +31,7 @@ import MOUs from "../faculty/categories/MOUs";
 import HodHeader from "./HodHeader";
 import API_BASE, { getFileUrl } from "../../api";
 import { showToast } from "../../utils/toast";
+import { useDepartments } from "../../hooks/useDepartments";
 
 /* ================= PROFILE INFO ================= */
 
@@ -54,6 +55,7 @@ import CreditConfigViewer from "../admin/sections/credit-config/common/CreditCon
 function HodDashboard({ setPage = () => {}, readOnly = false, hodUser = null }){
 
   const responsive = useResponsive();
+  const { departments } = useDepartments();
   const [view, setView] = useState("dept-dashboard");
   const [uploads, setUploads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +90,12 @@ const extraMenuItems = readOnly
   ? hodUser.department
   : localStorage.getItem("user_department");
   const token = localStorage.getItem("token");
+  const currentDepartmentCode = user?.department || department;
+  const currentDepartmentRecord = useMemo(
+    () => departments.find((item) => item.code === currentDepartmentCode) || null,
+    [departments, currentDepartmentCode]
+  );
+  const showDepartmentWarning = Boolean(user && currentDepartmentCode && !currentDepartmentRecord);
 
  const handleLogout = () => {
   localStorage.clear();
@@ -362,6 +370,16 @@ const hodId = hodUser?._id || user?._id;
 
         <div className="hod-content">
 
+          {showDepartmentWarning && (
+            <div style={departmentWarning}>
+              <strong>Department unavailable.</strong>
+              <span style={{ marginLeft: 6 }}>
+                Your department is no longer active. It may have been archived or replaced, so some HOD actions may be limited.
+                Please contact the admin team to confirm your department setup.
+              </span>
+            </div>
+          )}
+
           {view === "dept-dashboard" &&
             <DepartmentDashboard
               uploads={departmentApprovedUploads}
@@ -573,4 +591,15 @@ const activeItem = {
   fontWeight: 700,
   color: "#1e293b",
   boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
+};
+
+const departmentWarning = {
+  marginBottom: 18,
+  padding: "14px 16px",
+  borderRadius: 12,
+  background: "#fff7ed",
+  border: "1px solid #fdba74",
+  color: "#9a3412",
+  fontSize: 14,
+  lineHeight: 1.5
 };

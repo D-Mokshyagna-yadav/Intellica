@@ -3,6 +3,8 @@ const HOD = require("../models/HOD");
 const User = require("../models/User");
 const Upload = require("../models/Upload");
 const Department = require("../models/Department");
+const College = require("../models/College");
+const Notification = require("../models/Notification");
 const ROLES = require("../constants/roles");
 const { sendApprovalEmailToFaculty, sendApprovalEmailToHod, sendUploadApprovalEmail } = require("../utils/emailService");
 const { createNotification } = require("../utils/notificationService");
@@ -13,6 +15,7 @@ const deleteUserFolder = require("../utils/deleteUserFolder");
 const moveUploadFile = require("../utils/moveUploadFile");
 const { resolveDepartment } = require("../utils/departmentLookup");
 const { AppError } = require("../utils/errors");
+const logger = require("../utils/logger");
 
 async function findManagedUser(userId) {
   const faculty = await Faculty.findById(userId);
@@ -26,6 +29,302 @@ async function findManagedUser(userId) {
 
   return null;
 }
+
+async function findDuplicateAccount({ employeeId, email }) {
+  const normalizedEmployeeId = String(employeeId || "").trim();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+
+  const [faculty, hod] = await Promise.all([
+    Faculty.findOne({
+      $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }],
+    }),
+    HOD.findOne({
+      $or: [{ employeeId: normalizedEmployeeId }, { email: normalizedEmail }],
+    }),
+  ]);
+
+  return faculty || hod;
+}
+
+function normalizeDepartmentCode(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
+
+function generateDepartmentCode(name) {
+  const normalized = normalizeDepartmentCode(name);
+  return normalized || "DEPARTMENT";
+}
+
+async function updateDepartmentReferences(previousCode, nextCode, nextName) {
+  if (previousCode === nextCode) {
+    await Promise.all([
+      Faculty.updateMany({ department: previousCode }, { $set: { departmentName: nextName } }),
+      HOD.updateMany({ department: previousCode }, { $set: { departmentName: nextName } }),
+    ]);
+    return;
+  }
+
+  await Promise.all([
+    Faculty.updateMany(
+      { department: previousCode },
+      { $set: { department: nextCode, departmentName: nextName } }
+    ),
+    HOD.updateMany(
+      { department: previousCode },
+      { $set: { department: nextCode, departmentName: nextName } }
+    ),
+    Upload.updateMany(
+      { department: previousCode },
+      { $set: { department: nextCode } }
+    ),
+    Notification.updateMany(
+      { audienceDepartment: previousCode },
+      { $set: { audienceDepartment: nextCode } }
+    ),
+  ]);
+}
+
+exports.createManualUser = async (req, res) => {
+  const role = String(req.body.role || "").trim().toUpperCase();
+  const employeeId = String(req.body.employeeId || "").trim();
+  const name = String(req.body.name || "").trim();
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const designation = String(req.body.designation || "").trim();
+  const googleScholar = String(req.body.googleScholar || "").trim();
+  const vidwanId = String(req.body.vidwanId || "").trim();
+  const scopusId = String(req.body.scopusId || "").trim();
+
+  if (![ROLES.FACULTY, ROLES.HOD].includes(role)) {
+    throw new AppError("Invalid role selected", 400);
+  }
+
+  if (!employeeId || !name || !email || !req.body.department || !designation) {
+    throw new AppError("Employee ID, name, email, department, and designation are required", 400);
+  }
+
+  if (!googleScholar && !vidwanId && !scopusId) {
+    throw new AppError("At least one research identifier is required", 400);
+  }
+
+  const departmentRecord = await resolveDepartment(req.body.department);
+  if (!departmentRecord) {
+    throw new AppError("Invalid department", 400);
+  }
+
+  const existingAccount = await findDuplicateAccount({ employeeId, email });
+  if (existingAccount) {
+    throw new AppError("Employee ID or email already exists", 400);
+  }
+
+  const basePayload = {
+    employeeId,
+    name,
+    email,
+    department: departmentRecord.code,
+    departmentName: departmentRecord.name,
+    designation,
+    googleScholar,
+    vidwanId,
+    scopusId,
+    isApproved: true,
+    status: "APPROVED",
+    profileImage: "",
+    createdBy: req.user.id,
+    createdByRole: ROLES.ADMIN,
+  };
+
+  let createdUser;
+
+  if (role === ROLES.FACULTY) {
+    createdUser = await Faculty.create({
+      ...basePayload,
+      role: ROLES.FACULTY,
+    });
+
+    const hod = await HOD.findOne({
+      department: departmentRecord.code,
+      isApproved: true,
+      status: "APPROVED",
+    }).select("name email department");
+
+    if (hod) {
+      await createNotification({
+        message: `Admin created faculty account for ${createdUser.name} in ${departmentRecord.name}.`,
+        audienceRoles: [ROLES.HOD],
+        audienceDepartment: departmentRecord.code,
+        metadata: {
+          facultyName: createdUser.name,
+          departmentName: departmentRecord.name,
+          createdBy: req.user.name,
+          createdByRole: ROLES.ADMIN,
+        },
+      });
+    }
+
+    sendApprovalEmailToFaculty(createdUser).catch((error) => logger.warn({ err: error }, "Failed to send faculty creation email"));
+  } else {
+    const duplicateDepartmentHod = await HOD.findOne({
+      department: departmentRecord.code,
+    });
+
+    if (duplicateDepartmentHod) {
+      throw new AppError("A HOD already exists for this department", 400);
+    }
+
+    createdUser = await HOD.create({
+      ...basePayload,
+      role: ROLES.HOD,
+    });
+
+    sendApprovalEmailToHod(createdUser).catch((error) => logger.warn({ err: error }, "Failed to send HOD creation email"));
+  }
+
+  res.status(201).json({
+    message: `${role === ROLES.FACULTY ? "Faculty" : "HOD"} created successfully`,
+    user: createdUser,
+  });
+};
+
+exports.getManagedDepartments = async (_req, res) => {
+  const departments = await Department.find()
+    .populate("college", "name code")
+    .sort({ isArchived: 1, sortOrder: 1, name: 1 })
+    .lean();
+
+  res.json(departments);
+};
+
+exports.createDepartment = async (req, res) => {
+  const name = String(req.body.name || "").trim();
+  const code = normalizeDepartmentCode(req.body.code || name);
+  const description = String(req.body.description || "").trim();
+  const sortOrder = Number.isFinite(Number(req.body.sortOrder)) ? Number(req.body.sortOrder) : 0;
+
+  if (!name) {
+    throw new AppError("Department name is required", 400);
+  }
+
+  if (!code) {
+    throw new AppError("Department code is required", 400);
+  }
+
+  const duplicate = await Department.findOne({
+    $or: [{ code }, { name }],
+  }).lean();
+
+  if (duplicate) {
+    throw new AppError("Department code or name already exists", 400);
+  }
+
+  const college = await College.findOne({ isActive: true, isArchived: false }).select("_id").lean();
+
+  const department = await Department.create({
+    name,
+    code,
+    description,
+    sortOrder,
+    college: college?._id || null,
+    isActive: true,
+    isArchived: false,
+    archivedAt: null,
+    metadata: {},
+  });
+
+  res.status(201).json({
+    message: "Department created successfully",
+    department,
+  });
+};
+
+exports.updateDepartment = async (req, res) => {
+  const department = await Department.findById(req.params.id);
+
+  if (!department) {
+    throw new AppError("Department not found", 404);
+  }
+
+  const nextName = String(req.body.name || department.name).trim();
+  const nextCode = normalizeDepartmentCode(req.body.code || department.code);
+  const nextDescription = req.body.description === undefined
+    ? department.description
+    : String(req.body.description || "").trim();
+  const nextSortOrder = Number.isFinite(Number(req.body.sortOrder)) ? Number(req.body.sortOrder) : department.sortOrder;
+  const nextActive = typeof req.body.isActive === "boolean" ? req.body.isActive : department.isActive;
+
+  if (!nextName) {
+    throw new AppError("Department name is required", 400);
+  }
+
+  if (!nextCode) {
+    throw new AppError("Department code is required", 400);
+  }
+
+  const duplicate = await Department.findOne({
+    _id: { $ne: department._id },
+    $or: [{ code: nextCode }, { name: nextName }],
+  }).lean();
+
+  if (duplicate) {
+    throw new AppError("Department code or name already exists", 400);
+  }
+
+  const previousCode = department.code;
+  department.name = nextName;
+  department.code = nextCode;
+  department.description = nextDescription;
+  department.sortOrder = nextSortOrder;
+  department.isActive = nextActive;
+  department.isArchived = false;
+  department.archivedAt = null;
+  await department.save();
+
+  await updateDepartmentReferences(previousCode, nextCode, nextName);
+
+  res.json({
+    message: "Department updated successfully",
+    department: await Department.findById(department._id).populate("college", "name code").lean(),
+  });
+};
+
+exports.deleteDepartment = async (req, res) => {
+  const department = await Department.findById(req.params.id);
+
+  if (!department) {
+    throw new AppError("Department not found", 404);
+  }
+
+  department.isArchived = true;
+  department.isActive = false;
+  department.archivedAt = new Date();
+  await department.save();
+
+  res.json({
+    message: "Department archived successfully",
+    department,
+  });
+};
+
+exports.restoreDepartment = async (req, res) => {
+  const department = await Department.findById(req.params.id);
+
+  if (!department) {
+    throw new AppError("Department not found", 404);
+  }
+
+  department.isArchived = false;
+  department.isActive = true;
+  department.archivedAt = null;
+  await department.save();
+
+  res.json({
+    message: "Department restored successfully",
+    department,
+  });
+};
 
 exports.getAllHods = async (req, res) => {
   const hods = await HOD.find().sort({ createdAt: -1 });

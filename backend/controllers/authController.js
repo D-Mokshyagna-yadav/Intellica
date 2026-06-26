@@ -151,7 +151,7 @@ exports.registerFaculty = async (req, res) => {
   });
 
   const existingHod = await HOD.findOne({
-    department: normalizedDept,
+    department: departmentRecord.code,
     isApproved: true,
     status: "APPROVED",
   });

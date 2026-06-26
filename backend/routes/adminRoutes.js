@@ -16,6 +16,11 @@ router.post("/hod-discussion/:id", asyncHandler(adminController.hodDiscussion));
 router.delete("/remove-hod/:id", asyncHandler(adminController.removeApprovedHod));
 
 router.get("/departments", asyncHandler(adminController.getDepartmentStatus));
+router.get("/departments/manage", asyncHandler(adminController.getManagedDepartments));
+router.post("/departments", asyncHandler(adminController.createDepartment));
+router.put("/departments/:id", asyncHandler(adminController.updateDepartment));
+router.delete("/departments/:id", asyncHandler(adminController.deleteDepartment));
+router.post("/departments/:id/restore", asyncHandler(adminController.restoreDepartment));
 router.get("/top-departments", asyncHandler(adminController.getTopDepartments));
 router.get("/activity-stats", asyncHandler(adminController.getActivityStats));
 
@@ -24,6 +29,7 @@ router.post("/approve-upload/:id", asyncHandler(adminController.approveUploadByA
 router.post("/discussion/:id", asyncHandler(adminController.adminDiscussion));
 
 router.get("/all-users", asyncHandler(adminController.getAllUsers));
+router.post("/users", asyncHandler(adminController.createManualUser));
 router.delete("/delete-user/:id", asyncHandler(adminController.deleteUser));
 router.put("/change-department/:id", asyncHandler(adminController.changeDepartment));
 router.get("/department-analytics/:department", asyncHandler(adminController.getDepartmentAnalytics));

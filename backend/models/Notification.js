@@ -22,8 +22,7 @@ const notificationSchema = new mongoose.Schema(
       default: [],
     },
     audienceDepartment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
+      type: String,
       default: null,
     },
     audienceUserId: {
