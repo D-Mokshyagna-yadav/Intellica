@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica | Mobile CV & Report Generator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@450&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        /* Custom Scrollbar for mobile preview area */
+        .preview-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .preview-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        /* Step progress animation */
+        .step-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#38485d",
+                      "primary-container": "#2563eb",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-primary-fixed": "#00174b",
+                      "tertiary-fixed": "#ffdbcd",
+                      "background": "#faf8ff",
+                      "secondary": "#505f76",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-error-container": "#93000a",
+                      "on-background": "#191b23",
+                      "inverse-on-surface": "#f0f0fb",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "tertiary": "#943700",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-container": "#54647a",
+                      "info": "#06B6D4",
+                      "surface-bright": "#faf8ff",
+                      "surface-tint": "#0053db",
+                      "error-container": "#ffdad6",
+                      "on-surface": "#191b23",
+                      "sidebar-bg": "#FFFFFF",
+                      "outline": "#737686",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#434655",
+                      "outline-variant": "#c3c6d7",
+                      "border-subtle": "#E2E8F0",
+                      "success": "#22C55E",
+                      "primary-fixed": "#dbe1ff",
+                      "primary": "#004ac6",
+                      "warning": "#F59E0B",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-bg": "#FFFFFF",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#ffede6",
+                      "on-tertiary": "#ffffff",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-container": "#ededf9",
+                      "surface-dim": "#d9d9e5",
+                      "surface-container-low": "#f3f3fe",
+                      "inverse-surface": "#2e3039",
+                      "tertiary-container": "#bc4800",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "surface-variant": "#e1e2ed",
+                      "on-primary-container": "#eeefff",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#b4c5ff",
+                      "surface": "#faf8ff",
+                      "surface-container-high": "#e7e7f3",
+                      "danger": "#EF4444"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-collapsed": "64px",
+                      "margin-mobile": "16px",
+                      "sidebar-width": "260px",
+                      "gutter": "24px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "button": ["Inter"],
+                      "data-mono": ["JetBrains Mono"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "button": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "450"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-bright text-on-surface font-body-md overflow-x-hidden">
+<!-- Top Navigation Bar (Mobile Optimized) -->
+<header class="flex justify-between items-center h-16 px-4 w-full sticky top-0 z-40 bg-surface-bright border-b border-border-subtle">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold">Report Generator</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">history</span>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female professor in a modern academic office, wearing a navy blazer, with soft natural light. The visual style is crisp, clean, and high-contrast, following a professional enterprise software aesthetic with a primary color palette of royal blue and white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7UBrVCD5D3N6juBDL3oNsdl_pI3QeamFS-ERCyCltbBlhM4PZMHC0Z3vOoAGFcVkl-q-561nIBfmfQKZqkxdxvPsoXZonkRZoEzY1oTwkXYKiohYGHP0htZoqnn-9SfGHzRtnXVeAVyaokmXupRUIbo57ECIZczkol6bMYdESP2xkgknqyFY827Btj3uaxkOx337hAx9Rm7j3xUCDYLAuD4Ekt9rXkfnEzKb-lYJ8jX6g_Aza3HGcfgrpKXlVpWQgCvkH5B0HBLI"/>
+</div>
+</div>
+</header>
+<!-- Progress Indicator -->
+<div class="px-4 py-6 bg-white">
+<div class="flex items-center justify-between relative">
+<!-- Background Line -->
+<div class="absolute top-4 left-0 w-full h-0.5 bg-surface-container-highest -z-10"></div>
+<!-- Active Line -->
+<div class="absolute top-4 left-0 w-1/2 h-0.5 bg-primary -z-10"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary">SELECT</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs ring-4 ring-primary-fixed">2</div>
+<span class="font-label-caps text-label-caps text-primary">PREVIEW</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center font-bold text-xs">3</div>
+<span class="font-label-caps text-label-caps text-secondary">EXPORT</span>
+</div>
+</div>
+</div>
+<main class="px-4 pb-32">
+<!-- Report Type Selection (Horizontal Scroll) -->
+<section class="mb-8">
+<h2 class="font-label-caps text-label-caps text-secondary mb-4">SELECT REPORT TYPE</h2>
+<div class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
+<!-- Card 1 -->
+<div class="min-w-[160px] p-4 rounded-xl border-2 border-primary bg-primary-fixed-dim/10 flex flex-col gap-3 transition-all">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_box</span>
+<div>
+<p class="font-button text-primary">Academic CV</p>
+<p class="text-[10px] text-on-secondary-container opacity-70">Standard Format</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[160px] p-4 rounded-xl border border-border-subtle bg-white flex flex-col gap-3">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+<div>
+<p class="font-button text-on-surface">NAAC Report</p>
+<p class="text-[10px] text-secondary">Criterion 2.4.1</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[160px] p-4 rounded-xl border border-border-subtle bg-white flex flex-col gap-3">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+<div>
+<p class="font-button text-on-surface">API Credit</p>
+<p class="text-[10px] text-secondary">Performance Appraisal</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Preview Section -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-label-caps text-label-caps text-secondary">DOCUMENT PREVIEW</h2>
+<button class="text-primary font-button flex items-center gap-1 text-xs">
+<span class="material-symbols-outlined text-xs">zoom_in</span> Full Screen
+                </button>
+</div>
+<div class="bg-surface-dim p-4 rounded-xl shadow-inner border border-border-subtle overflow-hidden h-[400px] flex justify-center">
+<div class="bg-white w-full h-full shadow-lg p-6 overflow-y-auto preview-scroll relative">
+<!-- CV Content Mock -->
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container-high rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up detailed professional profile photo of a male researcher in a lab setting, soft blue background tones. Clean, corporate minimalist aesthetic with balanced lighting and professional focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEl33G56tbt6WW_ZE8huq_WYaCt2OhGKLNuKEBClrE0L3Bg7GqGNi6psoDSZmaJJWrQsfJ_z8zLIQG7dTlbLd4usHuBpKhEgivKqcZe_pAPUgiuc6rb6uAaNxMJLGp54tPlrOjzoGeXEMgBuCSvzawQeHr3DcJk5XKn5_SPMUeyy53VCNWXya1Dn4mNHxigDfWSaz-4SgrCpSjFEH35AaYul4_hKKyzBWcNXQikLXgLjZosbUfu1fQyj5OCQfTBBQfTlouH-P4gXc"/>
+</div>
+<div class="text-right">
+<h3 class="font-headline-sm text-on-surface">Dr. Elena Rodriguez</h3>
+<p class="text-[10px] text-secondary font-data-mono">Senior Professor | Dept. of CS</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="border-b border-border-subtle pb-2">
+<h4 class="font-label-caps text-primary text-[10px] mb-2">RESEARCH SUMMARY</h4>
+<p class="text-[11px] leading-relaxed text-on-surface-variant">Over 15 years of experience in Artificial Intelligence and Neural Networks. Published 40+ papers in high-impact journals including Nature and IEEE.</p>
+</div>
+<div class="space-y-2">
+<h4 class="font-label-caps text-primary text-[10px]">RECENT PUBLICATIONS</h4>
+<div class="p-2 bg-surface-container-lowest border border-border-subtle rounded flex flex-col gap-1">
+<span class="text-[10px] font-bold">"Neural Plasticity in Deep Models"</span>
+<span class="text-[9px] text-secondary font-data-mono">Journal of AI Research, 2023</span>
+</div>
+<div class="p-2 bg-surface-container-lowest border border-border-subtle rounded flex flex-col gap-1">
+<span class="text-[10px] font-bold">"Ethics in Automated Systems"</span>
+<span class="text-[9px] text-secondary font-data-mono">Ethics in Tech, 2022</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4">
+<div class="p-3 bg-primary-container/5 rounded-lg border border-primary/10">
+<span class="block font-data-mono text-primary text-lg">42</span>
+<span class="text-[9px] font-label-caps text-secondary uppercase">H-Index</span>
+</div>
+<div class="p-3 bg-primary-container/5 rounded-lg border border-primary/10">
+<span class="block font-data-mono text-primary text-lg">1.2k</span>
+<span class="text-[9px] font-label-caps text-secondary uppercase">Citations</span>
+</div>
+</div>
+</div>
+<!-- Watermark -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.03] rotate-[-45deg]">
+<span class="text-6xl font-bold tracking-widest">PREVIEW</span>
+</div>
+</div>
+</div>
+</section>
+<!-- High-Density Settings Cards -->
+<section class="space-y-4">
+<h2 class="font-label-caps text-label-caps text-secondary">REPORT SETTINGS</h2>
+<div class="grid grid-cols-1 gap-3">
+<!-- Setting Item 1 -->
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">date_range</span>
+</div>
+<div>
+<p class="font-button text-sm">Date Range</p>
+<p class="text-[11px] text-secondary">Last 5 Academic Years</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<!-- Setting Item 2 -->
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">style</span>
+</div>
+<div>
+<p class="font-button text-sm">Template Style</p>
+<p class="text-[11px] text-secondary">Modern Minimalist (Blue)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<!-- Setting Item 3 -->
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">checklist</span>
+</div>
+<div>
+<p class="font-button text-sm">Data Inclusions</p>
+<p class="text-[11px] text-secondary">Research, Patents, Grants</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 w-full p-4 bg-white/80 backdrop-blur-md border-t border-border-subtle z-50">
+<div class="flex gap-3">
+<button class="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-xl font-button shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+                Export PDF
+            </button>
+<button class="w-14 h-14 flex items-center justify-center rounded-xl border border-border-subtle bg-white text-secondary hover:bg-surface-container-low active:scale-95 transition-transform">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<!-- Safe Area Indicator for modern phones -->
+<div class="h-4 w-full"></div>
+</footer>
+<!-- Bottom Navigation Bar (Persistent Shell) -->
+<!-- Not rendered as per Destination Rule: This is a Task-Focused sub-page featuring a 'Back' action -->
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.active\\:scale-95').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('touchend', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+
+        // Tab Switching Simulation
+        const reportTabs = document.querySelectorAll('section > div > div.min-w-\\[160px\\]');
+        reportTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                reportTabs.forEach(t => {
+                    t.classList.remove('border-primary', 'bg-primary-fixed-dim/10');
+                    t.classList.add('border-border-subtle', 'bg-white');
+                    const icon = t.querySelector('.material-symbols-outlined');
+                    const label = t.querySelector('.font-button');
+                    icon.classList.remove('text-primary');
+                    icon.classList.add('text-secondary');
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    label.classList.remove('text-primary');
+                    label.classList.add('text-on-surface');
+                });
+                tab.classList.add('border-primary', 'bg-primary-fixed-dim/10');
+                tab.classList.remove('border-border-subtle', 'bg-white');
+                const activeIcon = tab.querySelector('.material-symbols-outlined');
+                const activeLabel = tab.querySelector('.font-button');
+                activeIcon.classList.add('text-primary');
+                activeIcon.classList.remove('text-secondary');
+                activeIcon.style.fontVariationSettings = "'FILL' 1";
+                activeLabel.classList.add('text-primary');
+                activeLabel.classList.remove('text-on-surface');
+            });
+        });
+    </script>
+</body></html>

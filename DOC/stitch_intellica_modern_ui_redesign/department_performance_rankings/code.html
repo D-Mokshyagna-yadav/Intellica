@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Department Rankings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#943700",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-variant": "#e1e2ed",
+                        "surface-dim": "#d9d9e5",
+                        "border-subtle": "#E2E8F0",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "primary": "#004ac6",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-fixed": "#0b1c30",
+                        "surface-tint": "#0053db",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-surface": "#2e3039",
+                        "warning": "#F59E0B",
+                        "on-surface": "#191b23",
+                        "on-error-container": "#93000a",
+                        "success": "#22C55E",
+                        "danger": "#EF4444",
+                        "secondary-fixed": "#d3e4fe",
+                        "info": "#06B6D4",
+                        "secondary-container": "#d0e1fb",
+                        "on-background": "#191b23",
+                        "secondary": "#505f76",
+                        "outline": "#737686",
+                        "tertiary-container": "#bc4800",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#ffede6",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface-bg": "#FFFFFF",
+                        "surface": "#faf8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container": "#ededf9",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-primary-fixed": "#00174b",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f3f3fe",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-secondary-container": "#54647a",
+                        "background": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "margin-mobile": "16px",
+                        "sidebar-collapsed": "64px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "button": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (from JSON) -->
+<aside class="hidden md:flex bg-sidebar-bg border-r border-border-subtle w-sidebar-width h-screen sticky left-0 top-0 flex-col h-full py-6 px-4 z-50">
+<div class="mb-8 px-4">
+<h1 class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assured_workload</span>
+                Intellica
+            </h1>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Credit Verification</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 bg-secondary-container text-primary font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-primary hover:bg-surface-tint text-on-primary font-button text-button py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                Submit Evidence
+            </button>
+<div class="border-t border-border-subtle pt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-surface-container-lowest">
+<!-- TopNavBar (from JSON) -->
+<header class="bg-surface-bright flex justify-between items-center h-16 px-gutter w-full border-b border-border-subtle sticky top-0 z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-surface-container-low border border-border-subtle rounded-lg font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-outline-variant" placeholder="Search (Cmd+K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-6 w-px bg-border-subtle mx-2"></div>
+<button class="text-primary hover:text-surface-tint font-button text-button px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-surface-container-low transition-colors hidden sm:block">
+                    Quick Action
+                </button>
+<div class="ml-2 w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-border-subtle flex-shrink-0 cursor-pointer">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate administrator in a modern office setting. The lighting is bright and evenly distributed, highlighting a confident expression. The background is slightly blurred with subtle hints of office greenery and glass partitions. The overall tone is authoritative yet approachable, fitting for a modern academic software interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT_5YbCWXApsO42TbmTRlJ4hQDVWGxwe583wy0TMJ1CVAg1CcxkNeA8o5SeVPTp2Cdv0SaKIdX8LEqLhPgm_s5su8Aua4PjtRHbIT-67UYXPBMZy0V75Gg0UNDzu4XwlE4IdzR5mq6_j4g7G6f2SYAbPfb1QFoCZtOeDpNUyPb-qSyzVm7U-m1Y8gbXnPaw52RwaNz6O8p0PbKnBYtVsvK_C2vq-_DcdM5QfWXjugRuTUxKNSplGO20wiNkxPe1oFxrl3KIL5x-1k"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content Canvas -->
+<div class="flex-1 overflow-y-auto p-4 md:p-gutter">
+<div class="max-w-container-max mx-auto space-y-8 pb-12">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 text-secondary mb-1">
+<a class="font-body-sm text-body-sm hover:text-primary transition-colors" href="#">Reporting</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Department Rankings</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Institutional Performance</h2>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Aggregated credit verification metrics by academic department.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-border-subtle rounded-lg font-button text-button text-secondary hover:bg-surface-container-low hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-button text-button hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Report
+                        </button>
+</div>
+</div>
+<!-- Leaderboard Bento Box -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Top Performer -->
+<div class="lg:col-span-1 bg-surface-bg border border-border-subtle rounded-xl p-6 relative overflow-hidden group hover:border-primary transition-colors">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]">emoji_events</span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-success/10 text-success flex items-center justify-center font-headline-sm text-headline-sm">
+                                #1
+                            </div>
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Top Department</h3>
+<p class="font-headline-sm text-headline-sm text-on-surface">Computer Science (CSE)</p>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-baseline mb-1">
+<span class="font-body-sm text-body-sm text-secondary">Institutional Score</span>
+<span class="font-data-mono text-data-mono text-success">98.4</span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-success w-[98.4%] rounded-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2 border-t border-border-subtle">
+<div>
+<p class="font-label-caps text-label-caps text-secondary">Avg Credits</p>
+<p class="font-data-mono text-data-mono text-on-surface mt-1">42.5/yr</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">Verified</p>
+<p class="font-data-mono text-data-mono text-on-surface mt-1">99.2%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Runners Up List -->
+<div class="lg:col-span-2 bg-surface-bg border border-border-subtle rounded-xl flex flex-col overflow-hidden">
+<div class="px-6 py-4 border-b border-border-subtle bg-surface-bright flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Leaderboard Top 5</h3>
+<button class="font-button text-button text-primary hover:underline">View All</button>
+</div>
+<div class="flex-1 overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-border-subtle">
+<th class="px-6 py-3 font-label-caps text-label-caps text-secondary font-medium w-16">Rank</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-secondary font-medium">Department</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-secondary font-medium text-right">Score</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-secondary font-medium text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-border-subtle hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-3 font-data-mono text-data-mono text-secondary">#2</td>
+<td class="px-6 py-3 font-medium text-on-surface">Electrical Engineering (ECE)</td>
+<td class="px-6 py-3 text-right font-data-mono text-data-mono">95.1</td>
+<td class="px-6 py-3 text-right text-success flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +2.4
+                                        </td>
+</tr>
+<tr class="border-b border-border-subtle hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-3 font-data-mono text-data-mono text-secondary">#3</td>
+<td class="px-6 py-3 font-medium text-on-surface">Mechanical Engineering (ME)</td>
+<td class="px-6 py-3 text-right font-data-mono text-data-mono">92.8</td>
+<td class="px-6 py-3 text-right text-success flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +1.1
+                                        </td>
+</tr>
+<tr class="border-b border-border-subtle hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-3 font-data-mono text-data-mono text-secondary">#4</td>
+<td class="px-6 py-3 font-medium text-on-surface">Business Administration (BA)</td>
+<td class="px-6 py-3 text-right font-data-mono text-data-mono">89.5</td>
+<td class="px-6 py-3 text-right text-danger flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_down</span> -0.5
+                                        </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Department Grid -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">All Departments</h3>
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-secondary">Sort by:</span>
+<select class="bg-surface-container-low border border-border-subtle rounded-lg font-body-sm text-body-sm py-1 pl-2 pr-8 focus:ring-primary focus:border-primary">
+<option>Rank (High to Low)</option>
+<option>Name (A-Z)</option>
+<option>Total Faculty</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-bg border border-border-subtle rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="inline-block px-2 py-0.5 bg-surface-container-high text-secondary rounded font-data-mono text-[11px] mb-2">RANK #1</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Computer Science</h4>
+<p class="font-body-sm text-body-sm text-secondary">CSE</p>
+</div>
+<div class="w-16 h-8 bg-surface-container-low rounded flex items-center justify-center opacity-50">
+<!-- Sparkline placeholder -->
+<svg class="w-full h-full stroke-success fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,25 Q10,20 20,22 T40,15 T60,18 T80,5 T100,2" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Total Faculty</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">142</p>
+</div>
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Avg Credits</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">42.5</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-bg border border-border-subtle rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="inline-block px-2 py-0.5 bg-surface-container-high text-secondary rounded font-data-mono text-[11px] mb-2">RANK #2</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Electrical Eng.</h4>
+<p class="font-body-sm text-body-sm text-secondary">ECE</p>
+</div>
+<div class="w-16 h-8 bg-surface-container-low rounded flex items-center justify-center opacity-50">
+<svg class="w-full h-full stroke-success fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,20 L20,22 L40,18 L60,15 L80,10 L100,8" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Total Faculty</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">98</p>
+</div>
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Avg Credits</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">39.1</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-bg border border-border-subtle rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="inline-block px-2 py-0.5 bg-surface-container-high text-secondary rounded font-data-mono text-[11px] mb-2">RANK #3</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Mechanical Eng.</h4>
+<p class="font-body-sm text-body-sm text-secondary">ME</p>
+</div>
+<div class="w-16 h-8 bg-surface-container-low rounded flex items-center justify-center opacity-50">
+<svg class="w-full h-full stroke-warning fill-none" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,15 L20,12 L40,16 L60,14 L80,15 L100,12" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Total Faculty</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">112</p>
+</div>
+<div class="bg-surface-bright rounded p-3 border border-border-subtle">
+<p class="font-label-caps text-label-caps text-secondary mb-1">Avg Credits</p>
+<p class="font-data-mono text-data-mono text-on-surface font-semibold">38.4</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html>

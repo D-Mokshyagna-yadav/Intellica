@@ -5,7 +5,8 @@ const logger = require("./logger");
 function deleteUserFolder(user) {
   if (!user) return;
 
-  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "../uploads");
+  const resolveStoragePath = require("./resolveStoragePath");
+  const basePath = resolveStoragePath();
   const dept = String(user.department || "COMMON").trim().toUpperCase();
   const role = String(user.role || "FACULTY").trim().toLowerCase();
   const employeeId = String(user.employeeId || user.regId || user._id || "unknown").trim();

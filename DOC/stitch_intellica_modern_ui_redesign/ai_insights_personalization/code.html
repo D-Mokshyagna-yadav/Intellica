@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - AI Insights &amp; Dashboard Personalization</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "surface-bright": "#faf8ff",
+                        "surface-container": "#ededf9",
+                        "surface-bg": "#FFFFFF",
+                        "surface-tint": "#0053db",
+                        "surface-container-low": "#f3f3fe",
+                        "on-background": "#191b23",
+                        "on-secondary-fixed": "#0b1c30",
+                        "success": "#22C55E",
+                        "danger": "#EF4444",
+                        "border-subtle": "#E2E8F0",
+                        "on-tertiary-container": "#ffede6",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed": "#00174b",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2e3039",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e2ed",
+                        "outline": "#737686",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary": "#004ac6",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "info": "#06B6D4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .ai-gradient {
+            background: linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(147,51,234,0.05) 100%);
+        }
+        .ai-border {
+            position: relative;
+        }
+        .ai-border::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(37,99,235,0.3), rgba(147,51,234,0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* Custom scrollbar for insights panel */
+        .insights-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .insights-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .insights-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex font-[Inter]">
+<!-- SideNavBar -->
+<nav class="hidden md:flex w-sidebar-width h-screen sticky left-0 top-0 border-r border-border-subtle bg-sidebar-bg flex-col py-6 px-4 shrink-0 z-10">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary font-bold">
+                I
+            </div>
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary">Intellica</div>
+<div class="font-label-caps text-label-caps text-secondary">Credit Verification</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-2">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-primary font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="mt-auto pt-4 border-t border-border-subtle">
+<button class="w-full bg-primary text-on-primary font-button text-button py-2 rounded-lg hover:bg-surface-tint transition-colors mb-4">
+                Submit Evidence
+            </button>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+<!-- TopNavBar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center h-16 px-4 w-full bg-surface-bright border-b border-border-subtle sticky top-0 z-40">
+<div class="font-headline-md text-headline-md font-bold text-primary">Intellica</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">search</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">menu</span></button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-auto p-4 md:p-gutter flex flex-col md:flex-row gap-6 relative">
+<!-- Left Column: Dashboard Customization -->
+<div class="flex-1 flex flex-col gap-6">
+<!-- Header & Controls -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-background">Dashboard</h1>
+<p class="font-body-sm text-body-sm text-secondary">Customizing your workspace view</p>
+</div>
+<div class="flex items-center gap-3 bg-surface-container p-1 rounded-lg border border-border-subtle">
+<button class="px-4 py-1.5 rounded bg-surface-bg shadow-sm text-primary font-button text-button flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                            Customize
+                        </button>
+<button class="px-4 py-1.5 rounded text-secondary hover:text-on-background font-button text-button flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check</span>
+                            Done
+                        </button>
+</div>
+</div>
+<!-- Editable Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+<!-- Widget 1: Credits (Large) -->
+<div class="col-span-1 md:col-span-2 bg-surface-bg border border-border-subtle rounded-xl p-5 relative group shadow-sm hover:shadow-md transition-shadow">
+<!-- Customization Overlay Controls -->
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-surface-container-high rounded p-1">
+<button class="p-1 hover:bg-surface-variant rounded drag-handle text-secondary" title="Drag to reorder"><span class="material-symbols-outlined text-[16px]">drag_indicator</span></button>
+<button class="p-1 hover:bg-surface-variant rounded text-secondary" title="Resize"><span class="material-symbols-outlined text-[16px]">aspect_ratio</span></button>
+<button class="p-1 hover:bg-error-container hover:text-error rounded text-secondary" title="Remove"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-2 uppercase">Total Verified Credits</h3>
+<div class="flex items-end gap-4 mb-4">
+<span class="font-display-lg text-display-lg text-on-background">1,248</span>
+<span class="flex items-center text-success font-body-sm text-body-sm mb-1 bg-success/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12%
+                            </span>
+</div>
+<!-- Sparkline Placeholder -->
+<div class="h-16 w-full border-b border-border-subtle relative flex items-end gap-1">
+<div class="w-full bg-primary/20 h-[30%] rounded-t-sm"></div>
+<div class="w-full bg-primary/20 h-[45%] rounded-t-sm"></div>
+<div class="w-full bg-primary/20 h-[25%] rounded-t-sm"></div>
+<div class="w-full bg-primary/40 h-[60%] rounded-t-sm"></div>
+<div class="w-full bg-primary/40 h-[50%] rounded-t-sm"></div>
+<div class="w-full bg-primary h-[85%] rounded-t-sm relative">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-background text-surface-bg text-[10px] px-1.5 py-0.5 rounded font-data-mono">Nov</div>
+</div>
+</div>
+</div>
+<!-- Widget 2: Faculty Rank -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 relative group shadow-sm">
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-surface-container-high rounded p-1">
+<button class="p-1 hover:bg-surface-variant rounded drag-handle text-secondary"><span class="material-symbols-outlined text-[16px]">drag_indicator</span></button>
+<button class="p-1 hover:bg-error-container hover:text-error rounded text-secondary"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-4 uppercase">Department Rank</h3>
+<div class="flex items-center justify-center h-24">
+<div class="text-center">
+<div class="font-display-lg text-display-lg text-primary">#4</div>
+<div class="font-body-sm text-body-sm text-secondary">of 42 Faculty</div>
+</div>
+</div>
+</div>
+<!-- Widget 3: Goals -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 relative group shadow-sm">
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-surface-container-high rounded p-1">
+<button class="p-1 hover:bg-surface-variant rounded drag-handle text-secondary"><span class="material-symbols-outlined text-[16px]">drag_indicator</span></button>
+<button class="p-1 hover:bg-error-container hover:text-error rounded text-secondary"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-3 uppercase">Q4 Target</h3>
+<div class="font-body-md text-on-background mb-2">Research Publications</div>
+<div class="w-full bg-surface-container-high rounded-full h-2 mb-1">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+<div class="flex justify-between font-data-mono text-data-mono text-secondary">
+<span>3 / 4</span>
+<span>75%</span>
+</div>
+</div>
+<!-- Widget 4: Calendar / Upcoming -->
+<div class="col-span-1 md:col-span-2 xl:col-span-1 bg-surface-bg border border-border-subtle rounded-xl p-5 relative group shadow-sm">
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-surface-container-high rounded p-1">
+<button class="p-1 hover:bg-surface-variant rounded drag-handle text-secondary"><span class="material-symbols-outlined text-[16px]">drag_indicator</span></button>
+<button class="p-1 hover:bg-error-container hover:text-error rounded text-secondary"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-4 uppercase">Upcoming Deadlines</h3>
+<ul class="space-y-3">
+<li class="flex items-start gap-3">
+<div class="w-2 h-2 mt-1.5 rounded-full bg-warning shrink-0"></div>
+<div>
+<div class="font-body-sm text-body-sm text-on-background font-semibold">Submit FDP Evidence</div>
+<div class="font-data-mono text-data-mono text-secondary text-[11px]">Due in 2 days</div>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="w-2 h-2 mt-1.5 rounded-full bg-border-subtle shrink-0"></div>
+<div>
+<div class="font-body-sm text-body-sm text-on-background">Peer Review Committee</div>
+<div class="font-data-mono text-data-mono text-secondary text-[11px]">Nov 15, 2023</div>
+</div>
+</li>
+</ul>
+</div>
+<!-- Add Widget Placeholder -->
+<button class="border-2 border-dashed border-border-subtle rounded-xl p-5 flex flex-col items-center justify-center text-secondary hover:border-primary hover:text-primary transition-colors hover:bg-surface-container-low min-h-[160px]">
+<span class="material-symbols-outlined mb-2">add_circle</span>
+<span class="font-button text-button">Add Widget</span>
+</button>
+</div>
+</div>
+<!-- Right Column: AI Insights Panel -->
+<aside class="w-full md:w-80 flex flex-col gap-4 h-full shrink-0">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<h2 class="font-headline-sm text-headline-sm text-on-background">AI Insights</h2>
+</div>
+<div class="flex-1 overflow-y-auto insights-scroll pr-2 space-y-4 pb-16">
+<!-- Insight: Growth Alert -->
+<div class="ai-gradient ai-border rounded-xl p-4 shadow-sm bg-surface-bg">
+<div class="flex items-start gap-3 mb-2">
+<div class="bg-primary-container/20 text-primary p-1.5 rounded-lg shrink-0">
+<span class="material-symbols-outlined text-[20px]">trending_up</span>
+</div>
+<div>
+<h4 class="font-button text-button text-on-background">Growth Alert</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1 leading-relaxed">
+                                    Your verified credits are up <strong>15%</strong> this semester compared to last year. Sustaining this trend will exceed your annual target by early Q3.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Insight: Gap Analysis -->
+<div class="ai-gradient ai-border rounded-xl p-4 shadow-sm bg-surface-bg">
+<div class="flex items-start gap-3 mb-2">
+<div class="bg-warning/20 text-warning p-1.5 rounded-lg shrink-0">
+<span class="material-symbols-outlined text-[20px]">radar</span>
+</div>
+<div>
+<h4 class="font-button text-button text-on-background">Gap Analysis</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1 leading-relaxed">
+                                    You are missing <strong>2 Faculty Development Programs (FDPs)</strong> to meet the mandatory compliance target for this review cycle.
+                                </p>
+<button class="mt-3 text-primary font-button text-button text-[13px] flex items-center gap-1 hover:underline">
+                                    Browse available FDPs <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Insight: Peer Comparison -->
+<div class="ai-gradient ai-border rounded-xl p-4 shadow-sm bg-surface-bg">
+<div class="flex items-start gap-3 mb-2">
+<div class="bg-info/20 text-info p-1.5 rounded-lg shrink-0">
+<span class="material-symbols-outlined text-[20px]">compare_arrows</span>
+</div>
+<div>
+<h4 class="font-button text-button text-on-background">Peer Comparison</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1 leading-relaxed">
+                                    Your publication rate is in the <strong>top 10%</strong> of the engineering department, but committee participation is below the department average.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

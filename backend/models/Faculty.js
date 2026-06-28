@@ -19,6 +19,14 @@ const facultySchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    mobile: {
+      type: String,
+      default: "",
+    },
+    employmentType: {
+      type: String,
+      default: "Full-Time",
+    },
     password: {
       type: String,
       required: false,
@@ -69,6 +77,30 @@ const facultySchema = new mongoose.Schema(
       default: "PENDING",
     },
     profileImage: {
+      type: String,
+      default: "",
+    },
+    profileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+    qualifications: {
+      type: [String],
+      default: [],
+    },
+    experienceYears: {
+      type: Number,
+      default: 0,
+    },
+    researchInterests: {
+      type: [String],
+      default: [],
+    },
+    resumeUrl: {
+      type: String,
+      default: "",
+    },
+    emergencyContact: {
       type: String,
       default: "",
     },

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Faculty Achievement Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#2563eb",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-bright": "#faf8ff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "sidebar-bg": "#FFFFFF",
+                      "tertiary-container": "#bc4800",
+                      "inverse-surface": "#2e3039",
+                      "on-surface": "#191b23",
+                      "primary-fixed": "#dbe1ff",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "outline-variant": "#c3c6d7",
+                      "surface-dim": "#d9d9e5",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "danger": "#EF4444",
+                      "on-tertiary-container": "#ffede6",
+                      "surface-variant": "#e1e2ed",
+                      "surface": "#faf8ff",
+                      "secondary": "#505f76",
+                      "on-primary-container": "#eeefff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "secondary-container": "#d0e1fb",
+                      "on-secondary-fixed": "#0b1c30",
+                      "surface-container-low": "#f3f3fe",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "success": "#22C55E",
+                      "outline": "#737686",
+                      "border-subtle": "#E2E8F0",
+                      "on-secondary-container": "#54647a",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed": "#00174b",
+                      "tertiary": "#943700",
+                      "surface-container": "#ededf9",
+                      "surface-container-high": "#e7e7f3",
+                      "surface-bg": "#FFFFFF",
+                      "info": "#06B6D4",
+                      "background": "#faf8ff",
+                      "inverse-primary": "#b4c5ff",
+                      "primary": "#004ac6",
+                      "on-background": "#191b23",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-surface-variant": "#434655",
+                      "warning": "#F59E0B",
+                      "tertiary-fixed": "#ffdbcd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "sidebar-width": "260px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "sidebar-collapsed": "64px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.015em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "button": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .progress-ring {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<nav class="hidden md:flex flex-col h-screen sticky top-0 left-0 w-sidebar-width border-r border-outline-variant bg-sidebar-bg py-6 flex-shrink-0 z-10">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">Intellica</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Faculty Portal</p>
+</div>
+<div class="px-gutter mb-6">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-button text-button py-2.5 px-4 rounded-full hover:bg-on-primary-fixed-variant transition-colors">
+<span class="material-symbols-outlined">add</span>
+                New Achievement
+            </button>
+</div>
+<ul class="flex flex-col gap-1 px-4 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">dashboard</span>
+<span class="font-body-sm text-body-sm">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold bg-secondary-container/30 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<span class="font-body-sm text-body-sm">Achievements</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">verified_user</span>
+<span class="font-body-sm text-body-sm">Credit Approvals</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">forum</span>
+<span class="font-body-sm text-body-sm">Discussions</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">leaderboard</span>
+<span class="font-body-sm text-body-sm">Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">settings</span>
+<span class="font-body-sm text-body-sm">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-4">
+<ul class="flex flex-col gap-1 border-t border-outline-variant pt-4">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">help</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary">logout</span>
+<span class="font-body-sm text-body-sm">Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-grow flex flex-col w-full md:w-auto overflow-hidden">
+<!-- Top App Bar (Mobile & Desktop) -->
+<header class="sticky top-0 z-40 w-full flex justify-between items-center px-gutter h-16 bg-surface-bright border-b border-outline-variant">
+<div class="flex items-center gap-4 md:hidden">
+<button class="text-on-surface-variant p-2 -ml-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">Intellica</h1>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Faculty Achievement System</h2>
+<nav class="flex gap-6 h-full">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all duration-200 py-5" href="#">Directory</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all duration-200 py-5" href="#">Resources</a>
+<a class="font-label-caps text-label-caps text-primary border-b-2 border-primary py-5" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-low hidden sm:block">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Professor Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqmy3sIQMS5nLQfM6eokaLCbyIzRZCFY86c4CJk0XA2Rxl1tR119Sfz-anq5qbYKcIGtKU6uGFAQBrO-8EUEwtY_w7MGQoh3SSDFNdyto2UqchmCzloWLN4jqNYGADhxx2OiXVD1Bs0yVcz-QFc-_ZqgY-4qb7uR3YYiw2i77ZUd2P0AlcmI0LbRTLeF4s0_GjSm8RLOfbXPFCiX6RW_uDxmKAhkjN4D0gbMhzYYwsa3xbZmW7i0UWJ_26-8GKgUXuLgoENAdNkuI"/>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-grow p-4 md:p-gutter lg:p-8 max-w-[1280px] w-full mx-auto overflow-y-auto">
+<!-- Header: Profile Summary -->
+<section class="bg-surface-bg border border-border-subtle rounded-xl p-6 md:p-8 mb-8 flex flex-col md:flex-row gap-8 items-start md:items-center relative overflow-hidden">
+<!-- Decorative background elements -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-fixed opacity-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+<div class="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-surface-bg shadow-sm flex-shrink-0">
+<img alt="Dr. Eleanor Vance" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAZvbDM3-3ofdQh4848CO5eS4o62xLjWseTjb7Fmi9CIADakXp1wMyOLF2kzYvyoMca97KcXpcSMFRK0ZqBb5M6RaZDIktdsQs9EG2Xe_RDVbXnL03fKoMgas1DtPEOwjn5qSuds0Lg-TWQN956NQ-E0_nRbK0vFTO7UTjSQe3FVEPBfn9IWF7us7xM9tllgRzbQm6wVAH8ThCyehXj3Lv0ZgjZ-xjuVfL5Bygwcrl0OgsB56bn9Q3kdgPnnSlAoBy4GNMKdVNq9U"/>
+</div>
+<div class="flex-grow z-10">
+<div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+<h1 class="font-display-lg text-display-lg text-on-surface m-0 leading-tight">Dr. Eleanor Vance</h1>
+<div class="flex gap-2 mt-2 md:mt-0">
+<span class="inline-flex items-center gap-1 bg-success/10 text-success font-label-caps text-label-caps px-2.5 py-1 rounded-md border border-success/20">
+<span class="material-symbols-outlined text-[14px]">workspace_premium</span>
+                                Gold Scholar
+                            </span>
+<span class="inline-flex items-center gap-1 bg-primary/10 text-primary font-label-caps text-label-caps px-2.5 py-1 rounded-md border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">science</span>
+                                Research Champion
+                            </span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-4">Professor, Department of Computer Science &amp; Engineering</p>
+<div class="flex flex-wrap gap-4 text-secondary font-body-sm text-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">school</span>
+                            Ph.D. in Machine Learning, MIT
+                        </div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            Joined 2012
+                        </div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+                            e.vance@intellica.edu
+                        </div>
+</div>
+</div>
+</section>
+<!-- Dashboard: Quick Stats -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<!-- Research Credits -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Research Credits</h3>
+<span class="material-symbols-outlined text-primary">auto_graph</span>
+</div>
+<div class="flex items-end gap-4">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-surface-container-high" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-current text-primary progress-ring" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="25" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-caps text-label-caps text-on-surface font-bold">
+                                75%
+                            </div>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface leading-none">120</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">/ 160 Target</div>
+</div>
+</div>
+</div>
+<!-- Teaching Credits -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Teaching Credits</h3>
+<span class="material-symbols-outlined text-info">school</span>
+</div>
+<div class="flex items-end gap-4">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-surface-container-high" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-current text-info progress-ring" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="10" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-caps text-label-caps text-on-surface font-bold">
+                                90%
+                            </div>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface leading-none">180</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">/ 200 Target</div>
+</div>
+</div>
+</div>
+<!-- Professional Credits -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Professional Dev</h3>
+<span class="material-symbols-outlined text-warning">work</span>
+</div>
+<div class="flex items-end gap-4">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-surface-container-high" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-current text-warning progress-ring" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="60" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-caps text-label-caps text-on-surface font-bold">
+                                40%
+                            </div>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface leading-none">20</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">/ 50 Target</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Detailed Content (Timeline & Sections) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Publications Section -->
+<section class="bg-surface-bg border border-border-subtle rounded-xl overflow-hidden">
+<div class="border-b border-border-subtle p-5 flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+                                Recent Publications
+                            </h2>
+<button class="text-primary font-button text-button hover:underline">View All</button>
+</div>
+<div class="p-0">
+<!-- Publication Item -->
+<div class="p-5 border-b border-border-subtle hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline-md text-headline-md text-on-surface text-[18px] leading-snug">Deep Learning Approaches for Predictive Analytics in Healthcare</h4>
+<span class="bg-success/10 text-success font-label-caps text-label-caps px-2 py-0.5 rounded border border-success/20 whitespace-nowrap ml-4">Approved</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-3">Journal of Medical Informatics, Vol 45, Issue 2. Co-authored with Smith, J. and Doe, A.</p>
+<div class="flex flex-wrap gap-x-6 gap-y-2 font-data-mono text-data-mono text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_month</span> Oct 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">link</span> DOI: 10.1016/j.jmi.2023.1023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">tag</span> ISSN: 1234-5678</span>
+</div>
+</div>
+<!-- Publication Item -->
+<div class="p-5 hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline-md text-headline-md text-on-surface text-[18px] leading-snug">Federated Learning in Edge Computing: A Survey</h4>
+<span class="bg-warning/10 text-warning font-label-caps text-label-caps px-2 py-0.5 rounded border border-warning/20 whitespace-nowrap ml-4">Pending Review</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-3">IEEE Transactions on Cloud Computing, Advance Access.</p>
+<div class="flex flex-wrap gap-x-6 gap-y-2 font-data-mono text-data-mono text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_month</span> Aug 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">link</span> DOI: 10.1109/TCC.2023.32</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Projects & Grants Section -->
+<section class="bg-surface-bg border border-border-subtle rounded-xl overflow-hidden">
+<div class="border-b border-border-subtle p-5 flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">account_tree</span>
+                                Projects &amp; Grants
+                            </h2>
+</div>
+<div class="p-5 space-y-6">
+<div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-[-24px] before:w-px before:bg-border-subtle last:before:hidden">
+<div class="absolute left-[-4px] top-2 w-2 h-2 rounded-full bg-primary ring-4 ring-surface-bg"></div>
+<h4 class="font-headline-md text-headline-md text-on-surface text-[16px] mb-1">AI-Driven Diagnostics Framework</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-2">National Science Foundation (NSF) Grant • Principal Investigator</p>
+<div class="flex items-center gap-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">$500,000</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">2022 - 2025</span>
+</div>
+</div>
+<div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-[-24px] before:w-px before:bg-border-subtle last:before:hidden">
+<div class="absolute left-[-4px] top-2 w-2 h-2 rounded-full bg-border-subtle ring-4 ring-surface-bg"></div>
+<h4 class="font-headline-md text-headline-md text-on-surface text-[16px] mb-1">Smart City Traffic Optimization</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-2">Industry Sponsored Project (TechMobility Inc.) • Co-PI</p>
+<div class="flex items-center gap-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">$120,000</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">2020 - 2022</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Actions & Info -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Export Actions -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-4">Export Portfolio</h3>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between px-4 py-2.5 border border-border-subtle rounded-lg text-primary hover:bg-primary-fixed hover:border-primary-fixed transition-colors font-button text-button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                                    Download as PDF
+                                </span>
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+<button class="w-full flex items-center justify-between px-4 py-2.5 border border-border-subtle rounded-lg text-primary hover:bg-primary-fixed hover:border-primary-fixed transition-colors font-button text-button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">description</span>
+                                    NAAC Format Export
+                                </span>
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</div>
+</div>
+<!-- Research Profiles -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-4">Research Profiles</h3>
+<ul class="space-y-4">
+<li>
+<a class="flex items-center justify-between group" href="#">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#A6CE39]/10 text-[#A6CE39] flex items-center justify-center font-bold font-body-sm">iD</div>
+<div>
+<div class="font-body-sm text-body-sm text-on-surface font-semibold group-hover:text-primary transition-colors">ORCID</div>
+<div class="font-data-mono text-data-mono text-secondary text-[11px]">0000-0002-1825-0097</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary text-[18px]">open_in_new</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between group" href="#">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#FF6A00]/10 text-[#FF6A00] flex items-center justify-center font-bold font-body-sm">Sc</div>
+<div>
+<div class="font-body-sm text-body-sm text-on-surface font-semibold group-hover:text-primary transition-colors">Scopus ID</div>
+<div class="font-data-mono text-data-mono text-secondary text-[11px]">35271890400</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary text-[18px]">open_in_new</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between group" href="#">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#4285F4]/10 text-[#4285F4] flex items-center justify-center font-bold font-body-sm">GS</div>
+<div>
+<div class="font-body-sm text-body-sm text-on-surface font-semibold group-hover:text-primary transition-colors">Google Scholar</div>
+<div class="font-data-mono text-data-mono text-secondary text-[11px]">h-index: 24</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary text-[18px]">open_in_new</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- Portfolio Sharing -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-4">Share Portfolio</h3>
+<div class="flex gap-4 items-center mb-4">
+<div class="w-24 h-24 bg-surface-container-highest p-2 rounded border border-border-subtle flex items-center justify-center">
+<!-- Placeholder for QR Code -->
+<span class="material-symbols-outlined text-[48px] text-secondary">qr_code_2</span>
+</div>
+<div class="text-sm text-secondary font-body-sm">Scan to view public read-only profile.</div>
+</div>
+<div class="flex rounded-md shadow-sm">
+<input class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md text-data-mono text-on-surface sm:text-sm border-border-subtle bg-surface-container-lowest focus:ring-primary focus:border-primary" readonly="" type="text" value="https://intellica.edu/p/evance"/>
+<button class="inline-flex items-center px-3 py-2 border border-l-0 border-border-subtle rounded-r-md bg-surface-container-low text-secondary hover:bg-surface-container-highest hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

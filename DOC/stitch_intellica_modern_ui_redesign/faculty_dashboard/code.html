@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Faculty Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "info": "#06B6D4",
+                      "surface-container-high": "#e7e7f3",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#b4c5ff",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface": "#faf8ff",
+                      "secondary": "#505f76",
+                      "on-surface-variant": "#434655",
+                      "background": "#faf8ff",
+                      "tertiary-container": "#bc4800",
+                      "primary": "#004ac6",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "on-primary-container": "#eeefff",
+                      "primary-fixed": "#dbe1ff",
+                      "on-error-container": "#93000a",
+                      "outline": "#737686",
+                      "surface-container-highest": "#e1e2ed",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2e3039",
+                      "surface-variant": "#e1e2ed",
+                      "warning": "#F59E0B",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#f0f0fb",
+                      "outline-variant": "#c3c6d7",
+                      "surface-dim": "#d9d9e5",
+                      "secondary-fixed": "#d3e4fe",
+                      "primary-container": "#2563eb",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#00174b",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-background": "#191b23",
+                      "surface-container-low": "#f3f3fe",
+                      "surface-tint": "#0053db",
+                      "on-tertiary-container": "#ffede6",
+                      "border-subtle": "#E2E8F0",
+                      "danger": "#EF4444",
+                      "success": "#22C55E",
+                      "surface-bg": "#FFFFFF",
+                      "surface-container": "#ededf9",
+                      "surface-bright": "#faf8ff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#d0e1fb",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "tertiary": "#943700",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-surface": "#191b23",
+                      "sidebar-bg": "#FFFFFF",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#54647a",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "container-max": "1280px",
+                      "margin-mobile": "16px",
+                      "sidebar-collapsed": "64px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.015em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "button": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        .material-symbols-outlined.fill-1 {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-screen sticky left-0 top-0 bg-sidebar-bg border-r border-border-subtle flex flex-col py-6 px-4 shrink-0 hidden md:flex z-50">
+<div class="mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Credit Verification</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-primary font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-primary text-on-primary font-button text-button py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                Submit Evidence
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 sticky z-40 bg-surface-bright border-b border-border-subtle flex justify-between items-center h-16 px-gutter w-full shrink-0">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Trigger (hidden on desktop) -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-border-subtle rounded-lg font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 transition-shadow" placeholder="Search (Cmd+K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="bg-primary-container text-on-primary-container font-button text-button px-4 py-1.5 rounded-lg font-semibold hover:opacity-90 transition-opacity ml-2">
+                    Quick Action
+                </button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest ml-2 overflow-hidden border border-border-subtle">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female administrator in a modern, brightly lit office environment. She is smiling confidently, wearing a tailored navy blazer over a crisp white shirt. The background is a slightly blurred academic setting with sleek glass partitions, reflecting a clean, corporate academic aesthetic with cool blue and stark white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbSAp2crcSCP-kWQGqtqlufBfqg-chM9f8gaymo8ubhVnO9A77nFoIpKPJEB8CYC-TPA-13IR8Sw3pBXW-CtDxdcqxIiTXZuR_8q4D6KKnDryvLgV9yo7BQ1_87nZWwf9YJI7HJ3ytJPUrkIcmI8BSROHfemxrRv7Oz8s6RXmkidGrP4QOlK-1Nxp_1virwQTeEiD0nueUqfdjdTc-NZcfcqcDMA1105wxv21_pYdWThgr0g9KIsV1Dycci0Iaz2UUq9tMcoHl2KU"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-1 overflow-y-auto p-gutter bg-surface">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Welcome & Top Stats -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1">Welcome back, Dr. Smith</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Here is your academic credit summary for the 2023-2024 academic year.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-button text-button font-semibold hover:bg-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">upload_file</span>
+                        Quick Upload
+                    </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Progress Ring Card -->
+<div class="md:col-span-1 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute top-4 left-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Annual Target</span>
+</div>
+<div class="relative w-40 h-40 mt-8 mb-4">
+<!-- SVG Progress Ring -->
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary transition-all duration-1000 ease-out" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="282.7" stroke-dashoffset="70.67" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-display-lg font-bold text-on-surface font-data-mono">75<span class="text-lg text-secondary">%</span></span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-secondary text-center">90 of 120 Credits Approved</p>
+</div>
+<!-- Achievement Summary -->
+<div class="md:col-span-2 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Achievement Summary</h3>
+<a class="font-body-sm text-body-sm text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col justify-between border border-transparent hover:border-border-subtle transition-colors">
+<span class="material-symbols-outlined text-info mb-2">menu_book</span>
+<div>
+<div class="font-display-lg text-headline-md font-bold font-data-mono mb-1">12</div>
+<div class="font-body-sm text-label-caps text-secondary">Journals</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col justify-between border border-transparent hover:border-border-subtle transition-colors">
+<span class="material-symbols-outlined text-warning mb-2">lightbulb</span>
+<div>
+<div class="font-display-lg text-headline-md font-bold font-data-mono mb-1">3</div>
+<div class="font-body-sm text-label-caps text-secondary">Patents</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col justify-between border border-transparent hover:border-border-subtle transition-colors">
+<span class="material-symbols-outlined text-success mb-2">record_voice_over</span>
+<div>
+<div class="font-display-lg text-headline-md font-bold font-data-mono mb-1">8</div>
+<div class="font-body-sm text-label-caps text-secondary">Conferences</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col justify-between border border-transparent hover:border-border-subtle transition-colors">
+<span class="material-symbols-outlined text-primary mb-2">school</span>
+<div>
+<div class="font-display-lg text-headline-md font-bold font-data-mono mb-1">45</div>
+<div class="font-body-sm text-label-caps text-secondary">Mentorships</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Approval Timeline -->
+<div class="md:col-span-2 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-wider mb-6">Recent Submissions</h3>
+<div class="space-y-6">
+<!-- Timeline Item 1 -->
+<div class="relative flex gap-4">
+<div class="absolute left-[15px] top-8 bottom-[-24px] w-0.5 bg-border-subtle"></div>
+<div class="w-8 h-8 rounded-full bg-success/10 border border-success/20 flex items-center justify-center shrink-0 z-10 mt-1">
+<span class="material-symbols-outlined text-success text-[16px]">check</span>
+</div>
+<div class="flex-1 bg-surface-container-low p-4 rounded-lg border border-border-subtle hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold">IEEE Paper Publication</h4>
+<span class="font-data-mono text-data-mono text-secondary">Oct 12, 2023</span>
+</div>
+<div class="flex items-center gap-2 mb-3">
+<span class="px-2 py-0.5 rounded-full bg-success/10 text-success font-label-caps text-[10px] uppercase border border-success/20">Approved</span>
+<span class="font-body-sm text-body-sm text-secondary font-data-mono">+15 Credits</span>
+</div>
+<div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Verified by Dept. Head</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative flex gap-4">
+<div class="absolute left-[15px] top-8 bottom-[-24px] w-0.5 bg-border-subtle"></div>
+<div class="w-8 h-8 rounded-full bg-warning/10 border border-warning/20 flex items-center justify-center shrink-0 z-10 mt-1">
+<span class="material-symbols-outlined text-warning text-[16px]">hourglass_empty</span>
+</div>
+<div class="flex-1 bg-surface-container-low p-4 rounded-lg border border-border-subtle hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold">Guest Lecture at MIT</h4>
+<span class="font-data-mono text-data-mono text-secondary">Nov 05, 2023</span>
+</div>
+<div class="flex items-center gap-2 mb-3">
+<span class="px-2 py-0.5 rounded-full bg-warning/10 text-warning font-label-caps text-[10px] uppercase border border-warning/20">Pending Verification</span>
+<span class="font-body-sm text-body-sm text-secondary font-data-mono">+5 Credits</span>
+</div>
+<div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">upload_file</span>
+<span>Evidence submitted, awaiting committee review</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative flex gap-4">
+<div class="w-8 h-8 rounded-full bg-error/10 border border-error/20 flex items-center justify-center shrink-0 z-10 mt-1">
+<span class="material-symbols-outlined text-error text-[16px]">error</span>
+</div>
+<div class="flex-1 bg-surface-container-low p-4 rounded-lg border border-border-subtle hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold">Conference Attendance</h4>
+<span class="font-data-mono text-data-mono text-secondary">Nov 10, 2023</span>
+</div>
+<div class="flex items-center gap-2 mb-3">
+<span class="px-2 py-0.5 rounded-full bg-error/10 text-error font-label-caps text-[10px] uppercase border border-error/20">Revision Required</span>
+<span class="font-body-sm text-body-sm text-secondary font-data-mono">--</span>
+</div>
+<div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">comment</span>
+<span>Missing certificate of attendance. Please re-upload.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Leaderboard Rank -->
+<div class="md:col-span-1 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm flex flex-col relative overflow-hidden">
+<!-- Decorative gradient background -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full pointer-events-none"></div>
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-wider mb-6">Department Rank</h3>
+<div class="flex-1 flex flex-col items-center justify-center py-4">
+<div class="w-20 h-20 bg-primary-container/20 rounded-full flex items-center justify-center mb-4 border-4 border-surface-bg shadow-sm">
+<span class="material-symbols-outlined text-primary text-4xl">emoji_events</span>
+</div>
+<div class="font-display-lg text-display-lg font-bold font-data-mono text-on-surface mb-2">#4</div>
+<p class="font-body-md text-body-md text-secondary text-center">Computer Science Dept.</p>
+<div class="w-full mt-8 bg-surface-container-low rounded-lg p-4 border border-border-subtle">
+<div class="flex justify-between items-center mb-2">
+<span class="font-body-sm text-body-sm font-semibold">Next Tier: Top 3</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">12 Pts</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[70%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Reports &amp; Analytics - Intellica</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "info": "#06B6D4",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "primary": "#004ac6",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "outline": "#737686",
+                        "surface-container-highest": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f0fb",
+                        "outline-variant": "#c3c6d7",
+                        "surface-dim": "#d9d9e5",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary-container": "#2563eb",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-background": "#191b23",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-container": "#ffede6",
+                        "border-subtle": "#E2E8F0",
+                        "danger": "#EF4444",
+                        "success": "#22C55E",
+                        "surface-bg": "#FFFFFF",
+                        "surface-container": "#ededf9",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary": "#943700",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-surface": "#191b23",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "sidebar-collapsed": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F8FAFC; }
+    </style>
+</head>
+<body class="text-on-background font-body-md antialiased h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-screen sticky left-0 top-0 bg-sidebar-bg dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col h-full py-6 px-4 hidden md:flex z-50">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary font-bold">I</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary">Credit Verification</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+                Faculty Profiles
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+                Credit Approval
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined text-[20px]">library_books</span>
+                Research Assets
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg font-label-caps text-label-caps active:scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+                Reporting
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto pt-4 space-y-4">
+<button class="w-full bg-primary text-on-primary py-2 px-4 rounded-lg font-button text-button hover:bg-primary-container transition-colors">
+                Submit Evidence
+            </button>
+<div class="pt-4 border-t border-border-subtle dark:border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full w-full overflow-hidden">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 sticky z-40 bg-surface-bright dark:bg-surface-dim border-b border-border-subtle dark:border-outline-variant flex justify-between items-center h-16 px-gutter w-full">
+<div class="flex items-center gap-4 flex-1 md:hidden">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary font-bold">I</div>
+</div>
+<div class="hidden md:flex items-center flex-1 max-w-md bg-surface-container-low dark:bg-surface-variant rounded-lg px-3 py-2">
+<span class="material-symbols-outlined text-secondary mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full outline-none" placeholder="Search reports (Cmd+K)" type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors active:opacity-80 p-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors active:opacity-80 p-2">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors active:opacity-80 p-2">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container border border-border-subtle overflow-hidden ml-2">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A small, professional headshot of an administrator in a corporate academic setting. Bright, clear lighting. High quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALztj-ngYe4xKaQWzvkDNwWYmZmxqniWZdbO4X8eR5DkhStYj_COY-4meomw85otYFh0EyPauUprqu4ZQB2aCtJ3bCyYINEd-aYk8y9VLZUTJKAXp93RiRJFOaipKvf9jRz3g3lHtg9yHDwbLyvClHELMe575hdxMtk782FAdaYVsghzCZHBYRw7NapLV0RzjkC-tzJkp2HJjhCTgnCNsMKZDFSBtv2ss4viNWZq_EkwDJLFNC7L5gEqgKsAP2kPRP034uZKKS6xs"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8">
+<div class="max-w-[container-max] mx-auto space-y-6">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-background">Global Reports &amp; Analytics</h2>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Generate and export institutional credit distribution insights.</p>
+</div>
+</div>
+<!-- Report Generator -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm mb-4">Report Generator</h3>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-secondary">Role / Scope</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-3 py-2 font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>Institution Wide</option>
+<option>Department Level</option>
+<option>Faculty Individual</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-secondary">Date Range</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-3 py-2 font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>Current Academic Year</option>
+<option>Previous Academic Year</option>
+<option>Custom Range</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-secondary">Export Type</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-3 py-2 font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>PDF Preview (Print Ready)</option>
+<option>Excel (.xlsx)</option>
+<option>CSV (.csv)</option>
+</select>
+</div>
+<div>
+<button class="w-full bg-primary text-on-primary py-2 px-4 rounded-lg font-button text-button hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">build</span>
+                                Generate
+                            </button>
+</div>
+</div>
+</div>
+<!-- Analytics Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Chart Area -->
+<div class="lg:col-span-2 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-caps text-label-caps text-secondary">Credit Distribution (YTD)</h3>
+<button class="text-primary font-button text-body-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span> Export
+                            </button>
+</div>
+<div class="flex-1 min-h-[300px] flex items-end gap-2">
+<!-- Placeholder for actual chart -->
+<div class="w-full flex items-end justify-around h-full border-b border-border-subtle pb-2">
+<div class="w-1/6 bg-primary rounded-t-sm h-[80%] hover:opacity-90 transition-opacity relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Research: 420</div>
+</div>
+<div class="w-1/6 bg-info rounded-t-sm h-[60%] hover:opacity-90 transition-opacity relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Teaching: 310</div>
+</div>
+<div class="w-1/6 bg-tertiary-container rounded-t-sm h-[40%] hover:opacity-90 transition-opacity relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Service: 210</div>
+</div>
+<div class="w-1/6 bg-secondary rounded-t-sm h-[30%] hover:opacity-90 transition-opacity relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Grants: 150</div>
+</div>
+</div>
+</div>
+<div class="flex justify-around mt-4 pt-4 border-t border-border-subtle font-data-mono text-data-mono text-secondary">
+<span>RSCH</span>
+<span>TCHG</span>
+<span>SRVC</span>
+<span>GRNT</span>
+</div>
+</div>
+<!-- Export History -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-caps text-label-caps text-secondary">Recent Exports</h3>
+</div>
+<div class="space-y-4 flex-1 overflow-y-auto">
+<!-- History Item -->
+<div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-border-subtle">
+<div class="w-8 h-8 rounded bg-error-container text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-on-background font-medium truncate">Annual_Faculty_Review_2023.pdf</p>
+<p class="font-data-mono text-data-mono text-secondary mt-0.5">Today, 09:41 AM</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+<!-- History Item -->
+<div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-border-subtle">
+<div class="w-8 h-8 rounded bg-success/20 text-success flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">table_view</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-on-background font-medium truncate">Dept_Credit_Distribution_Q3.xlsx</p>
+<p class="font-data-mono text-data-mono text-secondary mt-0.5">Yesterday, 14:22 PM</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+<!-- History Item -->
+<div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-border-subtle">
+<div class="w-8 h-8 rounded bg-error-container text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-on-background font-medium truncate">Bio_Dept_Summary_Draft.pdf</p>
+<p class="font-data-mono text-data-mono text-secondary mt-0.5">Oct 24, 11:05 AM</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

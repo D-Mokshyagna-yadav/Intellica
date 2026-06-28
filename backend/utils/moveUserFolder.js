@@ -11,7 +11,8 @@ async function moveUserFolder(user, oldDept) {
 
   if (oldDeptNorm === newDept) return;
 
-  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "../uploads");
+  const resolveStoragePath = require("./resolveStoragePath");
+  const basePath = resolveStoragePath();
   const role = String(user.role || "FACULTY").trim().toLowerCase();
   const employeeId = String(user.employeeId || user.regId || user._id || "unknown").trim();
   const name = String(user.name || "user").trim().replace(/[^a-zA-Z0-9]/g, "_");

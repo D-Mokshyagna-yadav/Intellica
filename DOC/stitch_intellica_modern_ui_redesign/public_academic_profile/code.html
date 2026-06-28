@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Faculty Public Academic Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "secondary-fixed-dim": "#b7c8e1",
+                            "tertiary": "#943700",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "sidebar-bg": "#FFFFFF",
+                            "on-tertiary": "#ffffff",
+                            "on-secondary-container": "#54647a",
+                            "on-primary": "#ffffff",
+                            "on-surface": "#191b23",
+                            "on-tertiary-fixed": "#360f00",
+                            "surface-container-lowest": "#ffffff",
+                            "secondary-container": "#d0e1fb",
+                            "surface-bright": "#faf8ff",
+                            "surface-container": "#ededf9",
+                            "surface-bg": "#FFFFFF",
+                            "surface-tint": "#0053db",
+                            "surface-container-low": "#f3f3fe",
+                            "on-background": "#191b23",
+                            "on-secondary-fixed": "#0b1c30",
+                            "success": "#22C55E",
+                            "danger": "#EF4444",
+                            "border-subtle": "#E2E8F0",
+                            "on-tertiary-container": "#ffede6",
+                            "primary-container": "#2563eb",
+                            "on-primary-fixed": "#00174b",
+                            "on-error": "#ffffff",
+                            "inverse-on-surface": "#f0f0fb",
+                            "warning": "#F59E0B",
+                            "on-tertiary-fixed-variant": "#7d2d00",
+                            "error": "#ba1a1a",
+                            "surface-variant": "#e1e2ed",
+                            "secondary-fixed": "#d3e4fe",
+                            "surface-dim": "#d9d9e5",
+                            "outline-variant": "#c3c6d7",
+                            "on-error-container": "#93000a",
+                            "primary-fixed": "#dbe1ff",
+                            "on-primary-container": "#eeefff",
+                            "inverse-surface": "#2e3039",
+                            "error-container": "#ffdad6",
+                            "surface-container-highest": "#e1e2ed",
+                            "outline": "#737686",
+                            "tertiary-container": "#bc4800",
+                            "secondary": "#505f76",
+                            "on-surface-variant": "#434655",
+                            "background": "#faf8ff",
+                            "tertiary-fixed": "#ffdbcd",
+                            "surface": "#faf8ff",
+                            "tertiary-fixed-dim": "#ffb596",
+                            "on-secondary-fixed-variant": "#38485d",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "primary": "#004ac6",
+                            "surface-container-high": "#e7e7f3",
+                            "on-secondary": "#ffffff",
+                            "inverse-primary": "#b4c5ff",
+                            "info": "#06B6D4"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "container-max": "1280px",
+                            "sidebar-width": "260px",
+                            "sidebar-collapsed": "64px",
+                            "margin-mobile": "16px",
+                            "gutter": "24px"
+                    },
+                    "fontFamily": {
+                            "label-caps": ["Inter", "sans-serif"],
+                            "body-md": ["Inter", "sans-serif"],
+                            "data-mono": ["JetBrains Mono", "monospace"],
+                            "display-lg": ["Inter", "sans-serif"],
+                            "body-sm": ["Inter", "sans-serif"],
+                            "body-lg": ["Inter", "sans-serif"],
+                            "headline-sm": ["Inter", "sans-serif"],
+                            "headline-md": ["Inter", "sans-serif"],
+                            "button": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                            "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                            "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                            "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #191b23; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col items-center">
+<!-- TopNavBar (Public Read-Only Version) -->
+<header class="bg-surface-bright dark:bg-surface-dim border-b border-border-subtle dark:border-outline-variant docked full-width top-0 sticky z-40 flex justify-between items-center h-16 px-gutter w-full w-full max-w-container-max mx-auto shadow-sm">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Public Academic Profile</span>
+</div>
+</header>
+<main class="w-full max-w-container-max px-margin-mobile md:px-gutter py-8 space-y-8">
+<!-- Profile Header Bento -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Main Info Card -->
+<div class="glass-card rounded-xl p-8 md:col-span-8 flex flex-col md:flex-row gap-8 items-start shadow-sm transition-all duration-300 hover:shadow-md bg-white">
+<div class="flex-shrink-0">
+<img alt="Dr. Eleanor Vance" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-surface-container shadow-sm" data-alt="A professional headshot portrait of a distinguished academic faculty member in a bright, modern office setting. The person is wearing business casual attire. The lighting is soft and natural, emphasizing a trustworthy and knowledgeable demeanor, fitting a corporate minimalism aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-xBxuZ4oSfO3p2f25NFZ3GiC9l6A-fCZHZfOZIIs6u-dxoC9hZypA6ic_JOTBR0XLA5xmDsZwRymQ7sEQfdAzIj9SHEN6CCyx_JG1S-LPvjx0U_P06gjd7PGWYvwcBFGxyoP1U0A9gO_tt6FUSkU3KSqRzRWHVwTG62xL46ww4qG60QvG1MKcGy2_X3ilrdNF8V5fXC_S870q3y3vg96EaZ0wewzQQrws58bNHBt0huz8h76GAwU9J2d6E4OiQP9utZE0RhBdfMg"/>
+</div>
+<div class="flex flex-col justify-between h-full space-y-4">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Dr. Eleanor Vance</h1>
+<p class="font-headline-sm text-headline-sm text-secondary mb-1">Professor of Computational Neuroscience</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Department of Cognitive Sciences, Intellica University
+                        </p>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-primary/10 text-primary font-label-caps text-label-caps px-3 py-1 rounded-full">Neuroplasticity</span>
+<span class="bg-primary/10 text-primary font-label-caps text-label-caps px-3 py-1 rounded-full">Machine Learning</span>
+<span class="bg-primary/10 text-primary font-label-caps text-label-caps px-3 py-1 rounded-full">Cognitive Modeling</span>
+</div>
+</div>
+</div>
+<!-- Actions & QR Card -->
+<div class="glass-card rounded-xl p-6 md:col-span-4 flex flex-col justify-between items-center bg-white shadow-sm hover:shadow-md transition-all duration-300">
+<div class="w-full space-y-3">
+<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-on-primary font-button text-button py-2.5 px-4 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        Export as PDF
+                    </button>
+<button class="w-full flex items-center justify-center gap-2 border border-border-subtle hover:bg-surface-container-low text-primary font-button text-button py-2.5 px-4 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+                        Share Profile
+                    </button>
+</div>
+<div class="mt-6 p-4 bg-surface-container-low rounded-lg flex flex-col items-center">
+<img alt="Profile QR Code" class="w-24 h-24 mb-2" data-alt="A clean, minimalist QR code graphic generated for a vCard or profile link, rendered in sharp black and white with no distortion, fitting a modern corporate design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuM5t1cILDfZo9FYlPUrAk7iRYuxSAs0rYdwxsBo2QKQtJTOuA5S4oq3Vu0yRA4nxcI9Rf8hrnPavIca5DPJC6f2rDo6yQlsekUjiBG-5fXjQaye-jKV9yjCe8kVY_O4zLsvUtEfHzQQepKWYMINh7mfs15hnr2bZZU4VaGJ5RS7UafZpUGILzBMoBAsA6nTm6x5-8quw8vf0XtLn7OjJnAbmg48IX3xzS-UOVAX9etk-25V-ZQc2TR_u7TEBU0ZdR2d9qDacOYEo"/>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Scan for Contact</span>
+</div>
+</div>
+</div>
+<!-- Academic Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div class="bg-white border border-border-subtle rounded-xl p-6 shadow-sm">
+<p class="font-label-caps text-label-caps text-secondary mb-2">H-Index</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">42</span>
+<span class="font-data-mono text-data-mono text-success flex items-center"><span class="material-symbols-outlined text-[14px]">arrow_upward</span> Top 5%</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle rounded-xl p-6 shadow-sm">
+<p class="font-label-caps text-label-caps text-secondary mb-2">Total Citations</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">8,405</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle rounded-xl p-6 shadow-sm">
+<p class="font-label-caps text-label-caps text-secondary mb-2">Verified Credits</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">124</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Current Academic Year</span>
+</div>
+</div>
+</div>
+<!-- Bio & Research -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="bg-white border border-border-subtle rounded-xl p-8 shadow-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-border-subtle pb-2">Biography</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                    Dr. Eleanor Vance is a leading researcher in the intersection of artificial intelligence and cognitive neuroscience. With over 15 years of experience in academia, her work focuses on developing computational models to understand synaptic plasticity and learning mechanisms in the human brain. She has previously held positions at the National Institute of Cognitive Health and has been a visiting scholar at multiple international institutions.
+                </p>
+</div>
+<div class="bg-white border border-border-subtle rounded-xl p-8 shadow-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-border-subtle pb-2">Research Focus</h2>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-primary mt-1">psychology</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">Computational Modeling of Neural Networks</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Simulating large-scale brain networks to predict cognitive decline.</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-primary mt-1">memory</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">AI-Driven Brain-Computer Interfaces</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enhancing communication pathways for individuals with severe motor impairments.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</main>
+</body></html>

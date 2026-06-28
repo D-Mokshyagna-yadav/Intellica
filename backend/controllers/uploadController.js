@@ -13,7 +13,8 @@ const APPROVED_STATUSES = ["HOD_APPROVED", "ADMIN_APPROVED"];
 const DEPARTMENT_VISIBLE_STATUSES = ["FACULTY_SUBMITTED", "HOD_SUBMITTED", "HOD_APPROVED", "ADMIN_APPROVED", "HOD_COMMENT", "ADMIN_COMMENT"];
 
 function getRelativeFilePath(filePath) {
-  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
+  const resolveStoragePath = require("../utils/resolveStoragePath");
+  const basePath = resolveStoragePath();
   return path.relative(basePath, filePath).replace(/\\/g, "/");
 }
 
@@ -403,4 +404,59 @@ exports.getDepartmentRank = async (req, res) => {
     totalDepts: departmentTotals.length,
     myDept: req.user.department,
   });
+};
+
+exports.returnForRevision = async (req, res) => {
+  const upload = await Upload.findById(req.params.id);
+
+  if (!upload) {
+    throw new AppError("Upload not found", 404);
+  }
+
+  if (req.user.role === ROLES.HOD && upload.department !== req.user.department) {
+    throw new AppError("Access denied", 403);
+  }
+
+  const reason = String(req.body.reason || "").trim();
+
+  if (!reason) {
+    throw new AppError("Reason for revision is required", 400);
+  }
+
+  if (req.user.role === ROLES.HOD) {
+    upload.hodComment = reason;
+  } else {
+    upload.adminComment = reason;
+  }
+  
+  upload.status = "RETURNED_FOR_REVISION";
+  await upload.save();
+
+  res.json({
+    message: "Upload returned for revision",
+    upload,
+  });
+};
+
+exports.bulkApprove = async (req, res) => {
+  const { uploadIds } = req.body;
+  if (!Array.isArray(uploadIds) || uploadIds.length === 0) {
+    throw new AppError("uploadIds must be a non-empty array", 400);
+  }
+
+  const query = { _id: { $in: uploadIds } };
+  if (req.user.role === ROLES.HOD) {
+    query.department = req.user.department;
+  }
+
+  const uploads = await Upload.find(query);
+  const statusToSet = req.user.role === ROLES.ADMIN ? "ADMIN_APPROVED" : "HOD_APPROVED";
+
+  for (const upload of uploads) {
+    upload.status = statusToSet;
+    await upload.save();
+    await moveUploadFile(upload);
+  }
+
+  res.json({ message: `Successfully approved ${uploads.length} uploads` });
 };

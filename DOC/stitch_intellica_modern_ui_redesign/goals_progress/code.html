@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Faculty Goals &amp; Progress Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#38485d",
+                    "primary-container": "#2563eb",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-primary-fixed": "#00174b",
+                    "tertiary-fixed": "#ffdbcd",
+                    "background": "#faf8ff",
+                    "secondary": "#505f76",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-error-container": "#93000a",
+                    "on-background": "#191b23",
+                    "inverse-on-surface": "#f0f0fb",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "tertiary": "#943700",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-container": "#54647a",
+                    "info": "#06B6D4",
+                    "surface-bright": "#faf8ff",
+                    "surface-tint": "#0053db",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#191b23",
+                    "sidebar-bg": "#FFFFFF",
+                    "outline": "#737686",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#434655",
+                    "outline-variant": "#c3c6d7",
+                    "border-subtle": "#E2E8F0",
+                    "success": "#22C55E",
+                    "primary-fixed": "#dbe1ff",
+                    "primary": "#004ac6",
+                    "warning": "#F59E0B",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-bg": "#FFFFFF",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#d0e1fb",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-container": "#ededf9",
+                    "surface-dim": "#d9d9e5",
+                    "surface-container-low": "#f3f3fe",
+                    "inverse-surface": "#2e3039",
+                    "tertiary-container": "#bc4800",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-variant": "#e1e2ed",
+                    "on-primary-container": "#eeefff",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#b4c5ff",
+                    "surface": "#faf8ff",
+                    "surface-container-high": "#e7e7f3",
+                    "danger": "#EF4444"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-collapsed": "64px",
+                    "margin-mobile": "16px",
+                    "sidebar-width": "260px",
+                    "gutter": "24px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "button": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "button": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "450"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center h-16 px-margin-mobile w-full bg-surface-bright dark:bg-surface-dim border-b border-border-subtle dark:border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary font-bold text-headline-md" data-icon="dashboard">dashboard</span>
+<h1 class="font-headline-sm text-headline-sm text-primary dark:text-primary-fixed">Intellica</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a university faculty member in a bright, modern academic office. The lighting is soft and natural, with a palette of clean whites and professional blues, reflecting the Intellica corporate minimalism brand. The person has a friendly, authoritative expression suitable for a high-performance administrator profile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7DD9ifb1hz7qHq5dzDN4rNbYEyl-Gnq239w3mmMsRdsB3y2QNJQsnbV_UJjtzKkruWl_SwOMhyKp8kg9MbOdrBjjrJ7pMctO1ZZMD5pNqdLcdFseqcWVYYsrdnOzfdOS9xJk1HJdLfKJKBVMae5L-cRe4xxRdWob0YvvkVc8gyQOA6eFspYaSjQ_8BoG457qmxnk4vtX3efLBf9apgOL3Z9AAZtBTPDrLnMddX9OftYUqQQm-CwJt5pR1mJ6665a0ftqPA1CQy5c"/>
+</div>
+</div>
+</header>
+<main class="px-margin-mobile py-6 pb-24 space-y-8">
+<!-- Header Section -->
+<section class="space-y-1">
+<p class="font-label-caps text-label-caps text-secondary uppercase">Annual Review Period</p>
+<h2 class="font-display-lg text-display-lg tracking-tight">Academic Goals</h2>
+</section>
+<!-- Large Progress Ring (Bento Card Style) -->
+<section class="bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
+<div class="relative w-48 h-48">
+<!-- SVG Progress Ring -->
+<svg class="w-full h-full">
+<circle class="text-surface-container-high" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary progress-ring__circle" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.6" stroke-dashoffset="125.6" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-display-lg text-primary">75%</span>
+<span class="font-label-caps text-label-caps text-secondary">COMPLETE</span>
+</div>
+</div>
+<div class="mt-6 text-center">
+<p class="font-body-md text-on-surface">Overall Credit Completion</p>
+<p class="font-body-sm text-secondary">You are 12 credits ahead of last month.</p>
+</div>
+</section>
+<!-- Quick Access 'Adjust Goals' -->
+<div class="flex items-center justify-between bg-primary-container p-4 rounded-xl text-on-primary-container shadow-md active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="edit_calendar">edit_calendar</span>
+<span class="font-button text-button">Adjust Annual Targets</span>
+</div>
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Target Progress List -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h3 class="font-headline-sm text-headline-sm">Specific Targets</h3>
+<span class="font-label-caps text-label-caps text-primary">VIEW ALL</span>
+</div>
+<div class="space-y-3">
+<!-- Publications -->
+<div class="bg-surface-bg border border-border-subtle p-4 rounded-xl space-y-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="library_books">library_books</span>
+<span class="font-body-md font-semibold">Publications</span>
+</div>
+<span class="font-data-mono text-data-mono">4 / 6</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 66%"></div>
+</div>
+</div>
+<!-- Patents -->
+<div class="bg-surface-bg border border-border-subtle p-4 rounded-xl space-y-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="verified">verified</span>
+<span class="font-body-md font-semibold">Patents Pending</span>
+</div>
+<span class="font-data-mono text-data-mono">1 / 2</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-warning h-full rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<!-- Teaching Credits -->
+<div class="bg-surface-bg border border-border-subtle p-4 rounded-xl space-y-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="groups">groups</span>
+<span class="font-body-md font-semibold">Teaching Credits</span>
+</div>
+<span class="font-data-mono text-data-mono">120 / 150</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-success h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Milestones & Upcoming Deadlines -->
+<section class="grid grid-cols-1 gap-4">
+<!-- Recent Milestones -->
+<div class="bg-surface-container-lowest border border-border-subtle p-5 rounded-xl space-y-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<h3 class="font-headline-sm text-headline-sm">Recent Milestones</h3>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<p class="font-body-sm font-bold">Research Paper Approved</p>
+<p class="font-label-caps text-label-caps text-secondary">2 days ago • CS Journal</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<p class="font-body-sm font-bold">Seminar Hours Verified</p>
+<p class="font-label-caps text-label-caps text-secondary">Oct 12 • Faculty Board</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming Deadlines -->
+<div class="bg-error-container/10 border border-error/20 p-5 rounded-xl space-y-4">
+<div class="flex items-center gap-2 text-error">
+<span class="material-symbols-outlined" data-icon="event_busy">event_busy</span>
+<h3 class="font-headline-sm text-headline-sm">Upcoming Deadlines</h3>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4 border-l-2 border-error pl-4">
+<div>
+<p class="font-body-sm font-bold">Submit Evidence: Project X</p>
+<p class="font-label-caps text-label-caps text-error">IN 3 DAYS • NOV 01</p>
+</div>
+</div>
+<div class="flex gap-4 border-l-2 border-warning pl-4">
+<div>
+<p class="font-body-sm font-bold">Annual Research Asset Log</p>
+<p class="font-label-caps text-label-caps text-secondary">IN 14 DAYS • NOV 12</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile Primary Navigation) -->
+<nav class="fixed bottom-0 left-0 right-0 h-16 bg-surface-bright dark:bg-surface-dim border-t-0 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] flex items-center justify-around px-4 z-50">
+<button class="flex flex-col items-center gap-1 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg px-3 py-1 scale-[0.98] transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-[10px]">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors px-3 py-1">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-[10px]">Faculty</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors px-3 py-1">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-caps text-[10px]">Credit</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors px-3 py-1">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-label-caps text-[10px]">Research</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors px-3 py-1">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-[10px]">Settings</span>
+</button>
+</nav>
+<!-- FAB for Evidence Submission (Contextual) -->
+<button class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<script>
+        // Micro-interaction for Progress Rings
+        document.addEventListener('DOMContentLoaded', () => {
+            const circle = document.querySelector('.progress-ring__circle');
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            
+            // Set progress to 75% as in the static HTML but with a slight animation feel
+            const setProgress = (percent) => {
+                const offset = circumference - (percent / 100 * circumference);
+                circle.style.strokeDashoffset = offset;
+            };
+
+            // Immediate call or with slight delay for entrance animation
+            setTimeout(() => setProgress(75), 100);
+        });
+    </script>
+</body></html>

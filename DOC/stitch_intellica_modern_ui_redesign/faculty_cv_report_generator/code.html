@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Faculty Resume &amp; API Report Generator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "tertiary": "#943700",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "sidebar-bg": "#FFFFFF",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#54647a",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191b23",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#d0e1fb",
+                    "surface-bright": "#faf8ff",
+                    "surface-container": "#ededf9",
+                    "surface-bg": "#FFFFFF",
+                    "surface-tint": "#0053db",
+                    "surface-container-low": "#f3f3fe",
+                    "on-background": "#191b23",
+                    "on-secondary-fixed": "#0b1c30",
+                    "success": "#22C55E",
+                    "danger": "#EF4444",
+                    "border-subtle": "#E2E8F0",
+                    "on-tertiary-container": "#ffede6",
+                    "primary-container": "#2563eb",
+                    "on-primary-fixed": "#00174b",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "warning": "#F59E0B",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e1e2ed",
+                    "secondary-fixed": "#d3e4fe",
+                    "surface-dim": "#d9d9e5",
+                    "outline-variant": "#c3c6d7",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-primary-container": "#eeefff",
+                    "inverse-surface": "#2e3039",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e1e2ed",
+                    "outline": "#737686",
+                    "tertiary-container": "#bc4800",
+                    "secondary": "#505f76",
+                    "on-surface-variant": "#434655",
+                    "background": "#faf8ff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface": "#faf8ff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "primary": "#004ac6",
+                    "surface-container-high": "#e7e7f3",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#b4c5ff",
+                    "info": "#06B6D4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "sidebar-width": "260px",
+                    "sidebar-collapsed": "64px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "button": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "450"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+                    "button": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .paper-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem;
+            color: rgba(0, 0, 0, 0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<aside class="bg-sidebar-bg dark:bg-inverse-surface w-sidebar-width h-screen sticky left-0 top-0 border-r border-border-subtle dark:border-outline-variant flex flex-col h-full py-6 px-4 hidden md:flex">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
+                I
+            </div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed leading-tight">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary">Credit Verification</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-subtle">
+<button class="w-full bg-primary text-white font-button text-button py-2.5 rounded-lg hover:bg-surface-tint transition-colors mb-4">
+                Submit Evidence
+            </button>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-background">
+<!-- TopNavBar -->
+<header class="bg-surface-bright dark:bg-surface-dim docked full-width top-0 sticky z-40 border-b border-border-subtle dark:border-outline-variant flex justify-between items-center h-16 px-gutter w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer md:hidden" data-icon="menu">menu</span>
+<div class="flex items-center bg-surface-container-low rounded-lg px-3 py-1.5 border border-border-subtle focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-secondary text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none outline-none font-body-sm text-body-sm w-64 text-on-surface placeholder-secondary focus:ring-0 p-0" placeholder="Search profiles (Cmd+K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-6 w-px bg-border-subtle mx-1"></div>
+<button class="font-button text-button text-primary hover:text-surface-tint transition-colors">
+                    Quick Action
+                </button>
+<img class="w-8 h-8 rounded-full border border-border-subtle object-cover" data-alt="A small circular profile picture of an academic administrator in a light, modern corporate office setting, conveying professionalism and authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQV2MyXKvXZrL1CIDP1SRh8I50V8H9pShMhD-GIvdxE_KBzoSHx0OBdfFIHTvZbYTRSZC1y3LV4n4f5ggZax8N3QMbBDTMbwLNKg2dnCcMfxk4Olm5zrgNgpkCFYGA0DqVa-o3ePNIJ4gLXSVG8ij8U9IvlkTPMFbpT5A0oaWEcvV_mmgJVxYRa_-MDm4fAS_I66yiHklYMOFAebMNNdPtwT7PfjjmtBrbGuVMf-alBlmsGx77y9fc7AZibOt1JAwZ2yRE6qr4qz0"/>
+</div>
+</header>
+<!-- Application Area -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Template Selection Sidebar -->
+<div class="w-72 bg-surface border-r border-border-subtle flex flex-col overflow-y-auto hidden lg:flex">
+<div class="p-4 border-b border-border-subtle">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1">Report Generator</h2>
+<p class="font-body-sm text-body-sm text-secondary">Select a template for Dr. Elena Rostova.</p>
+</div>
+<div class="p-4 space-y-4">
+<!-- Template Option 1 -->
+<div class="border border-primary bg-primary-container/10 rounded-lg p-3 cursor-pointer relative">
+<div class="absolute top-3 right-3 text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="font-button text-button text-on-surface mb-1">Academic CV</h3>
+<p class="font-body-sm text-body-sm text-secondary mb-3 line-clamp-2">Standard comprehensive curriculum vitae including publications and teaching history.</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-surface-container-high text-on-surface-variant">Default</span>
+</div>
+</div>
+<!-- Template Option 2 -->
+<div class="border border-border-subtle bg-surface-container-lowest rounded-lg p-3 cursor-pointer hover:border-primary/50 transition-colors">
+<h3 class="font-button text-button text-on-surface mb-1">NAAC Report</h3>
+<p class="font-body-sm text-body-sm text-secondary mb-3 line-clamp-2">Formatted specifically for National Assessment and Accreditation Council submission.</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-info/10 text-info">Compliance</span>
+</div>
+</div>
+<!-- Template Option 3 -->
+<div class="border border-border-subtle bg-surface-container-lowest rounded-lg p-3 cursor-pointer hover:border-primary/50 transition-colors">
+<h3 class="font-button text-button text-on-surface mb-1">API Credit Report</h3>
+<p class="font-body-sm text-body-sm text-secondary mb-3 line-clamp-2">Detailed breakdown of Academic Performance Indicator scores for promotion cycles.</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-warning/10 text-warning">Metric Heavy</span>
+</div>
+</div>
+</div>
+<div class="mt-auto p-4 border-t border-border-subtle bg-surface-container-low">
+<label class="font-label-caps text-label-caps text-on-surface block mb-2">Include Sections</label>
+<div class="space-y-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm">Publications (Last 5 yrs)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm">Verified Certifications</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm">Student Feedback Scores</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Preview & Toolbar Area -->
+<div class="flex-1 flex flex-col min-w-0 bg-surface-container-low">
+<!-- Export Toolbar -->
+<div class="h-14 bg-surface border-b border-border-subtle flex items-center justify-between px-4 lg:px-6 shrink-0">
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-secondary">Preview Zoom</span>
+<div class="flex items-center bg-surface-container rounded-md border border-border-subtle">
+<button class="p-1 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="font-data-mono text-data-mono px-2 py-1">100%</span>
+<button class="p-1 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-subtle bg-surface text-secondary hover:text-primary hover:border-primary transition-colors font-button text-button">
+<span class="material-symbols-outlined text-sm" data-icon="print">print</span>
+                            Print
+                        </button>
+<div class="flex bg-primary rounded-lg overflow-hidden">
+<button class="flex items-center gap-2 px-4 py-1.5 text-white font-button text-button hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span>
+                                Export PDF
+                            </button>
+<div class="w-px bg-white/20"></div>
+<button class="px-2 py-1.5 text-white hover:bg-surface-tint transition-colors flex items-center">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Document Preview Canvas -->
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 flex justify-center relative">
+<!-- The Document (A4 Proportion Approximation) -->
+<div class="w-full max-w-[800px] bg-white paper-shadow rounded-sm relative overflow-hidden flex flex-col p-8 lg:p-12 mb-8 min-h-[1000px]">
+<div class="watermark font-headline-md text-headline-md">INTELLICA DRAFT</div>
+<!-- Header -->
+<div class="flex justify-between items-start border-b-2 border-primary pb-6 mb-6 z-10">
+<div class="flex gap-6">
+<img class="w-24 h-24 rounded-lg object-cover border border-border-subtle shadow-sm" data-alt="A professional headshot of a female academic faculty member in her 40s. She is wearing a modern blazer over a crisp shirt. The background is a neutral grey studio backdrop. High-key lighting, corporate minimal style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQg4Ab31hEcDX158GadKMQop65_iAZyzKfOQ8R14fAb5UQrXWO-vNjw642DCKGgrztAy_E44HfkkobnjB9vmn-YHU2XVgvkZEwcpzIIUt7EaWi6OKEmnYmnt9oEpnD2EroD18FK5K39i5oqcpFt1pc02f35rPsNVxtmYp5i5FxAzre7xbsnI_y_fAbT1uqSoOWGrL6TnJLA9DYnBUML5LfjyhlPTVc-H4teojRvcr4l3oq2MLU980YU6Ih2E5-5jPwzjpmR6dcBNQ"/>
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-1">Dr. Elena Rostova</h1>
+<h2 class="font-headline-sm text-headline-sm text-secondary mb-2">Professor of Cognitive Science</h2>
+<div class="flex flex-col gap-1 font-body-sm text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]" data-icon="mail">mail</span> e.rostova@university.edu</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]" data-icon="apartment">apartment</span> Dept. of Behavioral Sciences, Room 402</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]" data-icon="fingerprint">fingerprint</span> EMP-ID: 994-20-881</span>
+</div>
+</div>
+</div>
+<div class="text-right flex flex-col items-end">
+<img class="w-20 h-20 mb-2 border border-border-subtle p-1" data-alt="A clean, sharp QR code graphic on a white background, representing a digital verification link for an academic profile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6WDJqL0AYyjzJ_mS1OjelrC7RE-BERGGGpMZNUwxtNRlEsFR8QBCeVfCGWsQ8m7zblx-iSanY-4MxHz6HvXFB8w4KOQoS-MVwY5Ul8VuW3lh1xSmbKvvQB_q5-M3AYfDdwYddvBO8A4fhfR8JbxAMb70Gdmx-xqku8lIbJ4TZx0BNf2sjPk08sPpU1zmpYuNnNuZmoSOTChFY5SldBdSS4ImadsxELCMHBMLiycxlGIf7lopB4L6PaCXuVg91NOKf7P48oNryMyg"/>
+<span class="font-label-caps text-label-caps text-secondary">Scan to Verify</span>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-3 gap-8 z-10 flex-1">
+<!-- Left Column (Main Content) -->
+<div class="col-span-2 space-y-8">
+<!-- Section 1 -->
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="school">school</span> Education
+                                    </h3>
+<div class="space-y-4">
+<div class="relative pl-4 border-l-2 border-border-subtle">
+<div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-primary"></div>
+<div class="font-body-md text-body-md font-semibold text-on-surface">Ph.D. in Cognitive Psychology</div>
+<div class="font-body-sm text-body-sm text-secondary">Stanford University | 2008 - 2012</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Dissertation: "Neural Correlates of Working Memory under High Cognitive Load"</p>
+</div>
+<div class="relative pl-4 border-l-2 border-border-subtle">
+<div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-border-subtle"></div>
+<div class="font-body-md text-body-md font-semibold text-on-surface">M.Sc. in Neuroscience</div>
+<div class="font-body-sm text-body-sm text-secondary">University College London | 2006 - 2008</div>
+</div>
+</div>
+</div>
+<!-- Section 2 -->
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="article">article</span> Selected Publications (API Verified)
+                                    </h3>
+<div class="space-y-3">
+<div class="p-3 bg-surface-container-lowest border border-border-subtle rounded text-sm">
+<div class="flex justify-between items-start mb-1">
+<span class="font-semibold text-on-surface">Rostova, E., &amp; Chen, J. (2022). Attention Allocation in Multi-Tasking.</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-success/10 text-success whitespace-nowrap">API: 15 Pts</span>
+</div>
+<div class="font-body-sm text-body-sm text-secondary italic">Journal of Experimental Psychology, 145(3), 302-315.</div>
+</div>
+<div class="p-3 bg-surface-container-lowest border border-border-subtle rounded text-sm">
+<div class="flex justify-between items-start mb-1">
+<span class="font-semibold text-on-surface">Rostova, E. (2021). The Impact of Sleep Deprivation on Memory.</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-success/10 text-success whitespace-nowrap">API: 12 Pts</span>
+</div>
+<div class="font-body-sm text-body-sm text-secondary italic">Cognition, 210, 104598.</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Sidebar metrics) -->
+<div class="col-span-1 space-y-6">
+<div class="bg-surface-container-low p-4 rounded-lg border border-border-subtle">
+<h4 class="font-label-caps text-label-caps text-secondary mb-2">API Score Summary</h4>
+<div class="font-display-lg text-display-lg text-primary mb-1">428</div>
+<div class="w-full bg-border-subtle rounded-full h-1.5 mb-2">
+<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Eligible for Grade IV Promotion</div>
+</div>
+<div>
+<h4 class="font-label-caps text-label-caps text-secondary mb-3 border-b border-border-subtle pb-1">Current Grants</h4>
+<ul class="space-y-3">
+<li class="font-body-sm text-body-sm">
+<span class="block font-semibold text-on-surface">NIH R01 Grant</span>
+<span class="block text-secondary">$1.2M (2021 - 2026)</span>
+</li>
+<li class="font-body-sm text-body-sm">
+<span class="block font-semibold text-on-surface">NSF Career Award</span>
+<span class="block text-secondary">$450k (2020 - 2025)</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Footer / Signatures -->
+<div class="mt-auto pt-8 border-t border-border-subtle flex justify-between items-end z-10">
+<div>
+<div class="font-data-mono text-data-mono text-secondary mb-1">Generated: Oct 24, 2023 | 14:32 UTC</div>
+<div class="font-data-mono text-data-mono text-secondary">Intellica Hash: 8f92a4bc...</div>
+</div>
+<div class="text-center">
+<div class="w-48 h-12 border-b border-dashed border-outline mb-2 flex items-end justify-center pb-1 text-outline-variant italic font-body-sm text-body-sm">
+                                    Digital Signature Placement
+                                </div>
+<div class="font-label-caps text-label-caps text-on-surface">Authorized Signatory</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

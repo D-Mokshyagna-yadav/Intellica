@@ -130,15 +130,80 @@ async function buildLeaderboard() {
   return ranked;
 }
 
+async function buildIntraDepartmentLeaderboard(departmentCode) {
+  const [uploads, facultyInDept, hodsInDept] = await Promise.all([
+    Upload.find({ department: departmentCode, status: { $in: APPROVED_STATUSES } }).lean(),
+    Faculty.find({ department: departmentCode, isApproved: true, status: "APPROVED" }).lean(),
+    HOD.find({ department: departmentCode, isApproved: true, status: "APPROVED" }).lean(),
+  ]);
+
+  const userMap = new Map();
+
+  [...facultyInDept, ...hodsInDept].forEach((user) => {
+    userMap.set(user._id.toString(), {
+      userId: user._id.toString(),
+      name: user.name,
+      role: user.role,
+      department: user.department,
+      designation: user.designation,
+      profileImage: user.profileImage,
+      rank: 0,
+      monthlyScore: 0,
+      semesterScore: 0,
+      yearlyScore: 0,
+      overallScore: 0,
+    });
+  });
+
+  uploads.forEach((upload) => {
+    const userId = upload.faculty.toString();
+    if (!userMap.has(userId)) return;
+
+    const summary = userMap.get(userId);
+    const credits = Number(upload.credits) || 0;
+    const createdAt = upload.createdAt ? new Date(upload.createdAt) : null;
+    
+    summary.overallScore += credits;
+
+    if (createdAt && createdAt.getFullYear() === CURRENT_YEAR) {
+      summary.yearlyScore += credits;
+      
+      if (getCurrentSemester(createdAt) === getCurrentSemester(new Date())) {
+        summary.semesterScore += credits;
+      }
+      
+      if (createdAt.getMonth() === CURRENT_MONTH) {
+        summary.monthlyScore += credits;
+      }
+    }
+  });
+
+  const rankedUsers = Array.from(userMap.values()).sort(
+    (a, b) => b.overallScore - a.overallScore || a.name.localeCompare(b.name)
+  );
+
+  rankedUsers.forEach((user, index) => {
+    user.rank = index + 1;
+  });
+
+  return rankedUsers;
+}
+
 exports.getRanking = async (req, res) => {
   const rankings = await buildLeaderboard();
   const requestedDepartment = String(req.query.department || "").trim().toUpperCase();
 
   const filtered = requestedDepartment
-    ? rankings.filter((participant) => participant.department === requestedDepartment)
+    ? rankings.filter((item) => item.department === requestedDepartment)
     : rankings;
 
   res.json(filtered);
+};
+
+exports.getDepartmentRanking = async (req, res) => {
+  const requestedDepartment = String(req.query.department || req.user.department).trim().toUpperCase();
+  const rankings = await buildIntraDepartmentLeaderboard(requestedDepartment);
+  res.json(rankings);
 };
 
 exports.getMyRank = async (req, res) => {
@@ -150,33 +215,28 @@ exports.getMyRank = async (req, res) => {
     return res.status(403).json({ message: "You are not allowed to view another user's rank" });
   }
 
-  const [rankings, faculty, hod] = await Promise.all([
+  const participant = await Faculty.findById(requestedId).lean() || await HOD.findById(requestedId).lean();
+  
+  if (!participant) {
+    throw new AppError("User not found", 404);
+  }
+
+  const department = String(participant.department).trim().toUpperCase();
+  
+  const [deptLeaderboard, intraDeptLeaderboard] = await Promise.all([
     buildLeaderboard(),
-    Faculty.findById(requestedId).lean(),
-    HOD.findById(requestedId).lean(),
+    buildIntraDepartmentLeaderboard(department)
   ]);
 
-  const participant = faculty || hod;
-  const department = String(participant?.department || req.user.department || "").trim().toUpperCase();
-  const departmentSummary = rankings.find((item) => item.department === department);
+  const deptSummary = deptLeaderboard.find((item) => item.department === department);
+  const mySummary = intraDeptLeaderboard.find((item) => item.userId === requestedId);
 
-  res.json(
-    departmentSummary
-      ? {
-          departmentRank: departmentSummary.rank,
-          departmentTotal: rankings.length,
-          collegeRank: departmentSummary.rank,
-          collegeTotal: rankings.length,
-          score: departmentSummary.overallScore,
-          totalCredits: departmentSummary.overallScore,
-        }
-      : {
-          departmentRank: null,
-          departmentTotal: rankings.length,
-          collegeRank: null,
-          collegeTotal: rankings.length,
-          score: 0,
-          totalCredits: 0,
-        }
-  );
+  res.json({
+    departmentRank: mySummary ? mySummary.rank : null,
+    departmentTotal: intraDeptLeaderboard.length,
+    collegeRank: deptSummary ? deptSummary.rank : null,
+    collegeTotal: deptLeaderboard.length,
+    score: mySummary ? mySummary.overallScore : 0,
+    totalCredits: mySummary ? mySummary.overallScore : 0,
+  });
 };

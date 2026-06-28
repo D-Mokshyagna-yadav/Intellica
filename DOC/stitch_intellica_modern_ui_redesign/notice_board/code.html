@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica | Notice Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@450&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-tab-indicator {
+            view-transition-name: active-tab;
+        }
+        /* Custom scrollbar for horizontal categories */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-primary-fixed": "#00174b",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191b23",
+                        "inverse-on-surface": "#f0f0fb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#943700",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "info": "#06B6D4",
+                        "surface-bright": "#faf8ff",
+                        "surface-tint": "#0053db",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191b23",
+                        "sidebar-bg": "#FFFFFF",
+                        "outline": "#737686",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "outline-variant": "#c3c6d7",
+                        "border-subtle": "#E2E8F0",
+                        "success": "#22C55E",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#004ac6",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-bg": "#FFFFFF",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container": "#ededf9",
+                        "surface-dim": "#d9d9e5",
+                        "surface-container-low": "#f3f3fe",
+                        "inverse-surface": "#2e3039",
+                        "tertiary-container": "#bc4800",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-variant": "#e1e2ed",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#b4c5ff",
+                        "surface": "#faf8ff",
+                        "surface-container-high": "#e7e7f3",
+                        "danger": "#EF4444"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-collapsed": "64px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "button": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="bg-surface-bright sticky top-0 z-40 flex justify-between items-center h-16 px-4 w-full border-b border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="school">school</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female university administrator wearing a navy blue blazer, set against a blurred academic library background with soft, warm lighting. The aesthetic is clean, sharp, and corporate, emphasizing a modern academic environment with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVHHKstQvWpgvjsGuGf_ZUBYw_4HYCUEWvzFKN0UM4f7Ggko7ZZlEbqOWJ4hMNZmsoRH1l8Z3EpJzAcaDjznC-Wfu3mgYy07DOtnrQqZCNLLLsFYT9WarHVo5DbS5Gy2UezX6sFODZnQ-hFALnXjalAcpsHlu30DrUpBQgan9-H2CFe93qR86tBiUVLvEBXrDG6sA17Soxtu13o2Oo58dgE1rpobZ-QZsHhXtNCxhQGm4lYPaf_mqeazb_qms-F6BvH3P9U1tNEjI"/>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 py-6 max-w-container-max mx-auto w-full pb-24">
+<!-- Search & Filter Section -->
+<section class="mb-8 space-y-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-sm" placeholder="Search notices, circulars..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+<kbd class="hidden md:inline-block px-2 py-1 text-[10px] font-data-mono bg-surface-container border border-outline-variant rounded text-on-surface-variant">⌘K</kbd>
+</div>
+</div>
+<!-- Horizontal Category Chips -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-caps text-label-caps shadow-sm">All Notices</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-low text-secondary font-label-caps text-label-caps hover:bg-secondary-container transition-colors">Circulars</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-low text-secondary font-label-caps text-label-caps hover:bg-secondary-container transition-colors">Events</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-low text-secondary font-label-caps text-label-caps hover:bg-secondary-container transition-colors">Holidays</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-low text-secondary font-label-caps text-label-caps hover:bg-secondary-container transition-colors">Exams</button>
+</div>
+</section>
+<!-- Urgent Alerts (Pinned) -->
+<section class="mb-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-danger text-[20px]" data-icon="keep" style="font-variation-settings: 'FILL' 1;">keep</span>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant">PRIORITY ALERTS</h2>
+</div>
+<div class="space-y-3">
+<!-- Urgent Card 1 -->
+<div class="bg-surface-bright border-l-4 border-danger rounded-lg p-4 shadow-sm border border-border-subtle relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-danger text-4xl" data-icon="warning">warning</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-[10px] font-bold font-label-caps">URGENT</span>
+<span class="text-[11px] font-data-mono text-outline">10:45 AM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Server Maintenance: LMS Offline</h3>
+<p class="text-body-sm text-on-surface-variant line-clamp-2">The Learning Management System will be inaccessible today from 11:00 PM to 02:00 AM for emergency security patches.</p>
+</div>
+<!-- Urgent Card 2 -->
+<div class="bg-surface-bright border-l-4 border-warning rounded-lg p-4 shadow-sm border border-border-subtle relative overflow-hidden group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold font-label-caps">ACTION REQUIRED</span>
+<span class="text-[11px] font-data-mono text-outline">09:15 AM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Credit Verification Deadline</h3>
+<p class="text-body-sm text-on-surface-variant">All faculty profiles must complete the Phase 2 verification by end of day tomorrow to avoid payroll delays.</p>
+</div>
+</div>
+</section>
+<!-- Latest Feed -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="auto_stories">auto_stories</span>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant font-bold">LATEST UPDATES</h2>
+</div>
+<button class="text-primary font-label-caps text-label-caps">Mark all read</button>
+</div>
+<div class="space-y-4">
+<!-- Feed Item: Event -->
+<div class="flex gap-4 group cursor-pointer active:scale-[0.98] transition-transform">
+<div class="flex-shrink-0 w-16 h-16 rounded-xl bg-secondary-container flex flex-col items-center justify-center text-primary-container overflow-hidden">
+<span class="text-[10px] font-bold uppercase">MAY</span>
+<span class="text-2xl font-bold leading-none">24</span>
+</div>
+<div class="flex-1 border-b border-border-subtle pb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-secondary font-label-caps text-[10px] tracking-wider uppercase">Annual Symposium</span>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1 leading-tight">Modern AI in Research Applications</h4>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant font-data-mono">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                Main Auditorium
+                            </div>
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant font-data-mono">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                02:00 PM
+                            </div>
+</div>
+</div>
+</div>
+<!-- Feed Item: Holiday -->
+<div class="flex gap-4 group cursor-pointer active:scale-[0.98] transition-transform">
+<div class="flex-shrink-0 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-3xl" data-icon="beach_access">beach_access</span>
+</div>
+<div class="flex-1 border-b border-border-subtle pb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-success font-label-caps text-[10px] tracking-wider uppercase font-bold">Holiday</span>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1 leading-tight">Summer Break Commencement</h4>
+<p class="text-body-sm text-on-surface-variant line-clamp-1">College will remain closed from June 1st to July 15th for summer vacations.</p>
+</div>
+</div>
+<!-- Feed Item: Circular -->
+<div class="flex gap-4 group cursor-pointer active:scale-[0.98] transition-transform">
+<div class="flex-shrink-0 w-16 h-16 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl" data-icon="description">description</span>
+</div>
+<div class="flex-1 border-b border-border-subtle pb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-on-secondary-fixed-variant font-label-caps text-[10px] tracking-wider uppercase">Circular #C-902</span>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1 leading-tight">Revised Grading Policy 2024</h4>
+<div class="flex items-center gap-2">
+<span class="bg-surface-container text-on-surface-variant text-[10px] px-2 py-0.5 rounded border border-outline-variant">PDF • 1.2MB</span>
+<span class="text-[11px] font-data-mono text-outline">Yesterday</span>
+</div>
+</div>
+</div>
+<!-- Feed Item: Event 2 -->
+<div class="flex gap-4 group cursor-pointer active:scale-[0.98] transition-transform">
+<div class="flex-shrink-0 w-16 h-16 rounded-xl bg-secondary-container flex flex-col items-center justify-center text-primary-container overflow-hidden">
+<span class="text-[10px] font-bold uppercase">MAY</span>
+<span class="text-2xl font-bold leading-none">28</span>
+</div>
+<div class="flex-1 border-b border-border-subtle pb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-secondary font-label-caps text-[10px] tracking-wider uppercase">Workshop</span>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1 leading-tight">Blockchain Foundations Workshop</h4>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant font-data-mono">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                IT Lab 4
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-8 py-3 rounded-lg border border-outline-variant text-primary font-button hover:bg-surface-container transition-colors">
+                View Older Notices
+            </button>
+</section>
+</main>
+<!-- Floating Action Button (Admin) -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-bright border-t border-border-subtle px-2 py-2 flex justify-around items-center z-50">
+<button class="flex flex-col items-center justify-center px-4 py-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-[10px] mt-1">DASHBOARD</span>
+</button>
+<button class="flex flex-col items-center justify-center px-4 py-2 text-primary bg-secondary-container rounded-xl">
+<span class="material-symbols-outlined text-[24px]" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-label-caps text-[10px] mt-1 font-bold">NOTICES</span>
+</button>
+<button class="flex flex-col items-center justify-center px-4 py-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="groups">groups</span>
+<span class="font-label-caps text-[10px] mt-1">FACULTY</span>
+</button>
+<button class="flex flex-col items-center justify-center px-4 py-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="library_books">library_books</span>
+<span class="font-label-caps text-[10px] mt-1">ASSETS</span>
+</button>
+<button class="flex flex-col items-center justify-center px-4 py-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="settings">settings</span>
+<span class="font-label-caps text-[10px] mt-1">SETTINGS</span>
+</button>
+</nav>
+<!-- Subtle Texture Background -->
+<div class="fixed inset-0 pointer-events-none opacity-20 z-[-1]" style="background-image: radial-gradient(circle at 2px 2px, #c3c6d7 1px, transparent 0); background-size: 32px 32px;"></div>
+<script>
+        // Micro-interaction for search focus
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+
+        // Category Chip Selection
+        const chips = document.querySelectorAll('.no-scrollbar button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+                    c.classList.add('bg-surface-container-low', 'text-secondary');
+                });
+                chip.classList.remove('bg-surface-container-low', 'text-secondary');
+                chip.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            });
+        });
+    </script>
+</body></html>

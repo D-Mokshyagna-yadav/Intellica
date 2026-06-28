@@ -16,6 +16,7 @@ node_modules/
 # IDE files
 .vscode/
 .idea/
+*.md
 *.swp
 *.swo
 

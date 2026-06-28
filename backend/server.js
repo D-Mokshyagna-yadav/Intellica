@@ -25,6 +25,8 @@ const creditConfigRoutes = require("./routes/creditConfigRoutes");
 const rankingRoutes = require("./routes/rankingroutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
+const settingsRoutes = require("./routes/settingsRoutes");
 
 const app = express();
 
@@ -78,8 +80,8 @@ app.use(mongoSanitize());
 app.use(requestSanitizer);
 
 // Static files for uploads
-const uploadsPath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "uploads");
-app.use("/uploads", express.static(uploadsPath, { index: false }));
+const resolveStoragePath = require("./utils/resolveStoragePath");
+app.use("/uploads", express.static(resolveStoragePath(), { index: false }));
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -104,6 +106,8 @@ app.use("/api/credit-config", creditConfigRoutes);
 app.use("/api/ranking", rankingRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/departments", departmentRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // Frontend static files and SPA routing
 const frontendDistCandidates = [path.join(__dirname, "dist"), path.join(__dirname, "..", "frontend", "dist")];

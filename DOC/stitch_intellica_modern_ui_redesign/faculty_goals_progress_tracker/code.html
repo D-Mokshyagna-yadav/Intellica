@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Faculty Goals &amp; Progress Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "surface-bright": "#faf8ff",
+                        "surface-container": "#ededf9",
+                        "surface-bg": "#FFFFFF",
+                        "surface-tint": "#0053db",
+                        "surface-container-low": "#f3f3fe",
+                        "on-background": "#191b23",
+                        "on-secondary-fixed": "#0b1c30",
+                        "success": "#22C55E",
+                        "danger": "#EF4444",
+                        "border-subtle": "#E2E8F0",
+                        "on-tertiary-container": "#ffede6",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed": "#00174b",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2e3039",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e2ed",
+                        "outline": "#737686",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary": "#004ac6",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "info": "#06B6D4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for progress rings */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-full flex overflow-hidden">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen w-sidebar-width sticky left-0 top-0 bg-sidebar-bg border-r border-border-subtle py-6 px-4 z-50">
+<!-- Brand -->
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary font-bold">I</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary">Credit Verification</p>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-secondary-container text-primary font-bold scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<!-- CTA -->
+<div class="mt-auto pt-6">
+<button class="w-full bg-primary text-on-primary font-button text-button py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mb-6">
+<span class="material-symbols-outlined text-sm">upload</span>
+                Submit Evidence
+            </button>
+<div class="space-y-1 border-t border-border-subtle pt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto">
+<!-- TopNavBar (Mobile) -->
+<header class="md:hidden flex justify-between items-center h-16 px-margin-mobile w-full bg-surface-bright sticky top-0 z-40 border-b border-border-subtle">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded-sm flex items-center justify-center text-on-primary font-bold text-xs">I</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+</div>
+<div class="flex items-center gap-3 text-secondary">
+<span class="material-symbols-outlined">search</span>
+<span class="material-symbols-outlined">menu</span>
+</div>
+</header>
+<!-- Top Header / Breadcrumbs (Desktop) -->
+<div class="hidden md:flex justify-between items-center h-16 px-gutter w-full bg-surface-bright border-b border-border-subtle sticky top-0 z-40">
+<div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+<span>Dashboard</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-primary font-semibold">Faculty Goals &amp; Progress Tracker</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-surface-container-low border border-border-subtle rounded-md font-body-sm text-body-sm w-64 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Search (Cmd+K)" type="text"/>
+</div>
+<div class="flex items-center gap-3 text-secondary">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">history</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">help_outline</span></button>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-border-subtle ml-2">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a faculty administrator in a modern office setting. The lighting is bright and clean, typical of corporate minimal design. The subject is wearing a crisp white shirt." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDM_6BEvnOl9nZk9cjlmMlgkZSwFhR49Zk6NoicSnFsWdgLD4SPMY7oBoqIo0o0weqRb7sHzh4THee8Gf6Mvt8dJyzzt2TAtQBcLolPAS2UO1MgDXmOnMVX_6Cy212Vk40DfizDriJbtAgeZJdoFB8DEFMjHGIrKNhfS0BRQUTY962RnR2iGEx0qPC0ZsxKJS8OgHglvOA-ZdF9WxUp3W_HtSjWI8zmjuF8w0E6P7kMA0e1B9h9I2kok67c1Hrr_BTf8eaRWf_8__s"/>
+</div>
+</div>
+</div>
+<!-- Canvas -->
+<div class="p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full flex-1 space-y-6">
+<!-- Page Title Area -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Goals &amp; Progress</h2>
+<p class="font-body-md text-body-md text-secondary mt-1">Track individual and departmental academic milestones for Academic Year 2024-2025.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-border-subtle rounded-lg text-primary font-button text-button hover:bg-surface-container-low transition-colors">Export Report</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-button text-button hover:opacity-90 transition-opacity">Adjust Goals</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Main Progress Card (Spans 8 columns) -->
+<div class="md:col-span-8 bg-surface-bg border border-border-subtle rounded-xl p-6 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-6">Individual Academic Goals</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+<!-- Circular Progress -->
+<div class="flex flex-col items-center justify-center lg:col-span-1">
+<div class="relative w-48 h-48">
+<svg class="w-full h-full" viewbox="0 0 120 120">
+<circle class="text-surface-container-highest stroke-current" cx="60" cy="60" fill="transparent" r="50" stroke-width="12"></circle>
+<circle class="text-primary progress-ring__circle stroke-current" cx="60" cy="60" fill="transparent" r="50" stroke-dasharray="314.159" stroke-dashoffset="84.823" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-display-lg text-primary">73%</span>
+<span class="font-label-caps text-label-caps text-secondary">On Track</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-center text-secondary mt-4">Estimated completion: May 15, 2025</p>
+</div>
+<!-- Linear Bars -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Category 1 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface">Publications</span>
+<span class="font-body-sm text-body-sm text-secondary ml-2">(Target: 2)</span>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface">1 / 2</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<!-- Category 2 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface">Patents</span>
+<span class="font-body-sm text-body-sm text-secondary ml-2">(Target: 1)</span>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface">1 / 1</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- Category 3 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface">Verified Credits</span>
+<span class="font-body-sm text-body-sm text-secondary ml-2">(Target: 50)</span>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface">42 / 50</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 84%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- HOD Department Summary (Spans 4 columns) -->
+<div class="md:col-span-4 bg-surface-bright border border-border-subtle rounded-xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0 pointer-events-none"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">corporate_fare</span>
+<h3 class="font-label-caps text-label-caps text-secondary uppercase">Departmental Summary</h3>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-6">Computer Science Dept.</h4>
+<div class="space-y-5">
+<div class="flex items-center justify-between border-b border-border-subtle pb-3">
+<span class="font-body-md text-body-md text-secondary">Collective Target Progress</span>
+<span class="font-data-mono text-data-mono font-semibold text-primary">68%</span>
+</div>
+<div class="flex items-center justify-between border-b border-border-subtle pb-3">
+<span class="font-body-md text-body-md text-secondary">Faculty on Track</span>
+<span class="font-data-mono text-data-mono font-semibold text-on-surface">24 / 30</span>
+</div>
+<div class="flex items-center justify-between pb-3">
+<span class="font-body-md text-body-md text-secondary">At Risk</span>
+<span class="font-data-mono text-data-mono font-semibold text-warning">2</span>
+</div>
+</div>
+<button class="w-full mt-6 px-4 py-2 bg-surface-bg border border-border-subtle rounded-lg text-primary font-button text-button hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
+                            View Department Details
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Timeline / Recent Milestones (Spans 12 columns) -->
+<div class="md:col-span-12 bg-surface-bg border border-border-subtle rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Recent Milestones</h3>
+<a class="text-primary font-button text-button hover:underline" href="#">View Full Timeline</a>
+</div>
+<div class="space-y-4">
+<!-- Timeline Item -->
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-success/10 text-success flex items-center justify-center border border-success/20">
+<span class="material-symbols-outlined text-sm">done</span>
+</div>
+<div class="w-px h-8 bg-border-subtle my-1"></div>
+</div>
+<div class="pb-4">
+<p class="font-body-md text-body-md text-on-surface font-semibold">Patent Approved: "Neural Network Optimizer"</p>
+<p class="font-body-sm text-body-sm text-secondary">Credit applied to Fall Semester target.</p>
+<p class="font-data-mono text-data-mono text-secondary text-xs mt-1">Oct 12, 2024</p>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-sm">article</span>
+</div>
+<div class="w-px h-8 bg-border-subtle my-1"></div>
+</div>
+<div class="pb-4">
+<p class="font-body-md text-body-md text-on-surface font-semibold">Publication Submitted for Review</p>
+<p class="font-body-sm text-body-sm text-secondary">IEEE Conference on Machine Learning.</p>
+<p class="font-data-mono text-data-mono text-secondary text-xs mt-1">Sep 28, 2024</p>
+</div>
+</div>
+<!-- Timeline Item (Pending) -->
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-secondary flex items-center justify-center border border-border-subtle">
+<span class="material-symbols-outlined text-sm">hourglass_empty</span>
+</div>
+</div>
+<div class="pb-4">
+<p class="font-body-md text-body-md text-on-surface font-semibold">8 Credits Pending Verification</p>
+<p class="font-body-sm text-body-sm text-secondary">Awaiting departmental approval for workshop attendance.</p>
+<p class="font-data-mono text-data-mono text-secondary text-xs mt-1">Expected: Nov 01, 2024</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

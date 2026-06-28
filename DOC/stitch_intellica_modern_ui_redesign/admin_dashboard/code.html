@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Administrator Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "info": "#06B6D4",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "primary": "#004ac6",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "outline": "#737686",
+                        "surface-container-highest": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f0fb",
+                        "outline-variant": "#c3c6d7",
+                        "surface-dim": "#d9d9e5",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary-container": "#2563eb",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-background": "#191b23",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-container": "#ffede6",
+                        "border-subtle": "#E2E8F0",
+                        "danger": "#EF4444",
+                        "success": "#22C55E",
+                        "surface-bg": "#FFFFFF",
+                        "surface-container": "#ededf9",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary": "#943700",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-surface": "#191b23",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "sidebar-collapsed": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for data density */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c3c6d7; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar (from JSON) -->
+<nav class="bg-sidebar-bg border-r border-border-subtle w-sidebar-width h-screen sticky left-0 top-0 flex flex-col py-6 px-4 shrink-0 hidden md:flex z-30">
+<!-- Brand Header -->
+<div class="mb-8 px-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary mt-0.5">Credit Verification</p>
+</div>
+</div>
+</div>
+<!-- Submit Evidence CTA -->
+<div class="mb-6">
+<button class="w-full bg-primary text-on-primary font-button text-button py-2.5 px-4 rounded-lg hover:bg-surface-tint transition-colors shadow-sm flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+                Submit Evidence
+            </button>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-1 overflow-y-auto font-label-caps text-label-caps">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-secondary-container text-primary font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Faculty Profiles
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">verified</span>
+                Credit Approval
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">library_books</span>
+                Research Assets
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Reporting
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+<!-- Footer Links -->
+<div class="mt-auto pt-6 border-t border-border-subtle flex flex-col gap-1 font-label-caps text-label-caps">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 max-w-[1280px] w-full mx-auto min-h-screen bg-background">
+<!-- Header / Top Bar Area (Abstracted for simplicity in layout) -->
+<header class="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border-subtle px-gutter py-4 flex justify-between items-center h-16">
+<h2 class="font-headline-sm text-headline-sm text-on-background">System Overview</h2>
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center w-8 h-8 rounded-full text-secondary hover:bg-surface-container-high transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full border border-background"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-dim border border-border-subtle overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female university administrator in her 40s, wearing business casual attire. The lighting is soft and natural, suggesting a bright office environment. The style is highly realistic, corporate, and clean, fitting a modern software platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWEPm9OFCK4moOxVJSf_9mpvPt832jUHGQPAWoYunfv5dd77FChrotIVXyierX_JhawtyBzqE8np1_hNNzHJy36vpsxAQY8jrg89p7GJ8f6zjBojDItI7Mti91mjYrq9ZIQEmbynsZ3_sScLAqAkZDaMq2mufjz8oRukg-9LwtR623sDIx-KZ9IaLn6r9omHjc5C94e8wy8iXxQyDIwJhnxUwoNytqgiZuHIcImpzhvYEdmc3_XfIbTJbhnJQEij9rTo1e8uraKRc"/>
+</div>
+</div>
+</header>
+<div class="p-gutter pb-20 space-y-8">
+<!-- Actions & Title Row -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h3 class="font-display-lg text-display-lg text-on-background">Dashboard</h3>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Real-time metrics for academic credit ingestion.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-bg border border-border-subtle text-secondary font-button text-button rounded-lg hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                        Add Faculty
+                    </button>
+<button class="px-4 py-2 bg-surface-bg border border-border-subtle text-secondary font-button text-button rounded-lg hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">rule_settings</span>
+                        Configure Rules
+                    </button>
+<button class="px-4 py-2 bg-primary text-on-primary font-button text-button rounded-lg hover:bg-surface-tint transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">summarize</span>
+                        Generate Report
+                    </button>
+</div>
+</div>
+<!-- Bento Grid: Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1: Faculty Count -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 relative overflow-hidden flex flex-col justify-between hover:border-primary-fixed-dim transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Total Faculty</span>
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-data-mono text-[32px] leading-tight font-medium text-on-background">450</span>
+<span class="font-data-mono text-xs text-success flex items-center"><span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%</span>
+</div>
+<!-- Minimal Sparkline Background -->
+<div class="absolute bottom-0 left-0 w-full h-12 opacity-10 pointer-events-none text-primary">
+<svg class="w-full h-full stroke-current fill-none" preserveaspectratio="none" stroke-width="2" viewbox="0 0 100 30"><path d="M0,25 C20,20 40,30 60,15 C80,0 90,20 100,5"></path></svg>
+</div>
+</div>
+<!-- Card 2: Dept Count -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 relative overflow-hidden flex flex-col justify-between hover:border-primary-fixed-dim transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Departments</span>
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-data-mono text-[32px] leading-tight font-medium text-on-background">12</span>
+<span class="font-body-sm text-xs text-secondary">Active Nodes</span>
+</div>
+</div>
+<!-- Card 3: Pending Approvals -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 relative overflow-hidden flex flex-col justify-between hover:border-warning transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Pending Approvals</span>
+<div class="w-8 h-8 rounded bg-warning/10 flex items-center justify-center text-warning">
+<span class="material-symbols-outlined text-[20px]">pending_actions</span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-data-mono text-[32px] leading-tight font-medium text-on-background">24</span>
+<span class="font-data-mono text-xs text-warning flex items-center">Needs Review</span>
+</div>
+</div>
+<!-- Card 4: Recent Uploads -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 relative overflow-hidden flex flex-col justify-between hover:border-info transition-colors">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Recent Uploads</span>
+<div class="w-8 h-8 rounded bg-info/10 flex items-center justify-center text-info">
+<span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-data-mono text-[32px] leading-tight font-medium text-on-background">156</span>
+<span class="font-body-sm text-xs text-secondary">Last 7 days</span>
+</div>
+<!-- Minimal Sparkline Background -->
+<div class="absolute bottom-0 left-0 w-full h-12 opacity-10 pointer-events-none text-info">
+<svg class="w-full h-full stroke-current fill-none" preserveaspectratio="none" stroke-width="2" viewbox="0 0 100 30"><path d="M0,30 L20,25 L40,10 L60,15 L80,5 L100,20"></path></svg>
+</div>
+</div>
+</div>
+<!-- Bento Grid: Main Data Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Chart Area (Spans 2 cols) -->
+<div class="lg:col-span-2 bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col min-h-[380px]">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline-sm text-headline-sm text-on-background">Credit Statistics</h4>
+<select class="bg-surface-container-low border-border-subtle text-body-sm rounded-md text-secondary py-1 pl-3 pr-8 focus:ring-primary focus:border-primary">
+<option>YTD (Monthly)</option>
+<option>Last 30 Days</option>
+</select>
+</div>
+<!-- Abstract Chart Representation -->
+<div class="flex-1 relative flex items-end">
+<div class="absolute inset-0 grid grid-rows-4 border-l border-b border-border-subtle pointer-events-none">
+<div class="border-t border-border-subtle/50 border-dashed w-full h-full"></div>
+<div class="border-t border-border-subtle/50 border-dashed w-full h-full"></div>
+<div class="border-t border-border-subtle/50 border-dashed w-full h-full"></div>
+<div class="border-t border-border-subtle/50 border-dashed w-full h-full"></div>
+</div>
+<!-- Bars -->
+<div class="w-full h-full flex items-end justify-around pb-1 px-4 relative z-10">
+<div class="w-12 bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-colors cursor-pointer relative group" style="height: 30%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">120</div>
+</div>
+<div class="w-12 bg-primary/40 hover:bg-primary/60 rounded-t-sm transition-colors cursor-pointer relative group" style="height: 45%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">180</div>
+</div>
+<div class="w-12 bg-primary/60 hover:bg-primary/80 rounded-t-sm transition-colors cursor-pointer relative group" style="height: 35%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">140</div>
+</div>
+<div class="w-12 bg-primary hover:bg-primary-fixed-variant rounded-t-sm transition-colors cursor-pointer relative group" style="height: 70%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">280</div>
+</div>
+<div class="w-12 bg-primary/80 hover:bg-primary rounded-t-sm transition-colors cursor-pointer relative group" style="height: 55%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">220</div>
+</div>
+<div class="w-12 bg-primary-container hover:bg-primary rounded-t-sm transition-colors cursor-pointer relative group" style="height: 85%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity font-data-mono">340</div>
+</div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="w-full flex justify-around mt-3 font-data-mono text-[11px] text-secondary">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+</div>
+</div>
+<!-- Leaderboard Area -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6 flex flex-col min-h-[380px]">
+<h4 class="font-headline-sm text-headline-sm text-on-background mb-4">Top Departments</h4>
+<div class="flex-1 flex flex-col gap-3">
+<!-- Rank Item -->
+<div class="flex items-center p-3 rounded-lg bg-surface-container-low border border-transparent hover:border-border-subtle transition-colors">
+<span class="font-data-mono font-bold text-primary w-6">01</span>
+<div class="flex-1 ml-3">
+<p class="font-body-sm font-semibold text-on-background">Computer Science</p>
+</div>
+<span class="font-data-mono text-sm text-on-background">1,240 <span class="text-secondary text-xs">cr</span></span>
+</div>
+<div class="flex items-center p-3 rounded-lg hover:bg-surface-container-lowest border border-transparent hover:border-border-subtle transition-colors">
+<span class="font-data-mono text-secondary w-6">02</span>
+<div class="flex-1 ml-3">
+<p class="font-body-sm font-semibold text-on-background">Physics</p>
+</div>
+<span class="font-data-mono text-sm text-on-background">980 <span class="text-secondary text-xs">cr</span></span>
+</div>
+<div class="flex items-center p-3 rounded-lg hover:bg-surface-container-lowest border border-transparent hover:border-border-subtle transition-colors">
+<span class="font-data-mono text-secondary w-6">03</span>
+<div class="flex-1 ml-3">
+<p class="font-body-sm font-semibold text-on-background">Mathematics</p>
+</div>
+<span class="font-data-mono text-sm text-on-background">845 <span class="text-secondary text-xs">cr</span></span>
+</div>
+<div class="flex items-center p-3 rounded-lg hover:bg-surface-container-lowest border border-transparent hover:border-border-subtle transition-colors">
+<span class="font-data-mono text-secondary w-6">04</span>
+<div class="flex-1 ml-3">
+<p class="font-body-sm font-semibold text-on-background">Biology</p>
+</div>
+<span class="font-data-mono text-sm text-on-background">720 <span class="text-secondary text-xs">cr</span></span>
+</div>
+</div>
+<button class="w-full mt-4 py-2 border-t border-border-subtle font-label-caps text-label-caps text-primary hover:text-primary-fixed-variant transition-colors text-center">
+                        View All Rankings
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

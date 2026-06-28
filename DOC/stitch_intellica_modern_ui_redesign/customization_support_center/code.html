@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica | Dashboard Customization & Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@450&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .drag-handle { cursor: grab; }
+        .drag-handle:active { cursor: grabbing; }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        
+        /* Micro-interactions */
+        .widget-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .widget-card:hover { border-color: #004ac6; transform: translateY(-2px); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#191b23",
+                        "outline": "#737686",
+                        "success": "#22C55E",
+                        "primary": "#004ac6",
+                        "surface-bg": "#FFFFFF",
+                        "secondary-container": "#d0e1fb",
+                        "border-subtle": "#E2E8F0",
+                        "surface-container-low": "#f3f3fe",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-secondary-fixed-variant": "#38485d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "button": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<div class="flex min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="w-sidebar-width h-screen sticky left-0 top-0 bg-sidebar-bg border-r border-border-subtle flex flex-col py-6 px-4 z-50">
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase tracking-widest">Credit Verification</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-body-sm text-body-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span class="font-body-sm text-body-sm">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">library_books</span>
+<span class="font-body-sm text-body-sm">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="font-body-sm text-body-sm">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-primary font-bold rounded-lg scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-body-sm text-body-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-subtle space-y-1">
+<button class="w-full bg-primary text-white py-2.5 rounded-lg font-button text-button mb-4 shadow-sm hover:opacity-90 transition-opacity">
+                    Submit Evidence
+                </button>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-body-sm text-body-sm">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
+<!-- TopNavBar Anchor -->
+<header class="h-16 sticky top-0 bg-surface-bright border-b border-border-subtle flex justify-between items-center px-gutter z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-sm focus:ring-1 focus:ring-primary transition-all" placeholder="Search faculty, tutorials, or tickets (Cmd+K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="h-8 w-[1px] bg-border-subtle mx-2"></div>
+<button class="bg-surface-container-high px-4 py-1.5 rounded-lg font-button text-button text-primary hover:bg-secondary-container transition-colors">
+                        Quick Action
+                    </button>
+<img class="w-8 h-8 rounded-full border border-border-subtle object-cover" data-alt="Professional headshot of a senior academic administrator with a neutral background, high-end corporate photography style with soft studio lighting and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnqat62wucpMrjlPN2m94CmZtTSBFVtTw0TfwTcOmOWmlPUsKeYsNaoUg3rSfB9IcoiI5ifgfpgNRQYuXC-ypTTjMLMmF74d3f32aO4SoENjiYdObt9ZqKiXXy3EDQL3XJCSGzmLHosVLa3fKbDuqHya5Au9uIfeC9mLaOPWSB76B--qStlNGOX3WaQDGQkMjwE9ap2_K1knOdvVHmcIgVFinSQ3TVzbNpCDHCPQdCqV5tDmM2wgnaIEXAA-ooVT5rm7GiDUMJOVU"/>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-8 max-w-[1440px] mx-auto w-full">
+<!-- System Health & Maintenance Banner -->
+<div class="mb-8 flex flex-wrap gap-4">
+<div class="flex-1 min-w-[300px] bg-success/10 border border-success/20 rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<div>
+<p class="text-body-sm font-semibold text-on-surface">All Systems Operational</p>
+<p class="text-[12px] text-on-surface-variant">API Latency: <span class="font-data-mono">24ms</span> • Uptime: <span class="font-data-mono">99.99%</span></p>
+</div>
+</div>
+<button class="text-success font-button text-[12px] uppercase tracking-wider hover:underline">View Log</button>
+</div>
+<div class="flex-1 min-w-[300px] bg-warning/10 border border-warning/20 rounded-xl p-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-warning">info</span>
+<div>
+<p class="text-body-sm font-semibold text-on-surface">Scheduled Maintenance</p>
+<p class="text-[12px] text-on-surface-variant">Sunday, Oct 24 • 02:00 - 04:00 AM UTC</p>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Workspace Customization</h2>
+<p class="text-on-surface-variant mt-1">Rearrange your dashboard layout to optimize your approval workflow.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-border-subtle rounded-lg font-button text-button text-on-surface-variant hover:bg-white transition-all">Reset Default</button>
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-button text-button shadow-md hover:bg-primary/90 transition-all">Save Layout</button>
+</div>
+</div>
+<!-- Bento Grid Layout Editor -->
+<div class="bento-grid mb-12">
+<!-- High Priority Requests -->
+<div class="col-span-8 bg-white border border-border-subtle rounded-xl p-6 widget-card relative overflow-hidden group">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined drag-handle text-outline opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+<h3 class="font-headline-sm text-headline-sm">Pending Credit Approvals</h3>
+</div>
+<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-label-caps rounded">84 Total</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-transparent hover:border-primary/20 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-200 animate-pulse"></div>
+<div>
+<p class="text-body-sm font-semibold">Dr. Helena Vance</p>
+<p class="text-[12px] text-on-surface-variant">Faculty of Bio-Engineering • Research Grant V-24</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-warning/10 text-warning text-[11px] font-label-caps rounded-full border border-warning/20 uppercase">Urgent</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-transparent hover:border-primary/20 transition-all opacity-60">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-200 animate-pulse"></div>
+<div>
+<p class="text-body-sm font-semibold">Prof. Marcus Thorne</p>
+<p class="text-[12px] text-on-surface-variant">Department of Quantum Physics • Publication Credit</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-info/10 text-info text-[11px] font-label-caps rounded-full border border-info/20 uppercase">Standard</span>
+</div>
+</div>
+</div>
+<!-- Small Metric 1 -->
+<div class="col-span-4 bg-white border border-border-subtle rounded-xl p-6 widget-card flex flex-col justify-between group">
+<div class="flex justify-between">
+<span class="material-symbols-outlined drag-handle text-outline opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant uppercase tracking-wider mb-1">Approval Velocity</p>
+<h4 class="font-display-lg text-display-lg text-on-surface">14.2<span class="text-headline-sm font-normal text-on-surface-variant">/day</span></h4>
+</div>
+<div class="h-12 w-full mt-4 bg-primary/5 rounded flex items-end px-1 gap-1">
+<div class="flex-1 bg-primary/20 h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-2/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-1/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-3/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/50 h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/60 h-full rounded-t-sm"></div>
+</div>
+</div>
+<!-- Resource Allocation -->
+<div class="col-span-4 bg-white border border-border-subtle rounded-xl p-6 widget-card group">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-sm text-headline-sm">Storage</h3>
+<span class="material-symbols-outlined drag-handle text-outline opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<div class="relative pt-1">
+<div class="flex mb-2 items-center justify-between">
+<div><span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary bg-primary-fixed">Evidence Vault</span></div>
+<div class="text-right"><span class="text-xs font-semibold inline-block text-primary">82%</span></div>
+</div>
+<div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-secondary-container">
+<div class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary" style="width:82%"></div>
+</div>
+<p class="text-[11px] text-on-surface-variant">41.2 GB of 50 GB used. Auto-purge scheduled in 12 days.</p>
+</div>
+</div>
+<!-- System Analytics Mini -->
+<div class="col-span-8 bg-white border border-border-subtle rounded-xl p-6 widget-card flex items-center group gap-8">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined drag-handle text-outline opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+<h3 class="font-headline-sm text-headline-sm">Active Sessions</h3>
+</div>
+<p class="text-on-surface-variant text-body-sm">Currently <span class="font-bold text-success">12</span> administrators online across <span class="font-bold">4</span> departments.</p>
+</div>
+<div class="flex gap-4">
+<div class="text-center">
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">Admins</p>
+<p class="font-data-mono text-xl font-bold">08</p>
+</div>
+<div class="w-[1px] h-10 bg-border-subtle"></div>
+<div class="text-center">
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">Faculty</p>
+<p class="font-data-mono text-xl font-bold">142</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Support Center Grid -->
+<div class="grid grid-cols-12 gap-8 pt-8 border-t border-border-subtle">
+<!-- Left: Help & Tutorials -->
+<div class="col-span-8 space-y-12">
+<!-- FAQ Accordion -->
+<div>
+<h3 class="font-headline-md text-headline-md mb-6">Knowledge Base</h3>
+<div class="space-y-2">
+<details class="group bg-white border border-border-subtle rounded-xl p-4 cursor-pointer hover:shadow-sm transition-shadow">
+<summary class="flex items-center justify-between font-body-md font-semibold list-none">
+<span>How do I bulk-approve faculty credits?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="pt-4 text-on-surface-variant text-body-sm leading-relaxed border-t border-border-subtle mt-4">
+                                        To bulk approve, navigate to the "Credit Approval" screen, select multiple entries using the checkboxes in the data table, and click the "Batch Action" button in the header toolbar.
+                                    </div>
+</details>
+<details class="group bg-white border border-border-subtle rounded-xl p-4 cursor-pointer hover:shadow-sm transition-shadow">
+<summary class="flex items-center justify-between font-body-md font-semibold list-none">
+<span>Can I customize the evidence requirement forms?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="pt-4 text-on-surface-variant text-body-sm leading-relaxed border-t border-border-subtle mt-4">
+                                        Yes, super-admins can modify requirement schemas via the "Settings > Form Builder" section. Changes will apply to all future submissions.
+                                    </div>
+</details>
+<details class="group bg-white border border-border-subtle rounded-xl p-4 cursor-pointer hover:shadow-sm transition-shadow">
+<summary class="flex items-center justify-between font-body-md font-semibold list-none">
+<span>What file formats are supported for PDF ingestion?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="pt-4 text-on-surface-variant text-body-sm leading-relaxed border-t border-border-subtle mt-4">
+                                        We support PDF, DOCX, and high-resolution JPEG/PNG. For automated OCR processing, we recommend 300DPI PDF files.
+                                    </div>
+</details>
+</div>
+</div>
+<!-- Video Tutorials -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md">Video Academy</h3>
+<a class="text-primary text-body-sm font-semibold hover:underline" href="#">View All Tutorials</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="group cursor-pointer">
+<div class="aspect-video rounded-xl bg-surface-container-low border border-border-subtle relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-105" data-alt="A clean professional educational video thumbnail showing a modern software dashboard interface with data charts and a play button overlay, minimalist corporate design style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9WpFSzuiBbZzwUuOb1HjdIc441EVONAKLffRmpeuEX7oRZKhUSqpnGmKa9oCa-BgHpu078OdJYXH9Z4JDiSFKngCDNZOdYKFoa_p1TUpOgZMB-TEx1cZHadsm1D5f-S1e-JVlatD5VQaMzoRhvNgkXFdDI1te6g2e0mrTJdsOmEB_3qTxp6rGa_zPul2zaQ8v0ueZoW-RpD7i-2COXKQkRNc2ng6IxZwRC4bM6qr_apskXih2mZOKLKvr_vKwk6VXSNCY_g95gI8')"></div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary fill-current">play_arrow</span>
+</div>
+</div>
+<span class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/60 text-white text-[10px] rounded font-data-mono">04:12</span>
+</div>
+<p class="mt-3 font-semibold text-body-sm group-hover:text-primary transition-colors">Mastering the Approval Flow</p>
+<p class="text-[12px] text-on-surface-variant">Admin Essentials • 1.2k views</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-video rounded-xl bg-surface-container-low border border-border-subtle relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-105" data-alt="Educational video thumbnail showcasing an advanced reporting module with interactive bar graphs and export buttons, clean white-mode UI design with blue accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuANW3LdMYLzmRxwZbfvb7EiFpULAWsiSTDGA8rNiKzUnoGLtRUmB7G6SNUTIFTGQXrCJEtVcrmKpyYJNrrCI3q8JKVlBgHQMmS94Vk-bas0GnYaCc9xGgKXeN3s0uYzewgDCahEvCkTRoLyFT2yUxuiBE6W14YPPWeGF-HZjsE5YM61EZcWZOTEOMcDaXD1nrIVhWcqhYQlV86A3jDaFxnjNQ0-PXC7RXh1X3GKAnsj3EA_QzDzhCjJt-r847vGpmB6s3jrqqdAaCw')"></div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary fill-current">play_arrow</span>
+</div>
+</div>
+<span class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/60 text-white text-[10px] rounded font-data-mono">06:45</span>
+</div>
+<p class="mt-3 font-semibold text-body-sm group-hover:text-primary transition-colors">Advanced Reporting & Export</p>
+<p class="text-[12px] text-on-surface-variant">Data Strategy • 856 views</p>
+</div>
+</div>
+</div>
+<!-- Empty State: Recent Tickets -->
+<div>
+<h3 class="font-headline-md text-headline-md mb-6">Recent Tickets</h3>
+<div class="bg-white border-2 border-dashed border-border-subtle rounded-2xl py-16 flex flex-col items-center justify-center text-center">
+<div class="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-outline text-[32px]">support_agent</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">No active tickets</h4>
+<p class="text-on-surface-variant text-body-sm max-w-xs mx-auto mb-6">You haven't raised any support requests in the last 30 days. Need help with something?</p>
+<button class="px-6 py-2 border border-primary text-primary rounded-lg font-button text-button hover:bg-primary/5 transition-all">Visit Help Portal</button>
+</div>
+</div>
+</div>
+<!-- Right: Ticket Form & Timeline -->
+<div class="col-span-4 space-y-8">
+<!-- Raise Ticket Form -->
+<div class="bg-white border border-border-subtle rounded-2xl p-6 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm mb-4">Open Support Ticket</h3>
+<form class="space-y-4">
+<div>
+<label class="block text-[11px] font-label-caps text-on-surface-variant uppercase mb-1.5">Issue Priority</label>
+<select class="w-full bg-surface-container-low border-border-subtle rounded-lg text-body-sm focus:ring-primary">
+<option>Low - Question/Feedback</option>
+<option>Medium - Minor Bug</option>
+<option>High - Workflow Blocker</option>
+<option>Critical - System Down</option>
+</select>
+</div>
+<div>
+<label class="block text-[11px] font-label-caps text-on-surface-variant uppercase mb-1.5">Subject</label>
+<input class="w-full bg-surface-container-low border-border-subtle rounded-lg text-body-sm focus:ring-primary" placeholder="Brief summary of the issue" type="text"/>
+</div>
+<div>
+<label class="block text-[11px] font-label-caps text-on-surface-variant uppercase mb-1.5">Description</label>
+<textarea class="w-full bg-surface-container-low border-border-subtle rounded-lg text-body-sm focus:ring-primary" placeholder="Tell us what happened..." rows="4"></textarea>
+</div>
+<button class="w-full bg-primary text-white py-3 rounded-lg font-button text-button shadow-md hover:bg-primary/90 transition-all" type="submit">Submit Ticket</button>
+</form>
+</div>
+<!-- Release Notes Timeline -->
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h3 class="font-headline-sm text-headline-sm mb-6">Release Notes</h3>
+<div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-border-subtle">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-4 border-surface-container-low z-10">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<p class="text-[10px] font-label-caps text-primary uppercase">v2.4.0 • Today</p>
+<h4 class="font-semibold text-body-sm mt-1">Smart Evidence Recognition</h4>
+<p class="text-[12px] text-on-surface-variant mt-1">Enabled AI-powered scanning for tenure-track publication verification.</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-border-subtle rounded-full flex items-center justify-center border-4 border-surface-container-low z-10">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">v2.3.8 • Oct 12</p>
+<h4 class="font-semibold text-body-sm mt-1">Export Performance</h4>
+<p class="text-[12px] text-on-surface-variant mt-1">CSV/XLSX exports are now processed in background threads for larger datasets.</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-border-subtle rounded-full flex items-center justify-center border-4 border-surface-container-low z-10">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">v2.3.5 • Sep 28</p>
+<h4 class="font-semibold text-body-sm mt-1">Security Patch</h4>
+<p class="text-[12px] text-on-surface-variant mt-1">Updated OAuth2 protocols and improved session encryption.</p>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-center text-primary font-button text-button hover:underline">View Full Changelog</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- FAB Suppression Logic (Hidden as per guidance for Settings/Support) -->
+<!-- Contextual Footer (Web version as per guidance) -->
+<footer class="md:hidden">
+<!-- Mobile Nav Placeholder if needed -->
+</footer>
+<script>
+        // Simple drag and drop simulation micro-interactions
+        document.querySelectorAll('.widget-card').forEach(card => {
+            card.addEventListener('mousedown', (e) => {
+                if(e.target.closest('.drag-handle')) {
+                    card.classList.add('opacity-50', 'scale-[0.98]');
+                }
+            });
+            card.addEventListener('mouseup', () => {
+                card.classList.remove('opacity-50', 'scale-[0.98]');
+            });
+        });
+
+        // Command + K focus simulation
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                document.querySelector('input[type="text"]').focus();
+            }
+        });
+    </script>
+</body></html>

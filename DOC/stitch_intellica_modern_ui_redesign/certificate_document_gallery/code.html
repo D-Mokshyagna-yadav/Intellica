@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Achievement Certificate &amp; Document Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#943700",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "surface-bright": "#faf8ff",
+                        "surface-container": "#ededf9",
+                        "surface-bg": "#FFFFFF",
+                        "surface-tint": "#0053db",
+                        "surface-container-low": "#f3f3fe",
+                        "on-background": "#191b23",
+                        "on-secondary-fixed": "#0b1c30",
+                        "success": "#22C55E",
+                        "danger": "#EF4444",
+                        "border-subtle": "#E2E8F0",
+                        "on-tertiary-container": "#ffede6",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed": "#00174b",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2e3039",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e2ed",
+                        "outline": "#737686",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary": "#004ac6",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "info": "#06B6D4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-screen sticky left-0 top-0 bg-sidebar-bg dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col py-6 px-4 hidden md:flex z-30">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-md font-bold">I</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary dark:text-on-surface-variant">Credit Verification</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Faculty Profiles
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">verified</span>
+                Credit Approval
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg font-label-caps text-label-caps scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined filled" style="font-variation-settings: 'FILL' 1;">library_books</span>
+                Research Assets
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Reporting
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto pt-6 space-y-4">
+<button class="w-full bg-primary text-on-primary font-button text-button py-2 rounded-lg hover:bg-primary-container transition-colors">Submit Evidence</button>
+<div class="border-t border-border-subtle pt-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">logout</span>
+                    Sign Out
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 sticky z-40 bg-surface-bright dark:bg-surface-dim border-b border-border-subtle dark:border-outline-variant flex justify-between items-center h-16 px-gutter w-full">
+<div class="flex-1 flex items-center gap-4">
+<!-- Mobile Menu Toggle (placeholder) -->
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface hidden md:block">
+                    Document Gallery
+                </div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative w-64 hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-surface-container-low border border-border-subtle rounded-md text-body-sm font-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Search documents (Cmd+K)" type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-border-subtle cursor-pointer hover:border-primary transition-colors">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an academic administrator in a brightly lit modern office setting. The style is clean, corporate minimalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0u24SEUDfIQ4XENBN4YpHdr2C17HnV-xRRkepEsBaHT2lsHnKpxrIThB5z_lZQHT1kUP6Zhed5wMOAToM6rn78gBmLLuQi_PLeIAMGNdgk_Ys7YdAyIxLfG4M_0Vs2gaILZSNlprfep2WFj7Z5AI0fIcIO6R7MR-UL8zyhTasM7p4-69YhmbdLwVLcaSPqOZ9RtfR7UV0jeHWPHjyZ3QKs2b1IWlFX928WyDtjAAWveNj901U5GC3pq-0_iBWf6r9qpEoCZGJxlg"/>
+</div>
+<button class="bg-primary text-on-primary font-button text-button px-4 py-1.5 rounded-lg hover:bg-primary-container transition-colors hidden sm:block">Quick Action</button>
+</div>
+</header>
+<!-- Gallery Content Area -->
+<div class="flex-1 overflow-y-auto p-gutter relative w-full max-w-[1280px] mx-auto">
+<!-- Filters & Actions -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+<div class="flex gap-2">
+<select class="bg-surface-bg border border-border-subtle rounded-md px-3 py-1.5 text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-primary">
+<option>Academic Year: 2023-2024</option>
+<option>Academic Year: 2022-2023</option>
+<option>All Years</option>
+</select>
+<select class="bg-surface-bg border border-border-subtle rounded-md px-3 py-1.5 text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-primary">
+<option>Category: All</option>
+<option>Certificates</option>
+<option>Publications</option>
+<option>Patents</option>
+<option>FDPs</option>
+</select>
+</div>
+<div class="flex gap-2 bg-surface-container rounded-lg p-1">
+<button class="px-3 py-1 bg-surface-bg shadow-sm rounded text-body-sm font-body-sm text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">grid_view</span> Grid
+                    </button>
+<button class="px-3 py-1 rounded text-body-sm font-body-sm text-on-surface-variant hover:text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">view_list</span> List
+                    </button>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-12">
+<!-- Card 1 -->
+<div class="group bg-surface-bg border border-border-subtle rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300 relative flex flex-col">
+<div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden">
+<img alt="Document Preview" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A modern academic certificate of achievement with a clean, minimalist design, featuring a prominent gold seal and elegant typography, displayed against a light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf-YnVEIi3-dq-ExW0WYxWVn-9EXtWxPAiRu4GuM1gE6vib-u-neGrUHFO7iO5bosXJsSwtesjJA0bExJQ-Gzlv1rJaHLfBhNq-VN1QliT8ZlgRg98twRA8szeooodGK5NZusgHwnU_4t9001tVPJTh9H7J3zpgT8Kadln5_Sd4HHL9xJwdUfD8j0KCOcS1a0A34u0WPV5gcfFBwtG4PslFcFX41PxLpOe0NqQ8yTH_pX9L-o9pva77nhgGAWk-8knaqbmsyg2I5k"/>
+<div class="absolute inset-0 bg-on-surface/0 group-hover:bg-on-surface/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors mr-2">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">rotate_right</span>
+</button>
+</div>
+<div class="absolute top-2 right-2">
+<span class="bg-success/10 text-success font-label-caps text-label-caps px-2 py-0.5 rounded-full border border-success/20">Approved</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate mb-1">Advanced Machine Learning Certification</h3>
+<p class="font-body-sm text-body-sm text-secondary truncate mb-3">Prof. Sarah Jenkins • Computer Science</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-data-mono text-data-mono text-on-surface-variant">Oct 2023</span>
+<span class="bg-surface-container text-on-surface font-label-caps text-label-caps px-2 py-0.5 rounded">FDP</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-bg border border-border-subtle rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300 relative flex flex-col">
+<div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden">
+<img alt="Document Preview" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A blurred preview of a highly technical research paper published in a prestigious journal. The layout is two-column, typical of scientific publications, set in a clean corporate academic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_PBDseIEjt1cwWqVdkhIYZKxXSk3hy4yjEJqIxkoHvqKzA0j_dWOropBB-c-ekj6YnCDQOlQBqUf7DS2dXx-b8jD_R0JWPYOtVhOyQLEmwMO0WJ4-yvA54xWgqNV0UEcHLsvHTwUQ51Dg1E0mkrTjCrIuATBiWQ77f0KfzIgcz9Av0E0G3zt23m9VkmB0zR6WhbLuo79sdwsglaApXEUsRmQV6l_WdMU-l7zUJUrlX0En_vAOD-OR6B3JNM-90JQ01bEu6wJph3I"/>
+<div class="absolute inset-0 bg-on-surface/0 group-hover:bg-on-surface/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors mr-2">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">rotate_right</span>
+</button>
+</div>
+<div class="absolute top-2 right-2">
+<span class="bg-warning/10 text-warning font-label-caps text-label-caps px-2 py-0.5 rounded-full border border-warning/20">Pending</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate mb-1">Quantum Computing Paradigms</h3>
+<p class="font-body-sm text-body-sm text-secondary truncate mb-3">Dr. Alan Turing • Physics</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-data-mono text-data-mono text-on-surface-variant">Nov 2023</span>
+<span class="bg-surface-container text-on-surface font-label-caps text-label-caps px-2 py-0.5 rounded">Publication</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-bg border border-border-subtle rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300 relative flex flex-col">
+<div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden">
+<img alt="Document Preview" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="An official patent document bearing a formal seal and technical diagrams. The image should look like a scanned document with high clarity and a modern academic presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWlFdssl9RQ9JVmnmwKUitILwFbLRtQllfsmAzkhI93RhQ39I_TpHbq6Yd_DiazIubI2zXefwzxfg0Uo13uHwARIZGRQHzlmcB_IuXQ_NRdp1Rrc9t1RUbGStR8gT72T8_UzBMm4YMp1HGaEWGkZQPaTAf7RuBjSrEYB8Tpy7VfNc09LXqUSlg9d8wmllmsYnnpx1bFdgDGn6rp0vxPrnc7zo76sT6nhDXMW__KM0RRUNd5AoJwHA_2CMgP2QlRIInWMXX147Xm48"/>
+<div class="absolute inset-0 bg-on-surface/0 group-hover:bg-on-surface/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors mr-2">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="bg-surface-bg text-primary rounded-full p-2 shadow-md hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">rotate_right</span>
+</button>
+</div>
+<div class="absolute top-2 right-2">
+<span class="bg-success/10 text-success font-label-caps text-label-caps px-2 py-0.5 rounded-full border border-success/20">Approved</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate mb-1">Novel Polymer Synthesis Method</h3>
+<p class="font-body-sm text-body-sm text-secondary truncate mb-3">Dr. Elena Rostova • Chemistry</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-data-mono text-data-mono text-on-surface-variant">Sep 2023</span>
+<span class="bg-surface-container text-on-surface font-label-caps text-label-caps px-2 py-0.5 rounded">Patent</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

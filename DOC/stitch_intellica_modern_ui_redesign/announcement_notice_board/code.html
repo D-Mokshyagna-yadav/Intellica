@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - College Announcement &amp; Notice Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "tertiary": "#943700",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "sidebar-bg": "#FFFFFF",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#54647a",
+                      "on-primary": "#ffffff",
+                      "on-surface": "#191b23",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#d0e1fb",
+                      "surface-bright": "#faf8ff",
+                      "surface-container": "#ededf9",
+                      "surface-bg": "#FFFFFF",
+                      "surface-tint": "#0053db",
+                      "surface-container-low": "#f3f3fe",
+                      "on-background": "#191b23",
+                      "on-secondary-fixed": "#0b1c30",
+                      "success": "#22C55E",
+                      "danger": "#EF4444",
+                      "border-subtle": "#E2E8F0",
+                      "on-tertiary-container": "#ffede6",
+                      "primary-container": "#2563eb",
+                      "on-primary-fixed": "#00174b",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "warning": "#F59E0B",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "error": "#ba1a1a",
+                      "surface-variant": "#e1e2ed",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-dim": "#d9d9e5",
+                      "outline-variant": "#c3c6d7",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#dbe1ff",
+                      "on-primary-container": "#eeefff",
+                      "inverse-surface": "#2e3039",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e1e2ed",
+                      "outline": "#737686",
+                      "tertiary-container": "#bc4800",
+                      "secondary": "#505f76",
+                      "on-surface-variant": "#434655",
+                      "background": "#faf8ff",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface": "#faf8ff",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "primary": "#004ac6",
+                      "surface-container-high": "#e7e7f3",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#b4c5ff",
+                      "info": "#06B6D4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1280px",
+                      "sidebar-width": "260px",
+                      "sidebar-collapsed": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.015em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "button": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+          }
+          .material-symbols-outlined.filled {
+              font-variation-settings: 'FILL' 1;
+          }
+      </style>
+</head>
+<body class="h-full bg-surface text-on-surface font-body-md overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-6 px-4 bg-sidebar-bg dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant w-sidebar-width h-screen sticky left-0 top-0 shrink-0 z-50">
+<div class="flex items-center gap-3 mb-8 px-4">
+<div class="w-8 h-8 bg-primary rounded-DEFAULT flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined filled">school</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary">Credit Verification</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg transition-transform duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined filled">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="mt-auto pt-6 border-t border-border-subtle">
+<button class="w-full mb-4 bg-primary text-on-primary font-button text-button py-2 px-4 rounded-DEFAULT hover:bg-primary-container transition-colors">
+                Submit Evidence
+            </button>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full bg-surface-bright dark:bg-surface-dim border-b border-border-subtle dark:border-outline-variant docked full-width top-0 sticky z-40 shrink-0">
+<div class="flex items-center gap-4 flex-1">
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="relative w-full max-w-md hidden sm:block">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-border-subtle rounded-DEFAULT leading-5 bg-surface-container-lowest placeholder-outline focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-body-sm font-body-sm" placeholder="Search Announcements (Cmd+K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full border-2 border-surface-bright"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="ml-2 hidden sm:block bg-surface-container text-primary font-button text-button py-1.5 px-3 rounded-DEFAULT hover:bg-surface-container-high border border-border-subtle transition-colors">
+                    Quick Action
+                </button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-border-subtle ml-2 shrink-0">
+<img alt="Administrator Profile" class="h-full w-full object-cover" data-alt="Professional headshot of a college administrator, middle-aged woman with glasses, neutral background, high resolution, soft lighting. Modern academic setting implied." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbxe9TYoxQ9253uX-tMx3A3bpBZkjdsgJd6-XryCSD8spv_tGcyBLMHLtE8oMBTj8EUkNkVZgY0dBN42CAprLStVgpkaJ2J1U4HgEuz_xR7l_bEYe1fprA4vhlAFtbdmHCXZTllzDsFqRKhPlBRZvzPFt0X4EFjSkhltZz7clAO3pg9YOz6aBRQS8RTsdTJe0lUUTPEEUAS_sbaRjKuBIcVY6q8CFejugpUEion6F9rb0sXMZy3FJc4rEUfD5JfIRJ_23iOoC0oVo"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-surface-container-lowest">
+<div class="max-w-[1280px] mx-auto p-gutter pb-24">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+<div>
+<div class="flex items-center gap-2 text-body-sm font-body-sm text-secondary mb-1">
+<a class="hover:text-primary transition-colors" href="#">Dashboard</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface">Announcements</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Notice Board Management</h2>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-bg border border-border-subtle text-primary font-button text-button py-2 px-4 rounded-DEFAULT hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter
+                        </button>
+<button class="bg-primary text-on-primary font-button text-button py-2 px-4 rounded-DEFAULT hover:bg-primary-container transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            New Announcement
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Form Area (Col 1-8) -->
+<div class="lg:col-span-8 space-y-6">
+<!-- Create New Card -->
+<div class="bg-surface-bg border border-border-subtle rounded-lg shadow-sm">
+<div class="border-b border-border-subtle px-6 py-4 flex justify-between items-center bg-surface-container-lowest rounded-t-lg">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_document</span>
+                                    Draft New Notice
+                                </h3>
+<div class="flex items-center gap-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-outline text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-warning">push_pin</span> Pin to Top
+                                        </span>
+</label>
+</div>
+</div>
+<div class="p-6 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-1 md:col-span-2">
+<label class="block font-label-caps text-label-caps text-on-surface-variant">Title</label>
+<input class="w-full border-border-subtle rounded-DEFAULT shadow-sm focus:border-primary focus:ring-primary sm:text-body-sm font-body-sm py-2 px-3" placeholder="e.g., End of Semester Examination Schedule" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant">Category</label>
+<select class="w-full border-border-subtle rounded-DEFAULT shadow-sm focus:border-primary focus:ring-primary sm:text-body-sm font-body-sm py-2 px-3 bg-surface-container-lowest">
+<option>Circular</option>
+<option>Exam</option>
+<option>Holiday</option>
+<option>Research</option>
+<option>Event</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant">Target Audience</label>
+<select class="w-full border-border-subtle rounded-DEFAULT shadow-sm focus:border-primary focus:ring-primary sm:text-body-sm font-body-sm py-2 px-3 bg-surface-container-lowest">
+<option>All Faculty &amp; Staff</option>
+<option>HODs Only</option>
+<option>Specific Department</option>
+<option>Research Scholars</option>
+</select>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant">Content</label>
+<div class="border border-border-subtle rounded-DEFAULT overflow-hidden">
+<div class="bg-surface-container-low border-b border-border-subtle px-3 py-2 flex gap-2 overflow-x-auto">
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">format_underlined</span></button>
+<div class="w-px h-6 bg-border-subtle mx-1"></div>
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">format_list_numbered</span></button>
+<div class="w-px h-6 bg-border-subtle mx-1"></div>
+<button class="p-1 text-secondary hover:text-on-surface hover:bg-surface-variant rounded"><span class="material-symbols-outlined text-[18px]">link</span></button>
+</div>
+<textarea class="w-full border-0 focus:ring-0 sm:text-body-sm font-body-sm p-4 bg-surface-container-lowest resize-y" placeholder="Enter notice details here..." rows="5"></textarea>
+</div>
+</div>
+<!-- Upload Area -->
+<div class="border-2 border-dashed border-border-subtle rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors hover:border-primary cursor-pointer bg-surface-container-lowest">
+<span class="material-symbols-outlined text-primary text-[32px] mb-2">cloud_upload</span>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Drag &amp; drop attachments</p>
+<p class="font-body-sm text-body-sm text-secondary mt-1">PDF, DOCX, or Images up to 10MB</p>
+</div>
+<div class="flex justify-end gap-3 pt-4 border-t border-border-subtle">
+<button class="px-4 py-2 text-secondary font-button text-button hover:bg-surface-container-high rounded-DEFAULT transition-colors">Save Draft</button>
+<button class="bg-primary text-on-primary px-6 py-2 font-button text-button rounded-DEFAULT hover:bg-primary-container transition-colors shadow-sm">Publish Notice</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Widget Area (Col 9-12) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Pinned Notices Widget -->
+<div class="bg-surface-bg border border-border-subtle rounded-lg shadow-sm flex flex-col h-full max-h-[600px]">
+<div class="border-b border-border-subtle px-4 py-3 bg-surface-container-low flex justify-between items-center rounded-t-lg">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-warning filled text-[20px]">push_pin</span>
+                                    Active Board
+                                </h3>
+<span class="bg-primary-container/10 text-primary px-2 py-0.5 rounded text-[11px] font-bold tracking-wide">LIVE</span>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-2">
+<!-- Notice Item 1 (Pinned) -->
+<div class="p-3 rounded-lg border border-border-subtle bg-surface-container-lowest hover:border-primary/50 transition-colors group cursor-pointer relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-warning"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[12px]">description</span> Exam
+                                        </span>
+<span class="text-[11px] text-secondary font-data-mono">2h ago</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface pl-2 leading-tight mb-1 group-hover:text-primary transition-colors">Revised Schedule for Mid-Term Assessments (Spring 2024)</h4>
+<p class="font-body-sm text-body-sm text-secondary text-[12px] line-clamp-2 pl-2">Please note the changes in the examination dates for 3rd and 4th-year engineering students...</p>
+</div>
+<!-- Notice Item 2 -->
+<div class="p-3 rounded-lg border border-border-subtle bg-surface-container-lowest hover:border-primary/50 transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[12px]">biotech</span> Research
+                                        </span>
+<span class="text-[11px] text-secondary font-data-mono">1d ago</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">Call for Papers: International Conference on AI &amp; ML</h4>
+<p class="font-body-sm text-body-sm text-secondary text-[12px] line-clamp-1">Faculty are encouraged to submit abstracts by end of month.</p>
+</div>
+<!-- Notice Item 3 -->
+<div class="p-3 rounded-lg border border-border-subtle bg-surface-container-lowest hover:border-primary/50 transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-flex items-center gap-1 bg-success/10 text-success px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[12px]">celebration</span> Holiday
+                                        </span>
+<span class="text-[11px] text-secondary font-data-mono">Oct 12</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight mb-1 group-hover:text-primary transition-colors">Campus Closure for National Holiday</h4>
+<p class="font-body-sm text-body-sm text-secondary text-[12px] line-clamp-1">All administrative offices will remain closed.</p>
+</div>
+</div>
+<div class="p-3 border-t border-border-subtle bg-surface-container-lowest rounded-b-lg">
+<button class="w-full text-center text-primary font-button text-button hover:bg-surface-container-low py-1.5 rounded transition-colors">View All Notices</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

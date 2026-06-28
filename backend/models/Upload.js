@@ -59,10 +59,6 @@ const uploadSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-    metadata: {
-      type: Object,
-      default: {},
-    },
     filePath: {
       type: String,
       default: "",
@@ -105,6 +101,7 @@ const uploadSchema = new mongoose.Schema(
         "ADMIN_COMMENT",
         "ADMIN_APPROVED",
         "REJECTED",
+        "RETURNED_FOR_REVISION",
       ],
       default: "FACULTY_SUBMITTED",
     },

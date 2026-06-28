@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica | AI Insights & Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@450&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-primary-fixed": "#00174b",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191b23",
+                        "inverse-on-surface": "#f0f0fb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#943700",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "info": "#06B6D4",
+                        "surface-bright": "#faf8ff",
+                        "surface-tint": "#0053db",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191b23",
+                        "sidebar-bg": "#FFFFFF",
+                        "outline": "#737686",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "outline-variant": "#c3c6d7",
+                        "border-subtle": "#E2E8F0",
+                        "success": "#22C55E",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#004ac6",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-bg": "#FFFFFF",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container": "#ededf9",
+                        "surface-dim": "#d9d9e5",
+                        "surface-container-low": "#f3f3fe",
+                        "inverse-surface": "#2e3039",
+                        "tertiary-container": "#bc4800",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-variant": "#e1e2ed",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#b4c5ff",
+                        "surface": "#faf8ff",
+                        "surface-container-high": "#e7e7f3",
+                        "danger": "#EF4444"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-collapsed": "64px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "button": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "button": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "450"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-float { animation: subtle-float 4s ease-in-out infinite; }
+
+        .edit-mode .widget-card {
+            border: 2px dashed #004ac6;
+            cursor: grab;
+        }
+        .edit-mode .widget-card:active {
+            cursor: grabbing;
+        }
+        .shake-animation {
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(0.5deg); }
+            75% { transform: rotate(-0.5deg); }
+            100% { transform: rotate(0deg); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-20">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 w-full bg-surface-bright border-b border-border-subtle px-4 flex justify-between items-center h-16">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-border-subtle ml-1">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a senior university administrator in a modern office, soft natural lighting, shallow depth of field, corporate minimalism aesthetic, high-end professional photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWUBkFMUHY1HitIkHVJrIHW73ss7A6YAhV98Q15pQieYeE3CEuJyMa22Rr5oqN4-2DGXNjLnMRE94nhZ_A2yQqMVZ8Ct5LG18SnJ_75dm37yz-XETX4kBlAroBZ1k0XxgluCMJxlayx_PXX3ixpZHiNx4aL9jAyhrixh3D9qcaacaJX6x6DVfENzqW_g8jz3_dwgwEPbE6jQ8YznJYrt1ntclBfhRstkYY0nc33OeLItp3oWWtpJF8FUJ1sVb8vh2P4gfK2LoGUB4"/>
+</div>
+</div>
+</header>
+<main class="p-4 space-y-6">
+<!-- Premium Insight Header -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-sm text-headline-sm">Premium Insights</h2>
+<span class="text-primary font-label-caps bg-primary-fixed px-2 py-0.5 rounded-full">AI Active</span>
+</div>
+<!-- Horizontal Scrolling Insight Cards -->
+<div class="flex gap-4 overflow-x-auto hide-scrollbar -mx-4 px-4 pb-2">
+<!-- Insight Card 1 -->
+<div class="min-w-[280px] bg-primary text-on-primary p-5 rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between h-48 animate-float">
+<div class="absolute top-0 right-0 opacity-10">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+<div>
+<p class="font-label-caps opacity-80 uppercase tracking-widest">Credit Growth</p>
+<h3 class="font-headline-md mt-1">+12.4% Semester Lead</h3>
+</div>
+<div class="space-y-2">
+<p class="font-body-sm opacity-90">Faculty output is trending above standard deviation for Q3.</p>
+<div class="h-1.5 w-full bg-on-primary/20 rounded-full overflow-hidden">
+<div class="bg-on-primary h-full w-3/4"></div>
+</div>
+</div>
+</div>
+<!-- Insight Card 2 -->
+<div class="min-w-[280px] bg-on-secondary-fixed-variant text-on-primary p-5 rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between h-48">
+<div class="absolute top-0 right-0 opacity-10">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div>
+<p class="font-label-caps opacity-80 uppercase tracking-widest">Gap Analysis</p>
+<h3 class="font-headline-md mt-1">8 Assets Pending</h3>
+</div>
+<div class="space-y-2">
+<p class="font-body-sm opacity-90">Research documentation required for Business faculty.</p>
+<button class="bg-white/20 hover:bg-white/30 text-white font-button px-4 py-1.5 rounded-lg transition-colors text-sm w-max">
+                            View Details
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Personalized Dashboard Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="font-headline-sm text-headline-sm">My Dashboard</h2>
+<p class="text-on-surface-variant font-body-sm">Customized view for Credit Verification</p>
+</div>
+<button class="flex items-center gap-2 text-primary font-button px-3 py-1.5 border border-primary rounded-lg hover:bg-primary/5 active:scale-95 transition-all" id="editLayoutBtn">
+<span class="material-symbols-outlined text-lg">edit</span>
+<span>Edit Layout</span>
+</button>
+</div>
+<!-- Bento Grid Widgets -->
+<div class="grid grid-cols-2 gap-4" id="widgetContainer">
+<!-- Large Status Widget -->
+<div class="widget-card col-span-2 bg-surface-bg border border-border-subtle p-4 rounded-xl flex flex-col gap-3 relative">
+<button class="delete-widget absolute -top-2 -right-2 bg-danger text-white rounded-full p-1 shadow-lg hidden">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-on-surface-variant uppercase">Approval Velocity</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg">4.2</span>
+<span class="text-on-surface-variant font-body-sm">days avg.</span>
+</div>
+<div class="flex gap-1 h-8 items-end">
+<div class="bg-primary-container/20 w-full h-[30%] rounded-sm"></div>
+<div class="bg-primary-container/20 w-full h-[45%] rounded-sm"></div>
+<div class="bg-primary-container/20 w-full h-[60%] rounded-sm"></div>
+<div class="bg-primary-container w-full h-[85%] rounded-sm"></div>
+<div class="bg-primary-container/20 w-full h-[70%] rounded-sm"></div>
+<div class="bg-primary-container/20 w-full h-[55%] rounded-sm"></div>
+</div>
+</div>
+<!-- Mini Metric 1 -->
+<div class="widget-card bg-surface-bg border border-border-subtle p-4 rounded-xl flex flex-col gap-2 relative">
+<button class="delete-widget absolute -top-2 -right-2 bg-danger text-white rounded-full p-1 shadow-lg hidden">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<span class="material-symbols-outlined text-warning" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-data-mono text-headline-sm">184</span>
+<span class="font-label-caps text-on-surface-variant text-[10px]">Verified Profiles</span>
+</div>
+<!-- Mini Metric 2 -->
+<div class="widget-card bg-surface-bg border border-border-subtle p-4 rounded-xl flex flex-col gap-2 relative">
+<button class="delete-widget absolute -top-2 -right-2 bg-danger text-white rounded-full p-1 shadow-lg hidden">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<span class="material-symbols-outlined text-success" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span class="font-data-mono text-headline-sm">1.2k</span>
+<span class="font-label-caps text-on-surface-variant text-[10px]">Research Assets</span>
+</div>
+<!-- Recent Activity Feed -->
+<div class="widget-card col-span-2 bg-surface-bg border border-border-subtle rounded-xl overflow-hidden relative">
+<button class="delete-widget absolute -top-2 -right-2 bg-danger text-white rounded-full p-1 shadow-lg hidden">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<div class="p-4 border-b border-border-subtle flex justify-between items-center">
+<h3 class="font-label-caps uppercase">Recent Activity</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
+</div>
+<div class="divide-y divide-border-subtle">
+<div class="p-4 flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-success"></div>
+<div class="flex-1">
+<p class="font-body-sm font-semibold">Dr. Sarah Chen Approved</p>
+<p class="text-[11px] text-on-surface-variant">2 minutes ago • Engineering</p>
+</div>
+</div>
+<div class="p-4 flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-warning"></div>
+<div class="flex-1">
+<p class="font-body-sm font-semibold">Asset Revision Required</p>
+<p class="text-[11px] text-on-surface-variant">1 hour ago • Humanities</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Floating Action Button (Contextual for Dashboard) -->
+<button class="fixed bottom-24 right-6 bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-40 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</main>
+<!-- Navigation Overlay for Edit Mode -->
+<div class="fixed inset-x-0 bottom-0 bg-surface-bg border-t border-border-subtle p-4 flex items-center justify-between z-50 translate-y-full transition-transform duration-300" id="editOverlay">
+<p class="font-body-sm">Rearrange or remove widgets</p>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-on-surface-variant font-button rounded-lg" id="cancelEdit">Cancel</button>
+<button class="px-4 py-2 bg-primary text-on-primary font-button rounded-lg" id="saveEdit">Done</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 h-16 bg-surface-bright flex justify-around items-center px-2 z-40 shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
+<!-- Dashboard Active -->
+<button class="flex flex-col items-center justify-center gap-1 w-full text-primary">
+<div class="bg-secondary-container text-primary font-bold rounded-lg px-4 py-1 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+</div>
+<span class="font-label-caps text-[10px]">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-full text-on-surface-variant">
+<div class="px-4 py-1 hover:bg-surface-container-low transition-colors rounded-lg">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<span class="font-label-caps text-[10px]">Profiles</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-full text-on-surface-variant">
+<div class="px-4 py-1 hover:bg-surface-container-low transition-colors rounded-lg">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<span class="font-label-caps text-[10px]">Approvals</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-full text-on-surface-variant">
+<div class="px-4 py-1 hover:bg-surface-container-low transition-colors rounded-lg">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<span class="font-label-caps text-[10px]">Reporting</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-full text-on-surface-variant">
+<div class="px-4 py-1 hover:bg-surface-container-low transition-colors rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<span class="font-label-caps text-[10px]">Settings</span>
+</button>
+</nav>
+<script>
+        const editBtn = document.getElementById('editLayoutBtn');
+        const cancelBtn = document.getElementById('cancelEdit');
+        const saveBtn = document.getElementById('saveEdit');
+        const overlay = document.getElementById('editOverlay');
+        const body = document.body;
+        const widgets = document.querySelectorAll('.widget-card');
+        const deleteBtns = document.querySelectorAll('.delete-widget');
+
+        function toggleEditMode(active) {
+            if (active) {
+                body.classList.add('edit-mode');
+                overlay.classList.remove('translate-y-full');
+                widgets.forEach(w => w.classList.add('shake-animation'));
+                deleteBtns.forEach(d => d.classList.remove('hidden'));
+            } else {
+                body.classList.remove('edit-mode');
+                overlay.classList.add('translate-y-full');
+                widgets.forEach(w => w.classList.remove('shake-animation'));
+                deleteBtns.forEach(d => d.classList.add('hidden'));
+            }
+        }
+
+        editBtn.addEventListener('click', () => toggleEditMode(true));
+        cancelBtn.addEventListener('click', () => toggleEditMode(false));
+        saveBtn.addEventListener('click', () => toggleEditMode(false));
+
+        // Simple mock removal
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                btn.closest('.widget-card').style.display = 'none';
+            });
+        });
+
+        // Basic Drag simulation (for visual purposes)
+        let draggedItem = null;
+        widgets.forEach(widget => {
+            widget.addEventListener('touchstart', (e) => {
+                if(!body.classList.contains('edit-mode')) return;
+                draggedItem = widget;
+                widget.style.opacity = '0.5';
+            });
+            widget.addEventListener('touchend', (e) => {
+                if(draggedItem) {
+                    draggedItem.style.opacity = '1';
+                    draggedItem = null;
+                }
+            });
+        });
+    </script>
+</body></html>

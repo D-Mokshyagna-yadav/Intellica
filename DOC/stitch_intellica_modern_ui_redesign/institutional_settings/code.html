@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Settings: Credit Rules</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;450;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#943700",
+                      "outline-variant": "#c3c6d7",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#b4c5ff",
+                      "surface-variant": "#e1e2ed",
+                      "surface-dim": "#d9d9e5",
+                      "border-subtle": "#E2E8F0",
+                      "on-primary": "#ffffff",
+                      "on-surface-variant": "#434655",
+                      "on-error": "#ffffff",
+                      "surface-container-high": "#e7e7f3",
+                      "primary": "#004ac6",
+                      "on-primary-container": "#eeefff",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "surface-bright": "#faf8ff",
+                      "surface-container-highest": "#e1e2ed",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "on-secondary-fixed": "#0b1c30",
+                      "surface-tint": "#0053db",
+                      "primary-fixed": "#dbe1ff",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "sidebar-bg": "#FFFFFF",
+                      "on-tertiary-fixed": "#360f00",
+                      "inverse-surface": "#2e3039",
+                      "warning": "#F59E0B",
+                      "on-surface": "#191b23",
+                      "on-error-container": "#93000a",
+                      "success": "#22C55E",
+                      "danger": "#EF4444",
+                      "secondary-fixed": "#d3e4fe",
+                      "info": "#06B6D4",
+                      "secondary-container": "#d0e1fb",
+                      "on-background": "#191b23",
+                      "secondary": "#505f76",
+                      "outline": "#737686",
+                      "tertiary-container": "#bc4800",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-tertiary-container": "#ffede6",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#2563eb",
+                      "surface-bg": "#FFFFFF",
+                      "surface": "#faf8ff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "surface-container": "#ededf9",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-primary-fixed": "#00174b",
+                      "error": "#ba1a1a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f3f3fe",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-secondary-container": "#54647a",
+                      "background": "#faf8ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "margin-mobile": "16px",
+                      "sidebar-collapsed": "64px",
+                      "gutter": "24px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.015em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "button": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          }
+          [data-weight="fill"] .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+          }
+      </style>
+</head>
+<body class="bg-background text-on-surface font-body-sm h-full flex antialiased">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-6 px-4 bg-sidebar-bg dark:bg-inverse-surface w-sidebar-width h-screen sticky left-0 top-0 border-r border-border-subtle dark:border-outline-variant shrink-0 z-50">
+<div class="mb-8 px-4 flex flex-col gap-1">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</div>
+<div class="text-secondary dark:text-on-surface-variant font-body-sm text-body-sm">Credit Verification</div>
+</div>
+<div class="flex-1 overflow-y-auto font-label-caps text-label-caps">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+<span>Faculty Profiles</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span>Credit Approval</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">library_books</span>
+<span>Research Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span>Reporting</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="mt-auto pt-6 border-t border-border-subtle dark:border-outline-variant font-label-caps text-label-caps">
+<button class="w-full mb-6 bg-primary text-on-primary py-2 px-4 rounded font-button text-button font-semibold hover:bg-primary/90 transition-colors">Submit Evidence</button>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span>Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full bg-surface-bright dark:bg-surface-dim docked full-width top-0 sticky z-40 border-b border-border-subtle dark:border-outline-variant shrink-0">
+<div class="flex items-center gap-4 md:hidden">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Intellica</div>
+</div>
+<div class="hidden md:flex items-center gap-2 text-on-surface-variant">
+<span class="font-label-caps text-label-caps font-medium">Settings</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="font-label-caps text-label-caps font-semibold text-primary">Institution Configuration</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-border-subtle rounded-md text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 placeholder:text-outline" placeholder="Search (Cmd+K)" type="text"/>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant dark:text-surface-variant">
+<button class="p-2 hover:text-primary dark:hover:text-primary-fixed transition-colors rounded-full hover:bg-surface-container-high dark:hover:bg-surface-variant"><span class="material-symbols-outlined text-[20px]">notifications</span></button>
+<button class="p-2 hover:text-primary dark:hover:text-primary-fixed transition-colors rounded-full hover:bg-surface-container-high dark:hover:bg-surface-variant hidden sm:block"><span class="material-symbols-outlined text-[20px]">history</span></button>
+<button class="p-2 hover:text-primary dark:hover:text-primary-fixed transition-colors rounded-full hover:bg-surface-container-high dark:hover:bg-surface-variant hidden sm:block"><span class="material-symbols-outlined text-[20px]">help_outline</span></button>
+</div>
+<div class="h-8 w-px bg-border-subtle mx-2 hidden sm:block"></div>
+<div class="flex items-center gap-3">
+<button class="hidden lg:block border border-border-subtle text-primary font-button text-button px-3 py-1.5 rounded font-semibold hover:bg-surface-container-low transition-colors">Quick Action</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-sm shrink-0 overflow-hidden border border-border-subtle">
+<img class="object-cover w-full h-full" data-alt="A macro photography shot of an abstract geometric pattern with sharp blue and white crystalline structures, creating a modern, clean, and highly detailed corporate tech aesthetic in a light mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp20Ql7gtUAARqBTCAIHhNRvhx8fMTFuDSk5cqFSDklM4KoID7xm3ORxMvHv_Oyblmn5xodGa6HnurI1ESg_1kYvQ9pH7dmv9vYDmRW12ktvl5_KNCJQkO2UQsZTudtK_tkNfWY7ngoYKSNdR7-hg1C23EQm2gQTAk3lw2pf-yr8SzY_ssCE9SEhNnPTEPI3So7guJu6EDIK0QAvk1gBsqOVurLU1YXXv6em_l0uQqgmD7UGtDuMqo_gW-qq_9PjLYxomHqUWTaCA"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-gutter bg-background">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Institution Settings</h1>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Configure global parameters for DVR &amp; Dr. HS MIC College of Technology.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 bg-surface-container border border-border-subtle rounded-md px-3 py-1.5">
+<span class="font-label-caps text-label-caps text-secondary">Academic Year</span>
+<select class="bg-transparent border-none text-body-sm font-semibold text-primary focus:ring-0 py-0 pl-1 pr-6 cursor-pointer">
+<option>2023 - 2024</option>
+<option>2024 - 2025</option>
+</select>
+</div>
+<button class="bg-primary text-on-primary font-button text-button px-4 py-2 rounded shadow-sm hover:bg-primary/90 transition-colors">Save Changes</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="border-b border-border-subtle w-full flex overflow-x-auto no-scrollbar">
+<button class="px-4 py-3 font-button text-button text-secondary hover:text-primary transition-colors whitespace-nowrap border-b-2 border-transparent">College Info</button>
+<button class="px-4 py-3 font-button text-button text-secondary hover:text-primary transition-colors whitespace-nowrap border-b-2 border-transparent">Departments</button>
+<button class="px-4 py-3 font-button text-button text-primary border-b-2 border-primary whitespace-nowrap">Credit Rules</button>
+<button class="px-4 py-3 font-button text-button text-secondary hover:text-primary transition-colors whitespace-nowrap border-b-2 border-transparent">System Logs</button>
+</div>
+<!-- Content Area: Bento Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Left Column: Categories List -->
+<div class="xl:col-span-1 space-y-6">
+<!-- Maintenance Card -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 shadow-sm">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Maintenance Mode</h3>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Suspend new submissions.</p>
+</div>
+<!-- Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-warning"></div>
+</label>
+</div>
+</div>
+<!-- Rule Categories Menu -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl shadow-sm overflow-hidden flex flex-col h-[500px]">
+<div class="p-4 border-b border-border-subtle bg-surface-bright">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Evaluation Categories</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-2">
+<ul class="space-y-1">
+<li>
+<button class="w-full text-left px-3 py-2.5 rounded-lg bg-surface-container-low border border-border-subtle flex justify-between items-center group">
+<span class="font-button text-button text-on-surface">Journal Publications</span>
+<span class="material-symbols-outlined text-secondary text-[20px] group-hover:text-primary">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-surface-container-low transition-colors flex justify-between items-center group">
+<span class="font-button text-button text-secondary">Patents &amp; IP</span>
+<span class="material-symbols-outlined text-outline-variant text-[20px] group-hover:text-primary">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-surface-container-low transition-colors flex justify-between items-center group">
+<span class="font-button text-button text-secondary">FDP / Workshops</span>
+<span class="material-symbols-outlined text-outline-variant text-[20px] group-hover:text-primary">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-surface-container-low transition-colors flex justify-between items-center group">
+<span class="font-button text-button text-secondary">Funded Projects</span>
+<span class="material-symbols-outlined text-outline-variant text-[20px] group-hover:text-primary">chevron_right</span>
+</button>
+</li>
+</ul>
+</div>
+<div class="p-3 border-t border-border-subtle bg-surface-bright">
+<button class="w-full py-2 border border-dashed border-primary text-primary font-button text-button rounded hover:bg-primary-fixed-dim/20 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                    New Category
+                                </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Detail Configuration (Tables) -->
+<div class="xl:col-span-2 space-y-6">
+<div class="bg-surface-bg border border-border-subtle rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-5 border-b border-border-subtle flex justify-between items-center bg-surface-bright">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Journal Publications</h2>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Configure credit weightings for various publication tiers.</p>
+</div>
+<button class="text-primary hover:bg-primary-fixed/30 p-2 rounded transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-border-subtle">
+<th class="px-5 py-3 font-label-caps text-label-caps text-secondary font-semibold">Sub-Category / Indexing</th>
+<th class="px-5 py-3 font-label-caps text-label-caps text-secondary font-semibold">Author Pos.</th>
+<th class="px-5 py-3 font-label-caps text-label-caps text-secondary font-semibold">Base Pts</th>
+<th class="px-5 py-3 font-label-caps text-label-caps text-secondary font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-5 py-3 align-top">
+<div class="font-body-sm text-on-surface font-medium">SCI / SCIE Indexed</div>
+<div class="text-[12px] text-secondary mt-0.5">High Impact Factor &gt; 1.0</div>
+</td>
+<td class="px-5 py-3 align-top">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-primary-container/10 text-primary border border-primary/20">First/Corresp.</span>
+</td>
+<td class="px-5 py-3 align-top font-data-mono text-data-mono text-on-surface">
+<input class="w-20 px-2 py-1 border border-border-subtle rounded text-right focus:ring-1 focus:ring-primary focus:border-primary" type="number" value="20.0"/>
+</td>
+<td class="px-5 py-3 align-top text-right">
+<button class="text-secondary hover:text-danger transition-colors p-1"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-5 py-3 align-top">
+<div class="font-body-sm text-on-surface font-medium">SCI / SCIE Indexed</div>
+<div class="text-[12px] text-secondary mt-0.5">High Impact Factor &gt; 1.0</div>
+</td>
+<td class="px-5 py-3 align-top">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-container text-secondary border border-border-subtle">Co-Author</span>
+</td>
+<td class="px-5 py-3 align-top font-data-mono text-data-mono text-on-surface">
+<input class="w-20 px-2 py-1 border border-border-subtle rounded text-right focus:ring-1 focus:ring-primary focus:border-primary" type="number" value="10.0"/>
+</td>
+<td class="px-5 py-3 align-top text-right">
+<button class="text-secondary hover:text-danger transition-colors p-1"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors bg-surface-container-low/50">
+<td class="px-5 py-3 align-top">
+<div class="font-body-sm text-on-surface font-medium">Scopus Indexed</div>
+<div class="text-[12px] text-secondary mt-0.5">Standard Tier</div>
+</td>
+<td class="px-5 py-3 align-top">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-primary-container/10 text-primary border border-primary/20">First/Corresp.</span>
+</td>
+<td class="px-5 py-3 align-top font-data-mono text-data-mono text-on-surface">
+<input class="w-20 px-2 py-1 border border-border-subtle rounded text-right focus:ring-1 focus:ring-primary focus:border-primary" type="number" value="15.0"/>
+</td>
+<td class="px-5 py-3 align-top text-right">
+<button class="text-secondary hover:text-danger transition-colors p-1"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-3 border-t border-border-subtle bg-surface-bright flex justify-end">
+<button class="text-primary font-button text-button px-3 py-1.5 rounded hover:bg-primary-fixed-dim/20 transition-colors flex items-center gap-1 text-sm">
+<span class="material-symbols-outlined text-[18px]">add_circle</span> Add Rule Line
+                                </button>
+</div>
+</div>
+<!-- Capping Limits -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl shadow-sm p-5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Category Capping</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-label-caps text-label-caps text-secondary block">Max Credits per Academic Year</label>
+<input class="w-full px-3 py-2 border border-border-subtle rounded-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary font-data-mono text-data-mono" type="number" value="50"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-caps text-label-caps text-secondary block">Carry Forward Limit</label>
+<select class="w-full px-3 py-2 border border-border-subtle rounded-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary font-body-sm">
+<option>0 (No Carry Forward)</option>
+<option>10 Credits</option>
+<option>20 Credits</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

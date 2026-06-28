@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Approval Discussion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#2563eb",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-bright": "#faf8ff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "sidebar-bg": "#FFFFFF",
+                      "tertiary-container": "#bc4800",
+                      "inverse-surface": "#2e3039",
+                      "on-surface": "#191b23",
+                      "primary-fixed": "#dbe1ff",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "outline-variant": "#c3c6d7",
+                      "surface-dim": "#d9d9e5",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "danger": "#EF4444",
+                      "on-tertiary-container": "#ffede6",
+                      "surface-variant": "#e1e2ed",
+                      "surface": "#faf8ff",
+                      "secondary": "#505f76",
+                      "on-primary-container": "#eeefff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "secondary-container": "#d0e1fb",
+                      "on-secondary-fixed": "#0b1c30",
+                      "surface-container-low": "#f3f3fe",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "success": "#22C55E",
+                      "outline": "#737686",
+                      "border-subtle": "#E2E8F0",
+                      "on-secondary-container": "#54647a",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed": "#00174b",
+                      "tertiary": "#943700",
+                      "surface-container": "#ededf9",
+                      "surface-container-high": "#e7e7f3",
+                      "surface-bg": "#FFFFFF",
+                      "info": "#06B6D4",
+                      "background": "#faf8ff",
+                      "inverse-primary": "#b4c5ff",
+                      "primary": "#004ac6",
+                      "on-background": "#191b23",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-surface-variant": "#434655",
+                      "warning": "#F59E0B",
+                      "tertiary-fixed": "#ffdbcd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "sidebar-width": "260px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "sidebar-collapsed": "64px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.015em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "button": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background h-full flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-sidebar-bg dark:bg-inverse-surface w-sidebar-width h-screen sticky top-0 left-0 border-r border-outline-variant dark:border-outline flex-col py-6 z-50">
+<div class="px-6 mb-8 flex items-center space-x-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-inverse-primary">Intellica</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Faculty Portal</p>
+</div>
+</div>
+<div class="px-4 mb-6">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-button text-button py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors duration-200 shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>New Achievement</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto px-4 space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors" data-icon="dashboard">dashboard</span>
+<span class="font-body-sm text-body-sm">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors" data-icon="military_tech">military_tech</span>
+<span class="font-body-sm text-body-sm">Achievements</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-primary dark:text-inverse-primary font-bold bg-secondary-container/30 dark:bg-secondary-container/10 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="font-body-sm text-body-sm">Credit Approvals</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors" data-icon="forum">forum</span>
+<span class="font-body-sm text-body-sm">Discussions</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors" data-icon="leaderboard">leaderboard</span>
+<span class="font-body-sm text-body-sm">Analytics</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors" data-icon="settings">settings</span>
+<span class="font-body-sm text-body-sm">Settings</span>
+</a>
+</div>
+<div class="mt-auto px-4 pt-4 border-t border-outline-variant space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-body-sm text-body-sm">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+<!-- TopNavBar -->
+<header class="bg-surface-bright dark:bg-inverse-surface sticky top-0 z-40 w-full border-b border-outline-variant dark:border-outline flex justify-between items-center px-gutter h-16 flex-shrink-0">
+<div class="flex items-center space-x-4 flex-1">
+<div class="md:hidden">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+<div class="hidden md:flex items-center space-x-2 text-on-surface-variant">
+<span class="font-body-sm text-body-sm hover:text-primary cursor-pointer transition-colors">Credit Approvals</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="font-body-sm text-body-sm text-primary font-semibold">ACH-2023-089</span>
+</div>
+</div>
+<div class="flex-1 flex justify-center hidden lg:flex">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-lg pl-10 pr-4 py-2 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Search achievements, faculty..." type="text"/>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex items-center space-x-1">
+<kbd class="px-1.5 py-0.5 bg-surface-bg border border-border-subtle rounded font-data-mono text-data-mono text-outline text-[10px]">⌘</kbd>
+<kbd class="px-1.5 py-0.5 bg-surface-bg border border-border-subtle rounded font-data-mono text-data-mono text-outline text-[10px]">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-end space-x-4 flex-1">
+<button class="text-on-surface-variant hover:text-primary transition-all duration-200 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-danger rounded-full border border-surface-bright"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all duration-200 hidden sm:block">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-container-high border border-border-subtle overflow-hidden cursor-pointer">
+<img alt="Professor Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxt_n-g42jkZ10q5dgXfD6EvjoEIyPoL62nYOQexHIL21xYoMJmEobi55je3dwebP5NgmUrvQSIgVq8eQ87ebsWOjOghvKTNUh4FJjH6FdlfPJoWfL1NrZlcJY8Rpz9Lc6NNGUz_c20N7BE8Me8OhJFj5D9jJyhgRGLpZ02dvtJsflyCS9Kdziex-14P_3oSmoMKsvtQXvW8Z0LRcL1b3Ved_VvLcC-_DfZpniwj-GEo_ICnuM1-i3hYBm7dZEN8reDY289OFZrII"/>
+</div>
+</div>
+</header>
+<!-- Content Split Layout -->
+<div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+<!-- Left Panel: Approval Timeline -->
+<div class="w-full lg:w-5/12 xl:w-1/3 bg-surface border-r border-border-subtle overflow-y-auto flex-shrink-0 flex flex-col">
+<!-- Submission Header Summary -->
+<div class="p-6 border-b border-border-subtle bg-surface-bg">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Journal Publication</h2>
+<p class="font-data-mono text-data-mono text-secondary">ID: ACH-2023-089</p>
+</div>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-caps text-label-caps bg-warning/10 text-warning border border-warning/20">
+                            PENDING HOD
+                        </span>
+</div>
+<div class="space-y-3">
+<div class="flex items-start">
+<span class="material-symbols-outlined text-outline text-[18px] mt-0.5 mr-2" data-icon="person">person</span>
+<div>
+<p class="font-label-caps text-label-caps text-outline">SUBMITTED BY</p>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold">Dr. Sarah Jenkins</p>
+<p class="font-body-sm text-body-sm text-secondary">Computer Science Dept.</p>
+</div>
+</div>
+<div class="flex items-start">
+<span class="material-symbols-outlined text-outline text-[18px] mt-0.5 mr-2" data-icon="description">description</span>
+<div>
+<p class="font-label-caps text-label-caps text-outline">CLAIMED CREDITS</p>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold">15 Credits (Category A)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline -->
+<div class="p-6 flex-1">
+<h3 class="font-label-caps text-label-caps text-outline mb-6">APPROVAL TIMELINE</h3>
+<div class="relative space-y-8 before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-border-subtle before:via-border-subtle before:to-transparent">
+<!-- Timeline Item 1 (Completed) -->
+<div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+<!-- Icon -->
+<div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-surface-bg bg-success text-on-primary shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-0 md:left-1/2 transform -translate-x-1/2">
+<span class="material-symbols-outlined text-[16px]" data-icon="check">check</span>
+</div>
+<!-- Content -->
+<div class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] pl-8 md:pl-0 md:group-odd:text-right md:group-even:text-left">
+<div class="bg-surface-bg p-4 rounded-lg border border-border-subtle shadow-sm relative">
+<h4 class="font-button text-button text-on-surface">Draft Submitted</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Initial documentation uploaded by Dr. Jenkins.</p>
+<time class="font-data-mono text-data-mono text-outline block mt-2">Oct 12, 10:30 AM</time>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 (Completed) -->
+<div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+<!-- Icon -->
+<div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-surface-bg bg-success text-on-primary shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-0 md:left-1/2 transform -translate-x-1/2">
+<span class="material-symbols-outlined text-[16px]" data-icon="check">check</span>
+</div>
+<!-- Content -->
+<div class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] pl-8 md:pl-0 md:group-odd:text-right md:group-even:text-left">
+<div class="bg-surface-bg p-4 rounded-lg border border-border-subtle shadow-sm">
+<h4 class="font-button text-button text-on-surface">Department Review</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Initial screening passed by Dept. Coordinator.</p>
+<time class="font-data-mono text-data-mono text-outline block mt-2">Oct 14, 02:15 PM</time>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 (Current) -->
+<div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+<!-- Icon -->
+<div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-primary bg-surface-bg text-primary shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-0 md:left-1/2 transform -translate-x-1/2">
+<div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+</div>
+<!-- Content -->
+<div class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] pl-8 md:pl-0 md:group-odd:text-right md:group-even:text-left">
+<div class="bg-primary/5 p-4 rounded-lg border border-primary/30 shadow-sm ring-1 ring-primary/10">
+<h4 class="font-button text-button text-primary">HOD Approval</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Pending review from Head of Department.</p>
+<time class="font-data-mono text-data-mono text-primary/70 block mt-2">In Progress</time>
+</div>
+</div>
+</div>
+<!-- Timeline Item 4 (Pending) -->
+<div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+<!-- Icon -->
+<div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-border-subtle bg-surface-bg text-outline shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-0 md:left-1/2 transform -translate-x-1/2">
+<span class="material-symbols-outlined text-[16px]" data-icon="more_horiz">more_horiz</span>
+</div>
+<!-- Content -->
+<div class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] pl-8 md:pl-0 md:group-odd:text-right md:group-even:text-left">
+<div class="p-4 rounded-lg border border-transparent opacity-50">
+<h4 class="font-button text-button text-outline">Dean Ratification</h4>
+<p class="font-body-sm text-body-sm text-outline mt-1">Final sign-off required.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Discussion Thread -->
+<div class="flex-1 flex flex-col bg-surface-bg relative">
+<!-- Thread Header -->
+<div class="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-surface-bg/80 backdrop-blur-sm z-10">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-secondary" data-icon="forum">forum</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Review Discussion</h3>
+<span class="px-2 py-0.5 bg-surface-container-low text-secondary rounded font-data-mono text-data-mono">4 Messages</span>
+</div>
+<div class="flex space-x-2">
+<button class="p-2 text-outline hover:text-primary transition-colors rounded hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Message 1: Faculty (Sender) -->
+<div class="flex flex-col items-start max-w-3xl">
+<div class="flex items-end space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border-subtle overflow-hidden flex-shrink-0">
+<img alt="Dr. Sarah Jenkins" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvA6EPvkh3i-9QFDnjcR0tG4UmaW2S4tLLoL_Qebx80kmfNcPbVxxROp0HgCJju0tdhH6ve7sviyWGRSfDAr7GJndxJ4SnOVtVselvELttDNKpJ9ESJyaQvVcYPTGASb4u-db9GvLCoISq9nOxgrax7fi1zsj7RTYUFRDw_DShz85OqyQO9VXcA7ICS5F8d2K7xiF75EHRB1_VjAXj5JA_SrirobL_mqMaK3vptjNKkrm53Pd-FS0dAon4UZvR_2UM40JiVlp9Zvc"/>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex items-baseline space-x-2">
+<span class="font-button text-button text-on-surface">Dr. Sarah Jenkins</span>
+<span class="font-data-mono text-data-mono text-outline text-[11px]">Oct 12, 10:32 AM</span>
+</div>
+<div class="bg-surface p-4 rounded-2xl rounded-bl-sm border border-border-subtle text-on-surface font-body-md text-body-md shadow-sm">
+<p>I have uploaded the final published version of the IEEE paper along with the conference presentation slides. Please let me know if additional indexing proof is required.</p>
+</div>
+</div>
+</div>
+<!-- Attachments -->
+<div class="ml-11 mt-2 flex gap-3 flex-wrap">
+<div class="flex items-center space-x-2 p-2 pr-3 bg-surface border border-border-subtle rounded-lg cursor-pointer hover:border-primary transition-colors group">
+<div class="w-8 h-8 bg-error/10 text-error rounded flex items-center justify-center group-hover:bg-error/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate max-w-[150px]">IEEE_Paper_Final.pdf</p>
+<p class="font-data-mono text-data-mono text-secondary text-[10px]">2.4 MB</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Message 2: Coordinator -->
+<div class="flex flex-col items-start max-w-3xl">
+<div class="flex items-end space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border-subtle overflow-hidden flex-shrink-0 flex items-center justify-center bg-secondary-container text-secondary">
+<span class="font-label-caps">MC</span>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex items-baseline space-x-2">
+<span class="font-button text-button text-on-surface">Mark Coordinator</span>
+<span class="font-data-mono text-data-mono text-outline text-[11px]">Oct 14, 09:15 AM</span>
+</div>
+<div class="bg-surface p-4 rounded-2xl rounded-bl-sm border border-border-subtle text-on-surface font-body-md text-body-md shadow-sm">
+<p>Thanks Sarah. The indexing looks good, but the system flagged that the co-author weighting needs to be explicitly stated as per the new Q3 guidelines.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- System Action: Resolved -->
+<div class="flex items-center justify-center my-6 relative">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-border-subtle"></div>
+</div>
+<div class="relative bg-surface-bg px-4 py-1 flex items-center space-x-2 border border-border-subtle rounded-full text-success text-sm bg-success/5">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+<span class="font-label-caps text-label-caps">Changes Resolved by Dr. Sarah Jenkins (Oct 14, 11:30 AM)</span>
+</div>
+</div>
+<!-- Message 3: Faculty (Sender) -->
+<div class="flex flex-col items-start max-w-3xl">
+<div class="flex items-end space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border-subtle overflow-hidden flex-shrink-0">
+<img alt="Dr. Sarah Jenkins" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdV-Rz7_CsmJ1F78PscPYcl0b-GmjtirCvcIG1eqmSGlAsMZn15e4NTYW70z_I15uTocjTfS8CZe2r2cY0IwBWTUkEpg7hqj71fMoYd8keSCzi9K2ecmGFiDlSi5bRBYs6hnGFQbQ-4CV2EIjxXq3oYL5BuuaMKyPWx7_CCIcs3BRyIRITLlx55JkOtCXeOpbrZrLoCIvOX-84RIulQ50T98CXc9UgEy8LfjSrX_1LOJ72pRctK5PZm647lSPLHOyTJTBABwWwuV8"/>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex items-baseline space-x-2">
+<span class="font-button text-button text-on-surface">Dr. Sarah Jenkins</span>
+<span class="font-data-mono text-data-mono text-outline text-[11px]">Oct 14, 11:30 AM</span>
+</div>
+<div class="bg-surface p-4 rounded-2xl rounded-bl-sm border border-border-subtle text-on-surface font-body-md text-body-md shadow-sm">
+<p>I've updated the form to reflect the 60/40 authorship split and attached the signed declaration from the co-author.</p>
+</div>
+</div>
+</div>
+<!-- Attachments -->
+<div class="ml-11 mt-2 flex gap-3 flex-wrap">
+<div class="flex items-center space-x-2 p-2 pr-3 bg-surface border border-border-subtle rounded-lg cursor-pointer hover:border-primary transition-colors group">
+<div class="w-8 h-8 bg-info/10 text-info rounded flex items-center justify-center group-hover:bg-info/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="image">image</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate max-w-[150px]">Signed_Dec_v2.png</p>
+<p class="font-data-mono text-data-mono text-secondary text-[10px]">1.1 MB</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action / Input Area -->
+<div class="p-4 border-t border-border-subtle bg-surface-bg flex flex-col gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+<!-- HOD Actions -->
+<div class="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-primary/20">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="gavel">gavel</span>
+<div>
+<h4 class="font-button text-button text-on-surface">HOD Decision Required</h4>
+<p class="font-body-sm text-body-sm text-secondary">Review the submission and provided evidence.</p>
+</div>
+</div>
+<div class="flex space-x-3">
+<button class="px-4 py-2 bg-surface text-danger font-button text-button border border-border-subtle rounded-lg hover:bg-danger/5 transition-colors">
+                                Request Changes
+                            </button>
+<button class="px-5 py-2 bg-primary text-on-primary font-button text-button rounded-lg shadow-sm hover:bg-primary-container transition-colors flex items-center space-x-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="thumb_up">thumb_up</span>
+<span>Approve (15 Credits)</span>
+</button>
+</div>
+</div>
+<!-- Message Input -->
+<div class="flex items-end space-x-3 relative">
+<button class="p-2 text-secondary hover:text-primary transition-colors mb-1">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<div class="flex-1 relative">
+<textarea class="w-full bg-surface border border-border-subtle rounded-xl py-3 pl-4 pr-12 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none overflow-hidden min-h-[44px]" placeholder="Type a message or provide feedback..." rows="1" style="height: 44px;"></textarea>
+<button class="absolute right-2 bottom-1.5 p-1.5 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

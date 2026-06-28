@@ -12,7 +12,8 @@ async function moveProfileImage(user) {
   const folders = createUserFolder(user);
   if (!folders) return;
 
-  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
+  const resolveStoragePath = require("./resolveStoragePath");
+  const basePath = resolveStoragePath();
   let oldPath = path.join(basePath, "temp", filename);
   if (!fs.existsSync(oldPath)) {
     oldPath = path.join(basePath, filename);

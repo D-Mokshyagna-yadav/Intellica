@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 const adminController = require("../controllers/adminController");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
@@ -18,6 +19,7 @@ router.delete("/remove-hod/:id", asyncHandler(adminController.removeApprovedHod)
 router.get("/departments", asyncHandler(adminController.getDepartmentStatus));
 router.get("/departments/manage", asyncHandler(adminController.getManagedDepartments));
 router.post("/departments", asyncHandler(adminController.createDepartment));
+router.post("/departments/merge", asyncHandler(adminController.mergeDepartments));
 router.put("/departments/:id", asyncHandler(adminController.updateDepartment));
 router.delete("/departments/:id", asyncHandler(adminController.deleteDepartment));
 router.post("/departments/:id/restore", asyncHandler(adminController.restoreDepartment));
@@ -26,12 +28,18 @@ router.get("/activity-stats", asyncHandler(adminController.getActivityStats));
 
 router.get("/pending-uploads", asyncHandler(adminController.getPendingUploadsForAdmin));
 router.post("/approve-upload/:id", asyncHandler(adminController.approveUploadByAdmin));
+router.post("/bulk-approve", asyncHandler(require("../controllers/uploadController").bulkApprove));
 router.post("/discussion/:id", asyncHandler(adminController.adminDiscussion));
+router.put("/return-revision/:id", asyncHandler(require("../controllers/uploadController").returnForRevision));
 
 router.get("/all-users", asyncHandler(adminController.getAllUsers));
+router.get("/export-users", asyncHandler(adminController.exportUsers));
+router.post("/import-users", multer({ storage: multer.memoryStorage() }).single("file"), asyncHandler(adminController.importUsers));
 router.post("/users", asyncHandler(adminController.createManualUser));
 router.delete("/delete-user/:id", asyncHandler(adminController.deleteUser));
 router.put("/change-department/:id", asyncHandler(adminController.changeDepartment));
+router.post("/promote-hod/:id", asyncHandler(adminController.promoteToHod));
+router.post("/demote-faculty/:id", asyncHandler(adminController.demoteToFaculty));
 router.get("/department-analytics/:department", asyncHandler(adminController.getDepartmentAnalytics));
 
 module.exports = router;

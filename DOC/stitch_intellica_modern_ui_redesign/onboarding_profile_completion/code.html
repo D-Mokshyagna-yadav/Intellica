@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Profile Completion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#943700",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-variant": "#e1e2ed",
+                        "surface-dim": "#d9d9e5",
+                        "border-subtle": "#E2E8F0",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "primary": "#004ac6",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-fixed": "#0b1c30",
+                        "surface-tint": "#0053db",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-surface": "#2e3039",
+                        "warning": "#F59E0B",
+                        "on-surface": "#191b23",
+                        "on-error-container": "#93000a",
+                        "success": "#22C55E",
+                        "danger": "#EF4444",
+                        "secondary-fixed": "#d3e4fe",
+                        "info": "#06B6D4",
+                        "secondary-container": "#d0e1fb",
+                        "on-background": "#191b23",
+                        "secondary": "#505f76",
+                        "outline": "#737686",
+                        "tertiary-container": "#bc4800",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#ffede6",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface-bg": "#FFFFFF",
+                        "surface": "#faf8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container": "#ededf9",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-primary-fixed": "#00174b",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f3f3fe",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-secondary-container": "#54647a",
+                        "background": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "margin-mobile": "16px",
+                        "sidebar-collapsed": "64px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "button": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0; }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c3c6d7; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<div class="max-w-container-max w-full flex flex-col md:flex-row gap-gutter">
+<!-- Left: Progress Indicator -->
+<div class="w-full md:w-sidebar-width flex-shrink-0 mb-8 md:mb-0">
+<div class="sticky top-8">
+<div class="mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Intellica</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Profile Completion</p>
+</div>
+<nav aria-label="Progress">
+<ol class="overflow-hidden" role="list">
+<li class="relative pb-10">
+<div aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-primary"></div>
+<a class="relative flex items-center group" href="#">
+<span class="h-9 flex items-center">
+<span class="relative z-10 w-8 h-8 flex items-center justify-center bg-primary rounded-full group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-on-primary text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+</span>
+</span>
+<span class="ml-4 min-w-0 flex flex-col">
+<span class="font-label-caps text-label-caps text-primary tracking-wide">Step 1</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Personal Info</span>
+</span>
+</a>
+</li>
+<li class="relative pb-10">
+<div aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border-subtle"></div>
+<a class="relative flex items-center group" href="#">
+<span class="h-9 flex items-center">
+<span class="relative z-10 w-8 h-8 flex items-center justify-center bg-surface-container-high border-2 border-border-subtle rounded-full">
+<span class="material-symbols-outlined text-outline text-sm">school</span>
+</span>
+</span>
+<span class="ml-4 min-w-0 flex flex-col">
+<span class="font-label-caps text-label-caps text-outline tracking-wide">Step 2</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">Academic Details</span>
+</span>
+</a>
+</li>
+<li class="relative pb-10">
+<div aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border-subtle"></div>
+<a class="relative flex items-center group" href="#">
+<span class="h-9 flex items-center">
+<span class="relative z-10 w-8 h-8 flex items-center justify-center bg-surface-container-high border-2 border-border-subtle rounded-full">
+<span class="material-symbols-outlined text-outline text-sm">fingerprint</span>
+</span>
+</span>
+<span class="ml-4 min-w-0 flex flex-col">
+<span class="font-label-caps text-label-caps text-outline tracking-wide">Step 3</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">Research IDs</span>
+</span>
+</a>
+</li>
+<li class="relative">
+<a class="relative flex items-center group" href="#">
+<span class="h-9 flex items-center">
+<span class="relative z-10 w-8 h-8 flex items-center justify-center bg-surface-container-high border-2 border-border-subtle rounded-full">
+<span class="material-symbols-outlined text-outline text-sm">description</span>
+</span>
+</span>
+<span class="ml-4 min-w-0 flex flex-col">
+<span class="font-label-caps text-label-caps text-outline tracking-wide">Step 4</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">Faculty Bio</span>
+</span>
+</a>
+</li>
+</ol>
+</nav>
+</div>
+</div>
+<!-- Right: Main Content Area (Bento-ish layout for forms) -->
+<div class="flex-1 max-w-3xl">
+<div class="bg-surface-bg border border-border-subtle rounded-xl shadow-sm overflow-hidden">
+<!-- Section Header -->
+<div class="px-8 py-6 border-b border-border-subtle bg-surface-bright">
+<h2 class="font-headline-md text-headline-md text-on-surface">Personal Information</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Please provide your basic details to set up your Intellica profile.</p>
+</div>
+<!-- Form Content -->
+<div class="p-8 space-y-8">
+<!-- Photo Upload -->
+<div class="flex items-center gap-6">
+<div class="w-24 h-24 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center overflow-hidden flex-shrink-0">
+<span class="material-symbols-outlined text-4xl text-outline-variant">person</span>
+</div>
+<div class="flex-1">
+<label class="block font-headline-sm text-headline-sm text-on-surface mb-2">Profile Photo</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Upload a professional headshot. JPG or PNG, max 5MB.</p>
+<div class="flex gap-3">
+<button class="bg-surface-container-high hover:bg-surface-variant text-on-surface border border-border-subtle px-4 py-2 rounded-lg font-button text-button transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-sm">upload</span>
+                                    Upload File
+                                </button>
+</div>
+</div>
+</div>
+<div class="border-t border-border-subtle"></div>
+<!-- Details Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="block font-button text-button text-on-surface" for="firstName">First Name</label>
+<input class="w-full bg-surface-bright border border-border-subtle rounded-lg px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" id="firstName" name="firstName" placeholder="Jane" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block font-button text-button text-on-surface" for="lastName">Last Name</label>
+<input class="w-full bg-surface-bright border border-border-subtle rounded-lg px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" id="lastName" name="lastName" placeholder="Doe" type="text"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="block font-button text-button text-on-surface" for="email">Institutional Email</label>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-4 py-2.5 font-data-mono text-data-mono text-on-surface-variant cursor-not-allowed" disabled="" id="email" name="email" type="email" value="jane.doe@university.edu"/>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 text-xs">Email is provided by your institution and cannot be changed.</p>
+</div>
+<div class="space-y-2">
+<label class="block font-button text-button text-on-surface" for="employeeId">Employee ID</label>
+<input class="w-full bg-surface-bright border border-border-subtle rounded-lg px-4 py-2.5 font-data-mono text-data-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" id="employeeId" name="employeeId" placeholder="EMP-12345" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block font-button text-button text-on-surface" for="phone">Contact Number (Optional)</label>
+<input class="w-full bg-surface-bright border border-border-subtle rounded-lg px-4 py-2.5 font-data-mono text-data-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" id="phone" name="phone" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="px-8 py-5 border-t border-border-subtle bg-surface-bright flex justify-between items-center">
+<button class="text-on-surface-variant hover:text-on-surface font-button text-button px-4 py-2 transition-colors" type="button">
+                        Cancel
+                    </button>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-button text-button px-6 py-2.5 rounded-lg shadow-sm transition-all hover:shadow flex items-center gap-2" type="button">
+                        Save &amp; Continue
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

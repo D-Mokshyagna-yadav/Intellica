@@ -1,10 +1,11 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const resolveStoragePath = require("../utils/resolveStoragePath");
 
 /* ================= BASE UPLOAD FOLDER ================= */
 
-const baseUploadDir = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
+const baseUploadDir = resolveStoragePath();
 const tempDir = path.join(baseUploadDir, "temp");
 
 /* ================= CREATE FOLDERS IF NOT EXIST ================= */

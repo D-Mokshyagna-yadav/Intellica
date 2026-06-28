@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intellica - Journal Publications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "info": "#06B6D4",
+                        "surface-container-high": "#e7e7f3",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "primary": "#004ac6",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "outline": "#737686",
+                        "surface-container-highest": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "warning": "#F59E0B",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f0fb",
+                        "outline-variant": "#c3c6d7",
+                        "surface-dim": "#d9d9e5",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary-container": "#2563eb",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-background": "#191b23",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-container": "#ffede6",
+                        "border-subtle": "#E2E8F0",
+                        "danger": "#EF4444",
+                        "success": "#22C55E",
+                        "surface-bg": "#FFFFFF",
+                        "surface-container": "#ededf9",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary": "#943700",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-surface": "#191b23",
+                        "sidebar-bg": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "sidebar-collapsed": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "450" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+                        "button": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-bright text-on-surface font-body-md antialiased h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-sidebar-bg dark:bg-inverse-surface w-sidebar-width h-screen sticky left-0 top-0 border-r border-border-subtle dark:border-outline-variant flex flex-col h-full py-6 px-4 hidden md:flex shrink-0">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Intellica</h1>
+<p class="font-label-caps text-label-caps text-secondary mt-0.5">Credit Verification</p>
+</div>
+</div>
+<button class="mb-6 w-full bg-primary text-on-primary font-button text-button py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+            Submit Evidence
+        </button>
+<div class="flex-1 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-secondary-container dark:bg-on-secondary-fixed-variant text-primary dark:text-primary-fixed-dim font-bold rounded-lg scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-caps text-label-caps">Credit Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-label-caps text-label-caps">Research Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">Reporting</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</div>
+<div class="mt-auto pt-4 border-t border-border-subtle flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors hover:bg-surface-container-high dark:hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col w-full min-w-0">
+<!-- TopNavBar -->
+<header class="bg-surface-bright dark:bg-surface-dim docked full-width top-0 sticky z-40 border-b border-border-subtle dark:border-outline-variant flex justify-between items-center h-16 px-gutter w-full shrink-0">
+<div class="flex items-center md:hidden">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Intellica</h1>
+</div>
+<div class="flex-1 max-w-xl hidden md:flex items-center gap-2 bg-surface-container-low rounded-lg px-3 py-1.5 border border-border-subtle focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm w-full placeholder-outline text-on-surface" placeholder="Search publications or press Cmd+K" type="text"/>
+</div>
+<div class="flex items-center gap-4 ml-auto">
+<button class="text-secondary hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-border-subtle mx-1"></div>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover border border-border-subtle" data-alt="A small, professional headshot portrait of an administrator in a modern office setting. Well-lit, high-key lighting, corporate minimalist aesthetic, clear focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvmKhEUgSQm3MdO0XvPeyVLrntypQQJdNoN3eEGnEuCXUg0Jax-VgG3ghIC4GfOV_outgZbChcxvz2sjvWe0HEHIXcTLMmzmh_oBA6nB4sMB8-HGYEdhGNIqkbBA5gLzt-5RzUTau0SLgwQw8xcPcm9LgLRlrWhkiRtXolS2_GpGjoInX1gNzxDMnQmxz9x2ZizjqkDhUwIG9ZTI7trOL7SSYVAtNMqoTY1s1F4MLQUuznFmmH-BwETuJ1X_KCFG8BImm0ZMtbr64"/>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 overflow-y-auto p-4 md:p-gutter bg-surface">
+<div class="max-w-container-max mx-auto">
+<!-- Page Header & Actions -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+<div>
+<div class="flex items-center gap-2 text-secondary mb-1">
+<span class="font-label-caps text-label-caps">Faculty Profiles</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-label-caps text-label-caps text-on-surface">Dr. Sarah Jenkins</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Journal Publications</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 border border-border-subtle rounded-lg text-primary font-button text-button hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-button text-button hover:bg-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Publication
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout for Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Stats Column -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6">
+<h3 class="font-label-caps text-label-caps text-secondary mb-4 uppercase">Total Publication Credits</h3>
+<div class="flex items-end gap-3">
+<span class="font-display-lg text-display-lg text-primary">12.5</span>
+<span class="font-body-sm text-body-sm text-secondary mb-2">Approved</span>
+</div>
+<div class="mt-4 h-12 w-full flex items-end gap-1 opacity-70">
+<!-- Sparkline mockup -->
+<div class="w-1/6 bg-primary-fixed h-1/4 rounded-t-sm"></div>
+<div class="w-1/6 bg-primary-fixed h-2/4 rounded-t-sm"></div>
+<div class="w-1/6 bg-primary-fixed h-1/3 rounded-t-sm"></div>
+<div class="w-1/6 bg-primary-fixed h-3/4 rounded-t-sm"></div>
+<div class="w-1/6 bg-primary-fixed h-2/3 rounded-t-sm"></div>
+<div class="w-1/6 bg-primary h-full rounded-t-sm"></div>
+</div>
+</div>
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-6">
+<h3 class="font-label-caps text-label-caps text-secondary mb-4 uppercase">Verification Status</h3>
+<ul class="flex flex-col gap-3">
+<li class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface">Approved</span>
+<span class="font-data-mono text-data-mono bg-success/10 text-success px-2 py-0.5 rounded">18</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface">Pending Review</span>
+<span class="font-data-mono text-data-mono bg-warning/10 text-warning px-2 py-0.5 rounded">3</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface">Requires Revision</span>
+<span class="font-data-mono text-data-mono bg-error/10 text-error px-2 py-0.5 rounded">1</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Cards Grid -->
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-max">
+<!-- Card 1 -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 hover:border-primary transition-colors cursor-pointer group flex flex-col h-full">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-success/10 text-success font-label-caps text-[10px] px-2 py-1 rounded-full border border-success/20 uppercase tracking-wider">Approved</span>
+<span class="font-data-mono text-data-mono text-secondary">2023</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-2">Quantum Coherence in Macroscopic Superconducting Structures</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-1">Nature Physics</p>
+<div class="mt-auto pt-4 border-t border-border-subtle flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-data-mono text-data-mono text-on-surface">3.0 Credits</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-border-subtle group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 hover:border-primary transition-colors cursor-pointer group flex flex-col h-full">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-warning/10 text-warning font-label-caps text-[10px] px-2 py-1 rounded-full border border-warning/20 uppercase tracking-wider">Pending Review</span>
+<span class="font-data-mono text-data-mono text-secondary">2023</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-2">Topological Insulators in Two-Dimensional Lattices</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-1">Physical Review Letters</p>
+<div class="mt-auto pt-4 border-t border-border-subtle flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">hourglass_empty</span>
+<span class="font-data-mono text-data-mono text-secondary">Est. 2.5 Credits</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-border-subtle group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 hover:border-primary transition-colors cursor-pointer group flex flex-col h-full">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-error/10 text-error font-label-caps text-[10px] px-2 py-1 rounded-full border border-error/20 uppercase tracking-wider">Revision Req</span>
+<span class="font-data-mono text-data-mono text-secondary">2022</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-2">Dynamics of Non-Abelian Anyons</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-1">Journal of High Energy Physics</p>
+<div class="mt-auto pt-4 border-t border-border-subtle flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-error">error</span>
+<span class="font-body-sm text-body-sm text-error">Missing DOI</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-border-subtle group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-bg border border-border-subtle rounded-xl p-5 hover:border-primary transition-colors cursor-pointer group flex flex-col h-full">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-success/10 text-success font-label-caps text-[10px] px-2 py-1 rounded-full border border-success/20 uppercase tracking-wider">Approved</span>
+<span class="font-data-mono text-data-mono text-secondary">2022</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-2">Entanglement Entropy in Conformal Field Theories</h4>
+<p class="font-body-sm text-body-sm text-secondary mb-4 line-clamp-1">Science</p>
+<div class="mt-auto pt-4 border-t border-border-subtle flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-data-mono text-data-mono text-on-surface">4.0 Credits</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-border-subtle group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

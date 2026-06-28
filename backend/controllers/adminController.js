@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
@@ -16,6 +17,7 @@ const moveUploadFile = require("../utils/moveUploadFile");
 const { resolveDepartment } = require("../utils/departmentLookup");
 const { AppError } = require("../utils/errors");
 const logger = require("../utils/logger");
+const ExcelJS = require("exceljs");
 
 async function findManagedUser(userId) {
   const faculty = await Faculty.findById(userId);
@@ -93,7 +95,10 @@ exports.createManualUser = async (req, res) => {
   const employeeId = String(req.body.employeeId || "").trim();
   const name = String(req.body.name || "").trim();
   const email = String(req.body.email || "").trim().toLowerCase();
+  const mobile = String(req.body.mobile || "").trim();
   const designation = String(req.body.designation || "").trim();
+  const employmentType = String(req.body.employmentType || "Full-Time").trim();
+  const password = req.body.password;
   const googleScholar = String(req.body.googleScholar || "").trim();
   const vidwanId = String(req.body.vidwanId || "").trim();
   const scopusId = String(req.body.scopusId || "").trim();
@@ -124,17 +129,21 @@ exports.createManualUser = async (req, res) => {
     employeeId,
     name,
     email,
+    mobile,
     department: departmentRecord.code,
     departmentName: departmentRecord.name,
     designation,
+    employmentType,
     googleScholar,
     vidwanId,
     scopusId,
     isApproved: true,
     status: "APPROVED",
+    profileCompleted: false,
     profileImage: "",
     createdBy: req.user.id,
     createdByRole: ROLES.ADMIN,
+    password: password ? await bcrypt.hash(password, 12) : null,
   };
 
   let createdUser;
@@ -287,6 +296,42 @@ exports.updateDepartment = async (req, res) => {
   res.json({
     message: "Department updated successfully",
     department: await Department.findById(department._id).populate("college", "name code").lean(),
+  });
+};
+
+
+
+exports.mergeDepartments = async (req, res) => {
+  const { sourceDepartmentCode, targetDepartmentCode } = req.body;
+
+  if (!sourceDepartmentCode || !targetDepartmentCode) {
+    throw new AppError("Source and target department codes are required", 400);
+  }
+
+  if (sourceDepartmentCode === targetDepartmentCode) {
+    throw new AppError("Source and target departments cannot be the same", 400);
+  }
+
+  const sourceDept = await resolveDepartment(sourceDepartmentCode);
+  const targetDept = await resolveDepartment(targetDepartmentCode);
+
+  if (!sourceDept) throw new AppError("Source department not found", 404);
+  if (!targetDept) throw new AppError("Target department not found", 404);
+
+  // Move HODs
+  await HOD.updateMany(
+    { department: sourceDept.code },
+    { $set: { department: targetDept.code, departmentName: targetDept.name } }
+  );
+
+  // Move Faculty
+  await Faculty.updateMany(
+    { department: sourceDept.code },
+    { $set: { department: targetDept.code, departmentName: targetDept.name } }
+  );
+
+  res.json({
+    message: `Successfully merged ${sourceDept.name} into ${targetDept.name}`,
   });
 };
 
@@ -538,6 +583,118 @@ exports.getAllUsers = async (req, res) => {
   res.json([...faculty, ...hods, ...normalizedAdmins]);
 };
 
+exports.exportUsers = async (req, res) => {
+  const [faculty, hods] = await Promise.all([
+    Faculty.find().select("-password -__v").lean(),
+    HOD.find().select("-password -__v").lean(),
+  ]);
+
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Users");
+
+  sheet.columns = [
+    { header: "Role", key: "role", width: 15 },
+    { header: "Employee ID", key: "employeeId", width: 15 },
+    { header: "Name", key: "name", width: 25 },
+    { header: "Email", key: "email", width: 30 },
+    { header: "Department", key: "department", width: 15 },
+    { header: "Designation", key: "designation", width: 20 },
+    { header: "Status", key: "status", width: 15 },
+  ];
+
+  const allUsers = [...faculty, ...hods];
+  allUsers.forEach((user) => {
+    sheet.addRow({
+      role: user.role,
+      employeeId: user.employeeId,
+      name: user.name,
+      email: user.email,
+      department: user.department,
+      designation: user.designation,
+      status: user.status,
+    });
+  });
+
+  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  res.setHeader("Content-Disposition", "attachment; filename=users_export.xlsx");
+  return workbook.xlsx.write(res);
+};
+
+exports.importUsers = async (req, res) => {
+  if (!req.file) {
+    throw new AppError("No file uploaded", 400);
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(req.file.buffer);
+  const sheet = workbook.getWorksheet(1);
+  
+  if (!sheet) {
+    throw new AppError("Invalid Excel file", 400);
+  }
+
+  const results = { success: 0, failed: 0, errors: [] };
+  
+  // Skip header row
+  for (let i = 2; i <= sheet.rowCount; i++) {
+    const row = sheet.getRow(i);
+    const role = String(row.getCell(1).value || "").trim().toUpperCase();
+    const employeeId = String(row.getCell(2).value || "").trim();
+    const name = String(row.getCell(3).value || "").trim();
+    const email = String(row.getCell(4).value || "").trim().toLowerCase();
+    const department = String(row.getCell(5).value || "").trim();
+    const designation = String(row.getCell(6).value || "").trim();
+
+    if (!employeeId || !email) continue;
+
+    try {
+      const existing = await findDuplicateAccount({ employeeId, email });
+      if (existing) {
+        results.failed++;
+        results.errors.push(`Row ${i}: User with ID ${employeeId} or Email ${email} already exists.`);
+        continue;
+      }
+
+      const departmentRecord = await resolveDepartment(department);
+      if (!departmentRecord) {
+        results.failed++;
+        results.errors.push(`Row ${i}: Invalid department ${department}.`);
+        continue;
+      }
+
+      const payload = {
+        employeeId,
+        name,
+        email,
+        department: departmentRecord.code,
+        departmentName: departmentRecord.name,
+        designation: designation || "Faculty",
+        role: role === ROLES.HOD ? ROLES.HOD : ROLES.FACULTY,
+        isApproved: true,
+        status: "APPROVED",
+        createdBy: req.user.id,
+        createdByRole: ROLES.ADMIN,
+      };
+
+      if (role === ROLES.HOD) {
+        await HOD.create(payload);
+      } else {
+        await Faculty.create(payload);
+      }
+      
+      results.success++;
+    } catch (err) {
+      results.failed++;
+      results.errors.push(`Row ${i}: ${err.message}`);
+    }
+  }
+
+  res.status(200).json({
+    message: "Import completed",
+    results,
+  });
+};
+
 exports.deleteUser = async (req, res) => {
   const user = await findManagedUser(req.params.id);
 
@@ -609,4 +766,30 @@ exports.getDepartmentAnalytics = async (req, res) => {
     totalActivities: uploads.length,
     totalCredits: uploads.reduce((sum, upload) => sum + Number(upload.credits || 0), 0),
   });
+};
+
+exports.promoteToHod = async (req, res) => {
+  const faculty = await Faculty.findById(req.params.id);
+  if (!faculty) throw new AppError("Faculty not found", 404);
+
+  const newUserData = faculty.toObject();
+  newUserData.role = ROLES.HOD;
+
+  await HOD.create(newUserData);
+  await Faculty.deleteOne({ _id: faculty._id });
+
+  res.json({ message: "Promoted to HOD successfully" });
+};
+
+exports.demoteToFaculty = async (req, res) => {
+  const hod = await HOD.findById(req.params.id);
+  if (!hod) throw new AppError("HOD not found", 404);
+
+  const newUserData = hod.toObject();
+  newUserData.role = ROLES.FACULTY;
+
+  await Faculty.create(newUserData);
+  await HOD.deleteOne({ _id: hod._id });
+
+  res.json({ message: "Demoted to Faculty successfully" });
 };

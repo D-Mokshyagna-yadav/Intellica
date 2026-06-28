@@ -29,7 +29,8 @@ async function moveUploadFile(upload) {
   const folders = createUserFolder(user);
   if (!folders) return;
 
-  const basePath = fs.existsSync("/documents") ? "/documents" : path.join(__dirname, "..", "uploads");
+  const resolveStoragePath = require("./resolveStoragePath");
+  const basePath = resolveStoragePath();
   // Check if file is in temp/ or directly in root (during registration/migration)
   let oldPath = path.join(basePath, "temp", filename);
   if (!fs.existsSync(oldPath)) {

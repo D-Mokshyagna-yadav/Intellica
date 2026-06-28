@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
 const User = require("../models/User");
@@ -128,7 +129,7 @@ exports.registerFaculty = async (req, res) => {
     throw new AppError(req.fileValidationError, 400);
   }
 
-  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId } = req.body;
+  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId, password } = req.body;
 
   if (!employeeId || !name || !email || !department || !designation) {
     throw new AppError("All fields are required", 400);
@@ -178,6 +179,7 @@ exports.registerFaculty = async (req, res) => {
     isApproved: false,
     status: "PENDING",
     profileImage: req.file.filename,
+    password: password ? await bcrypt.hash(password, 12) : null,
   });
 
   sendRegistrationNotification({
@@ -197,7 +199,7 @@ exports.registerHOD = async (req, res) => {
     throw new AppError(req.fileValidationError, 400);
   }
 
-  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId } = req.body;
+  const { employeeId, name, email, department, designation, googleScholar, vidwanId, scopusId, password } = req.body;
 
   if (!employeeId || !name || !email || !department || !designation) {
     throw new AppError("All fields are required", 400);
@@ -233,6 +235,7 @@ exports.registerHOD = async (req, res) => {
     isApproved: false,
     status: "PENDING",
     profileImage: req.file.filename,
+    password: password ? await bcrypt.hash(password, 12) : null,
   });
 
   sendRegistrationNotification({
@@ -319,6 +322,113 @@ exports.verifyOTP = async (req, res) => {
     ...payload,
     message: "Login successful",
   });
+};
+
+exports.loginWithPassword = async (req, res) => {
+  const identifier = normalizeIdentifier(req.body.identifier);
+  const password = req.body.password;
+
+  if (!identifier || !password) {
+    throw new AppError("Identifier and password are required", 400);
+  }
+
+  const { user, role } = await findUserByIdentifier(identifier);
+
+  if (!user || !role) {
+    throw new AppError("User not found", 404);
+  }
+
+  assertAccountIsLoginReady(role, user);
+
+  if (!user.password) {
+    throw new AppError("No password is set for this account. Please use OTP login.", 401);
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new AppError("Invalid credentials", 401);
+  }
+
+  const payload = buildAuthPayload(user);
+  const token = jwt.sign(
+    {
+      id: payload.id,
+      role: payload.role,
+      department: payload.department || null,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+  );
+
+  res.status(200).json({
+    token,
+    ...payload,
+    message: "Login successful",
+  });
+};
+
+exports.resetPasswordWithOTP = async (req, res) => {
+  const identifier = normalizeIdentifier(req.body.identifier);
+  const otp = normalizeIdentifier(req.body.otp);
+  const newPassword = req.body.newPassword;
+
+  if (!identifier || !otp || !newPassword) {
+    throw new AppError("Identifier, OTP, and new password are required", 400);
+  }
+
+  const { user } = await findUserByIdentifier(identifier);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (!user.otp || user.otp !== otp) {
+    throw new AppError("Invalid OTP", 401);
+  }
+
+  if (!user.otpExpires || user.otpExpires < new Date()) {
+    throw new AppError("OTP expired", 401);
+  }
+
+  user.otp = null;
+  user.otpExpires = null;
+  user.password = await bcrypt.hash(newPassword, 12);
+  await user.save();
+
+  res.status(200).json({
+    message: "Password reset successful. You can now login with your new password.",
+  });
+};
+
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  
+  if (!newPassword) {
+    throw new AppError("New password is required", 400);
+  }
+
+  const targetModel = req.user.role === ROLES.FACULTY ? Faculty : req.user.role === ROLES.HOD ? HOD : User;
+  const user = await targetModel.findById(req.user.id);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  // If user already has a password, verify current password
+  if (user.password) {
+    if (!currentPassword) {
+      throw new AppError("Current password is required to change it", 400);
+    }
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new AppError("Incorrect current password", 401);
+    }
+  }
+
+  user.password = await bcrypt.hash(newPassword, 12);
+  await user.save();
+
+  res.status(200).json({ message: "Password updated successfully" });
 };
 
 exports.getMe = async (req, res) => {
