@@ -137,17 +137,17 @@ const dropdownStyle: React.CSSProperties = {
   width: 340,
   maxHeight: 440,
   overflowY: "hidden",
-  background: "var(--color-surface-container)",
-  border: "1px solid var(--color-border-subtle)",
-  borderRadius: 16,
-  boxShadow: "0 20px 40px rgba(0,0,0,0.35)",
-  padding: "8px 4px",
+  background: "#ffffff",
+  border: "1px solid #e2e8f0",
+  borderRadius: 24,
+  boxShadow: "0 24px 64px rgba(15,23,42,0.12)",
+  padding: 8,
   zIndex: 400,
 };
 
 const emptyStyle: React.CSSProperties = {
   padding: 24,
   textAlign: "center",
-  color: "var(--color-on-surface-variant)",
+  color: "#64748b",
   fontSize: 13,
 };

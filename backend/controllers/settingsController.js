@@ -1,6 +1,11 @@
 const Settings = require("../models/Settings");
 const { AppError } = require("../utils/errors");
 
+function getSettingValue(settings, key) {
+  const setting = settings.find((item) => item.key === key);
+  return setting ? setting.value : null;
+}
+
 exports.getAllSettings = async (req, res) => {
   const category = req.query.category;
   const filter = category ? { category } : {};
@@ -90,4 +95,16 @@ exports.deleteSetting = async (req, res) => {
   await Settings.findOneAndDelete({ key });
 
   res.json({ message: "Setting deleted successfully" });
+};
+
+exports.getSecuritySettings = async (_req, res) => {
+  const settings = await Settings.find({ category: { $in: ["security", "general"] } }).lean();
+
+  res.json({
+    twoFactorEnabled: Boolean(getSettingValue(settings, "twoFactorAuth")),
+    lastPasswordChange: null,
+    activeSessions: [],
+    loginHistory: [],
+    passwordPolicy: getSettingValue(settings, "passwordPolicy") || { minLength: 8 },
+  });
 };

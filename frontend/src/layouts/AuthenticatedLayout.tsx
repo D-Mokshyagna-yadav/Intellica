@@ -30,9 +30,14 @@ export default function AuthenticatedLayout() {
     return '/faculty';
   };
 
+  const getLeaderboardPath = () => {
+    if (role === 'ADMIN') return '/admin/leaderboard';
+    return '/leaderboard';
+  };
+
   const navItems = [
     { path: getDashboardPath(), label: 'Dashboard', icon: 'dashboard' },
-    { path: '/leaderboard', label: 'Leaderboard', icon: 'leaderboard' },
+    { path: getLeaderboardPath(), label: 'Leaderboard', icon: 'leaderboard' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -103,8 +108,8 @@ export default function AuthenticatedLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-7xl gap-4 p-3 sm:p-4 lg:p-6">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] gap-4 p-0 lg:p-4">
         <aside className="hidden lg:flex w-72 shrink-0">
           <Sidebar />
         </aside>
@@ -118,8 +123,8 @@ export default function AuthenticatedLayout() {
           </div>
         )}
 
-        <div className="flex-1">
-          <header className="rounded-[28px] border border-slate-200/70 bg-white/70 px-4 py-4 shadow-[0_16px_48px_rgba(15,23,42,0.06)] backdrop-blur-xl md:px-6">
+        <div className="flex-1 py-0 lg:py-0">
+          <header className="rounded-[24px] border border-slate-200/70 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.04)] md:px-6">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <button
@@ -164,7 +169,7 @@ export default function AuthenticatedLayout() {
             </div>
           </header>
 
-          <main className="mt-4 rounded-[28px] border border-slate-200/70 bg-white/60 p-4 shadow-[0_16px_48px_rgba(15,23,42,0.05)] backdrop-blur-xl md:p-6 lg:p-8">
+          <main className="mt-4 rounded-[24px] border border-slate-200/70 bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.04)] md:p-6 lg:p-8">
             <Outlet />
           </main>
         </div>

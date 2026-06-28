@@ -1,5 +1,5 @@
 const express = require("express");
-const announcementController = require("../controllers/announcementController");
+const { createAnnouncement, getAnnouncements, getAllAnnouncementsForAdmin, updateAnnouncement, deleteAnnouncement } = require("../controllers/announcementController");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const asyncHandler = require("../utils/asyncHandler");
@@ -9,12 +9,13 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get("/", asyncHandler(announcementController.getAnnouncements));
+router.get("/", asyncHandler(getAnnouncements));
 
 // Admin specific routes
 router.use(roleMiddleware(ROLES.ADMIN));
-router.get("/all", asyncHandler(announcementController.getAllAnnouncementsForAdmin));
-router.post("/", asyncHandler(announcementController.createAnnouncement));
-router.delete("/:id", asyncHandler(announcementController.deleteAnnouncement));
+router.get("/all", asyncHandler(getAllAnnouncementsForAdmin));
+router.post("/", asyncHandler(createAnnouncement));
+router.put("/:id", asyncHandler(updateAnnouncement));
+router.delete("/:id", asyncHandler(deleteAnnouncement));
 
 module.exports = router;

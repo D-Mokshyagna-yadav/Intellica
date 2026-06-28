@@ -170,13 +170,16 @@ const columns = [
 
 return(
 
-<div style={{maxWidth:1100}}>
+<div style={moduleShell}>
 
 <button onClick={onBack} style={backBtn}>
 ← Back
 </button>
 
-<h2>{title}</h2>
+<div style={{ marginTop: 8, marginBottom: 18 }}>
+  <p style={{ margin: 0, fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "#64748b" }}>{category}</p>
+  <h2 style={{ margin: "8px 0 0", fontSize: 28, lineHeight: 1.1, fontWeight: 700, color: "#0f172a" }}>{title}</h2>
+</div>
 
 {/* ================= TABS ================= */}
 
@@ -361,13 +364,14 @@ return(
 <button
 onClick={()=>setTab(tab)}
 style={{
-padding:"8px 18px",
-borderRadius:20,
-border:"none",
+padding:"10px 16px",
+borderRadius:999,
+border:"1px solid transparent",
 cursor:"pointer",
-backgroundColor:active ? "#2563eb" : "#e5e7eb",
-color:active ? "white" : "#111827",
-fontWeight:500
+backgroundColor:active ? "#2563eb" : "#f1f5f9",
+color:active ? "white" : "#334155",
+fontWeight:700,
+boxShadow: active ? "0 8px 18px rgba(37,99,235,0.18)" : "none"
 }}
 >
 {label}
@@ -381,16 +385,28 @@ fontWeight:500
 
 const tabs={
 display:"flex",
-gap:12,
-margin:"20px 0"
+gap:10,
+margin:"0 0 18px",
+padding:"10px",
+borderRadius:24,
+background:"#f8fafc",
+border:"1px solid #e2e8f0",
+flexWrap:"wrap"
 };
 
 const backBtn={
-background:"none",
-border:"none",
-color:"#2563eb",
+display:"inline-flex",
+alignItems:"center",
+gap:8,
+background:"#eff6ff",
+border:"1px solid #bfdbfe",
+color:"#1d4ed8",
+padding:"8px 14px",
+borderRadius:999,
 cursor:"pointer",
-marginBottom:10
+marginBottom:14,
+fontSize:13,
+fontWeight:700
 };
 
 const modalOverlay={
@@ -402,42 +418,53 @@ height:"100%",
 background:"rgba(0,0,0,0.4)",
 display:"flex",
 justifyContent:"center",
-alignItems:"center"
+alignItems:"center",
+padding:16,
+backdropFilter:"blur(4px)"
 };
 
 const modalBox={
 background:"white",
-padding:25,
-borderRadius:10,
-width:500,
-maxHeight:"80vh",
-overflowY:"auto"
+padding:24,
+borderRadius:24,
+width:"min(760px, 100%)",
+maxHeight:"84vh",
+overflowY:"auto",
+boxShadow:"0 32px 80px rgba(15,23,42,0.24)",
+border:"1px solid #e2e8f0"
 };
 
 const discussionBox={
-background:"#fee2e2",
-border:"1px solid #f87171",
-padding:"10px 12px",
-borderRadius:6,
+background:"#fff1f2",
+border:"1px solid #fecdd3",
+padding:"12px 14px",
+borderRadius:16,
 marginTop:12
 };
 
 const pdfBtn={
 display:"inline-block",
 marginTop:10,
-padding:"6px 12px",
+padding:"8px 14px",
 background:"#2563eb",
 color:"white",
-borderRadius:6,
+borderRadius:999,
 textDecoration:"none"
 };
 
 const closeBtn={
 marginTop:15,
-padding:"6px 12px",
+padding:"8px 14px",
 background:"#ef4444",
 color:"white",
 border:"none",
-borderRadius:6,
+borderRadius:999,
 cursor:"pointer"
+};
+
+const moduleShell = {
+  width: "100%",
+  maxWidth: 1240,
+  margin: "0 auto",
+  padding: 4,
 };

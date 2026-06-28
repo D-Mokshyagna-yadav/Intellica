@@ -23,5 +23,14 @@ export const leaderboardService = {
 
   /** Current user's rank + stats */
   getMyRank: () =>
-    apiFetch<{ rank: number; totalFaculty: number; myCredits: number; departmentRank: number }>("/rankings/my-rank"),
+    apiFetch<{
+      departmentRank: number | null;
+      departmentTotal: number;
+      collegeRank: number | null;
+      collegeTotal: number;
+      score: number;
+      myCredits: number;
+      totalCredits: number;
+      totalFaculty: number;
+    }>("/rankings/my-rank"),
 };

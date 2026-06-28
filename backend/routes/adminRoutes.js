@@ -25,6 +25,7 @@ router.delete("/departments/:id", asyncHandler(adminController.deleteDepartment)
 router.post("/departments/:id/restore", asyncHandler(adminController.restoreDepartment));
 router.get("/top-departments", asyncHandler(adminController.getTopDepartments));
 router.get("/activity-stats", asyncHandler(adminController.getActivityStats));
+router.get("/stats", asyncHandler(adminController.getActivityStats));
 
 router.get("/pending-uploads", asyncHandler(adminController.getPendingUploadsForAdmin));
 router.post("/approve-upload/:id", asyncHandler(adminController.approveUploadByAdmin));
@@ -33,9 +34,14 @@ router.post("/discussion/:id", asyncHandler(adminController.adminDiscussion));
 router.put("/return-revision/:id", asyncHandler(require("../controllers/uploadController").returnForRevision));
 
 router.get("/all-users", asyncHandler(adminController.getAllUsers));
+router.get("/users", asyncHandler(adminController.getAllUsers));
 router.get("/export-users", asyncHandler(adminController.exportUsers));
 router.post("/import-users", multer({ storage: multer.memoryStorage() }).single("file"), asyncHandler(adminController.importUsers));
 router.post("/users", asyncHandler(adminController.createManualUser));
+router.post("/create-user", asyncHandler(adminController.createManualUser));
+router.put("/users/:id/approve", asyncHandler(adminController.approveManagedUser));
+router.put("/users/:id/reject", asyncHandler(adminController.rejectManagedUser));
+router.delete("/users/:id", asyncHandler(adminController.deleteUser));
 router.delete("/delete-user/:id", asyncHandler(adminController.deleteUser));
 router.put("/change-department/:id", asyncHandler(adminController.changeDepartment));
 router.post("/promote-hod/:id", asyncHandler(adminController.promoteToHod));

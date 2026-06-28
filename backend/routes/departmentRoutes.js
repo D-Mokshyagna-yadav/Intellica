@@ -3,7 +3,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const { getDepartments } = require("../controllers/departmentController");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
-const { ROLES } = require("../constants/roles");
+const ROLES = require("../constants/roles");
 
 const router = express.Router();
 

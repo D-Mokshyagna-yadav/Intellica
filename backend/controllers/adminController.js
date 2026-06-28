@@ -410,6 +410,32 @@ exports.approveHod = async (req, res) => {
   });
 };
 
+exports.approveManagedUser = async (req, res) => {
+  const user = await findManagedUser(req.params.id);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if ("status" in user) user.status = "APPROVED";
+  if ("isApproved" in user) user.isApproved = true;
+  await user.save();
+
+  res.json({ message: "User approved successfully", user });
+};
+
+exports.rejectManagedUser = async (req, res) => {
+  const user = await findManagedUser(req.params.id);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if ("status" in user) user.status = "REJECTED";
+  if ("isApproved" in user) user.isApproved = false;
+  await user.save();
+
+  res.json({ message: "User rejected successfully", user });
+};
+
 exports.hodDiscussion = async (req, res) => {
   const hod = await HOD.findById(req.params.id);
 

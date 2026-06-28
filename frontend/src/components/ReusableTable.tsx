@@ -3,7 +3,12 @@ import React from "react";
 function ReusableTable({ columns = [], data = [], onEdit, onResubmit, onView }) {
 
   if (!data.length) {
-    return <p>No records found.</p>;
+    return (
+      <div style={emptyState}>
+        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#475569" }}>No records found</p>
+        <p style={{ margin: "6px 0 0", fontSize: 13, color: "#94a3b8" }}>Try changing the filters or come back after new entries are submitted.</p>
+      </div>
+    );
   }
 
   /* ================= FORMAT VALUES ================= */
@@ -40,7 +45,7 @@ function ReusableTable({ columns = [], data = [], onEdit, onResubmit, onView }) 
             <tr>
 
               {columns.map((col) => (
-                <th key={col.key} style={th}>
+                  <th key={col.key} style={th}>
                   {col.label}
                 </th>
               ))}
@@ -82,10 +87,7 @@ function ReusableTable({ columns = [], data = [], onEdit, onResubmit, onView }) 
                   <td style={stickyCell}>
 
                     {onView && (
-                      <button
-                        style={viewBtn}
-                        onClick={() => onView(row)}
-                      >
+                      <button style={viewBtn} onClick={() => onView(row)}>
                         View
                       </button>
                     )}
@@ -97,10 +99,7 @@ function ReusableTable({ columns = [], data = [], onEdit, onResubmit, onView }) 
                       row.status === "HOD_SUBMITTED" ||
                       row.status === "PENDING"
                     ) && (
-                      <button
-                        style={editBtn}
-                        onClick={() => onEdit(row)}
-                      >
+                      <button style={editBtn} onClick={() => onEdit(row)}>
                         Edit
                       </button>
                     )}
@@ -139,7 +138,12 @@ export default ReusableTable;
 /* ================= STYLES ================= */
 
 const outerWrapper = {
-  width: "100%"
+  width: "100%",
+  borderRadius: 24,
+  border: "1px solid #e2e8f0",
+  backgroundColor: "white",
+  boxShadow: "0 8px 24px rgba(15, 23, 42, 0.04)",
+  overflow: "hidden"
 };
 
 const scrollWrapper = {
@@ -148,27 +152,33 @@ const scrollWrapper = {
 };
 
 const table = {
-  minWidth: "1200px",
+  minWidth: "960px",
   borderCollapse: "collapse",
   backgroundColor: "white"
 };
 
 const th = {
-  padding: 12,
+  padding: "14px 16px",
   backgroundColor: "#f9fafb",
   borderBottom: "1px solid #e5e7eb",
   textAlign: "left",
-  whiteSpace: "nowrap"
+  whiteSpace: "nowrap",
+  fontSize: 13,
+  fontWeight: 700,
+  letterSpacing: "0.02em",
+  color: "#475569"
 };
 
 const td = {
-  padding: 12,
+  padding: "14px 16px",
   borderBottom: "1px solid #e5e7eb",
-  whiteSpace: "nowrap"
+  whiteSpace: "nowrap",
+  fontSize: 14,
+  color: "#0f172a"
 };
 
 const stickyHeader = {
-  padding: 12,
+  padding: "14px 16px",
   backgroundColor: "#f9fafb",
   borderBottom: "1px solid #e5e7eb",
   textAlign: "center",
@@ -178,7 +188,7 @@ const stickyHeader = {
 };
 
 const stickyCell = {
-  padding: 12,
+  padding: "14px 16px",
   borderBottom: "1px solid #e5e7eb",
   position: "sticky",
   right: 0,
@@ -187,30 +197,45 @@ const stickyCell = {
 };
 
 const viewBtn = {
-  padding: "6px 10px",
-  backgroundColor: "#6366f1",
-  color: "white",
-  border: "none",
-  borderRadius: 6,
+  padding: "7px 12px",
+  backgroundColor: "#eff6ff",
+  color: "#1d4ed8",
+  border: "1px solid #bfdbfe",
+  borderRadius: 999,
   cursor: "pointer",
-  marginRight: 6
+  marginRight: 6,
+  fontSize: 12,
+  fontWeight: 700
 };
 
 const editBtn = {
-  padding: "6px 10px",
+  padding: "7px 12px",
   backgroundColor: "#2563eb",
   color: "white",
   border: "none",
-  borderRadius: 6,
-  cursor: "pointer"
+  borderRadius: 999,
+  cursor: "pointer",
+  fontSize: 12,
+  fontWeight: 700
 };
 
 const resubmitBtn = {
-  padding: "6px 10px",
-  backgroundColor: "#f59e0b",
-  color: "white",
-  border: "none",
-  borderRadius: 6,
+  padding: "7px 12px",
+  backgroundColor: "#fff7ed",
+  color: "#c2410c",
+  border: "1px solid #fdba74",
+  borderRadius: 999,
   cursor: "pointer",
-  marginLeft: 6
+  marginLeft: 6,
+  fontSize: 12,
+  fontWeight: 700
+};
+
+const emptyState = {
+  width: "100%",
+  border: "1px dashed #cbd5e1",
+  borderRadius: 24,
+  background: "#fff",
+  padding: 28,
+  textAlign: "center"
 };

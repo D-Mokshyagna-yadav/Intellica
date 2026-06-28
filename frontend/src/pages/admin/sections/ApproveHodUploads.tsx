@@ -15,9 +15,13 @@ function ApproveHodUploads() {
   const [nameFilter, setNameFilter] = useState("");
   const [discussionModalOpen, setDiscussionModalOpen] = useState(false);
   const [discussionUploadId, setDiscussionUploadId] = useState(null);
-  const { departments } = useDepartments();
+  const { data: departments = [] } = useDepartments();
 
   const token = localStorage.getItem("token");
+
+  const openDetails = (upload) => {
+    setSelectedUpload(upload);
+  };
 
   /* ================= FETCH PENDING ================= */
   const fetchUploads = async () => {

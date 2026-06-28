@@ -27,6 +27,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
+const frontendApiRoutes = require("./routes/frontendApiRoutes");
 
 const app = express();
 
@@ -104,10 +105,12 @@ app.use("/api/faculty", facultyRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/credit-config", creditConfigRoutes);
 app.use("/api/ranking", rankingRoutes);
+app.use("/api/rankings", rankingRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api", frontendApiRoutes);
 
 // Frontend static files and SPA routing
 const frontendDistCandidates = [path.join(__dirname, "dist"), path.join(__dirname, "..", "frontend", "dist")];

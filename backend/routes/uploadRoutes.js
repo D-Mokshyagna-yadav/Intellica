@@ -19,6 +19,17 @@ router.post(
 );
 
 router.get("/mine", authMiddleware, asyncHandler(uploadController.getMyUploads));
+router.get("/pending", authMiddleware, asyncHandler(async (req, res) => {
+  if (req.user.role === ROLES.ADMIN) {
+    return uploadController.getPendingUploadsForAdmin(req, res);
+  }
+
+  if (req.user.role === ROLES.HOD) {
+    return uploadController.getPendingUploadsForHOD(req, res);
+  }
+
+  return res.status(403).json({ message: "Access denied" });
+}));
 
 router.put(
   "/update/:id/:category",
@@ -46,5 +57,14 @@ router.get("/category", authMiddleware, normalizeCategory, asyncHandler(uploadCo
 router.get("/faculty/:facultyId", authMiddleware, asyncHandler(uploadController.getFacultyUploads));
 router.get("/department", authMiddleware, roleMiddleware(ROLES.HOD, ROLES.ADMIN), asyncHandler(uploadController.getDepartmentUploads));
 router.get("/department/rank", authMiddleware, roleMiddleware(ROLES.HOD), asyncHandler(uploadController.getDepartmentRank));
+router.put("/:id/approve", authMiddleware, roleMiddleware(ROLES.HOD, ROLES.ADMIN), asyncHandler(async (req, res) => {
+  if (req.user.role === ROLES.ADMIN) {
+    return uploadController.approveUploadByAdmin(req, res);
+  }
+
+  return uploadController.approveUploadByHOD(req, res);
+}));
+router.put("/:id/reject", authMiddleware, roleMiddleware(ROLES.HOD, ROLES.ADMIN), asyncHandler(uploadController.returnForRevision));
+router.put("/:id/comment", authMiddleware, roleMiddleware(ROLES.HOD, ROLES.ADMIN), asyncHandler(uploadController.callForDiscussion));
 
 module.exports = router;

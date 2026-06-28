@@ -17,26 +17,24 @@ function CreditConfigViewer() {
   if (!data) return <LoadingState message="Loading credit rules..." />;
 
   return (
-    <div style={{ marginTop: 30 }}>
+    <div style={{ marginTop: 6 }}>
+      <div style={headerRow}>
+        <div>
+          <p style={eyebrow}>Credit Rules</p>
+          <h3 style={{ margin: "6px 0 0", fontSize: 28, lineHeight: 1.1, color: "#0f172a" }}>Credit Configuration</h3>
+        </div>
         <input
-  type="text"
-  placeholder="Search category..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  style={{
-    marginTop: 10,
-    marginBottom: 20,
-    padding: "8px 12px",
-    width: "300px",
-    borderRadius: 6,
-    border: "1px solid #cbd5e1"
-  }}
-/>
-      <h3>Credit Rules</h3>
+          type="text"
+          placeholder="Search category..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={searchStyle}
+        />
+      </div>
 
       {Object.entries(data).map(([type, categories]) => (
         <div key={type} style={{ marginTop: 20 }}>
-          <h4>{type.toUpperCase()}</h4>
+          <h4 style={sectionTitle}>{type.toUpperCase()}</h4>
 
           {Object.entries(categories)
   .filter(([cat]) =>
@@ -45,15 +43,9 @@ function CreditConfigViewer() {
   .map(([cat, rules]) => (
             <div
               key={cat}
-              style={{
-                padding: 15,
-                background: "white",
-                marginTop: 12,
-                borderRadius: 10,
-                boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
-              }}
+              style={ruleCard}
             >
-              <b style={{ fontSize: 15 }}>{toTitle(cat)}</b>
+              <b style={ruleTitle}>{toTitle(cat)}</b>
 
               <div style={{ marginTop: 10 }}>
                 {renderRules(rules)}
@@ -130,3 +122,10 @@ function toTitle(str = "") {
     .replace(/-/g, " ")
     .replace(/^./, s => s.toUpperCase());
 }
+
+const headerRow: React.CSSProperties = { display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 18 };
+const eyebrow: React.CSSProperties = { margin: 0, fontSize: 12, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#64748b" };
+const searchStyle: React.CSSProperties = { marginTop: 0, padding: "10px 14px", width: 320, maxWidth: "100%", borderRadius: 999, border: "1px solid #cbd5e1", background: "#fff", boxShadow: "0 8px 24px rgba(15,23,42,0.04)" };
+const sectionTitle: React.CSSProperties = { margin: "0 0 12px", fontSize: 16, letterSpacing: "0.08em", color: "#334155" };
+const ruleCard: React.CSSProperties = { padding: 18, background: "white", marginTop: 12, borderRadius: 20, border: "1px solid #e2e8f0", boxShadow: "0 8px 24px rgba(15,23,42,0.04)" };
+const ruleTitle: React.CSSProperties = { fontSize: 15, color: "#0f172a" };

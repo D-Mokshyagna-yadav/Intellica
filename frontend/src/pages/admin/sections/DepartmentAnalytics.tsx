@@ -225,7 +225,7 @@ export default function DepartmentAnalytics() {
   if (loading) return <LoadingState message="Loading analytics..." />;
 
   return (
-    <div style={{ padding: "0 10px" }}>
+    <div style={{ padding: 0 }}>
 
       {/* HEADER */}
       <div style={styles.headerRow}>
@@ -321,7 +321,7 @@ export default function DepartmentAnalytics() {
                 ? "All Departments — Ranked by Credits"
                 : `${departmentLabelByCode[selectedDepartment] || selectedDepartment} — Activities Breakdown`}
             </h3>
-            <div style={{ height: 380 }}>
+            <div style={{ height: 420 }}>
               <Bar data={barData} options={barOptions} />
             </div>
           </div>
@@ -331,7 +331,7 @@ export default function DepartmentAnalytics() {
 
             <div style={{ ...styles.card, flex: "1 1 300px", maxWidth: 380 }}>
               <h3 style={styles.cardTitle}>Overall Department Share</h3>
-              <div style={{ width: 280, height: 280, margin: "0 auto" }}>
+              <div style={{ width: 300, height: 300, margin: "0 auto" }}>
                 <Doughnut data={doughnutData} options={doughnutOptions} />
               </div>
             </div>
@@ -416,14 +416,14 @@ export default function DepartmentAnalytics() {
 }
 
 const styles = {
-  headerRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 },
-  downloadBtn: { padding: "10px 16px", backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 15 },
-  filters: { display: "flex", gap: 20, marginBottom: 24, background: "white", padding: "16px 20px", borderRadius: 12, flexWrap: "wrap", alignItems: "flex-end", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" },
+  headerRow: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16, marginBottom: 20, flexWrap: "wrap" },
+  downloadBtn: { padding: "10px 18px", backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: 999, cursor: "pointer", fontSize: 14, fontWeight: 700, boxShadow: "0 10px 24px rgba(37,99,235,0.18)" },
+  filters: { display: "flex", gap: 18, marginBottom: 24, background: "white", padding: "18px 20px", borderRadius: 20, flexWrap: "wrap", alignItems: "flex-end", border: "1px solid #e2e8f0", boxShadow: "0 8px 24px rgba(15,23,42,0.04)" },
   label: { fontSize: 14, fontWeight: 600, color: "#334155", display: "block", marginBottom: 6 },
-  select: { padding: "8px 12px", borderRadius: 8, border: "1px solid #cbd5e1", fontSize: 15 },
-  card: { background: "white", padding: 24, borderRadius: 14, boxShadow: "0 4px 12px rgba(0,0,0,0.06)" },
-  cardTitle: { fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 20, marginTop: 0 },
+  select: { padding: "10px 12px", borderRadius: 12, border: "1px solid #cbd5e1", fontSize: 15, minWidth: 180, background: "#fff" },
+  card: { background: "white", padding: 24, borderRadius: 20, border: "1px solid #e2e8f0", boxShadow: "0 8px 24px rgba(15,23,42,0.04)" },
+  cardTitle: { fontSize: 16, fontWeight: 700, color: "#1e293b", marginBottom: 20, marginTop: 0 },
   table: { width: "100%", borderCollapse: "collapse", fontSize: 15 },
-  th: { padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#475569", borderBottom: "2px solid #e2e8f0" },
-  td: { padding: "10px 14px", borderBottom: "1px solid #f1f5f9", color: "#334155" }
+  th: { padding: "12px 14px", textAlign: "left", fontWeight: 700, color: "#475569", borderBottom: "2px solid #e2e8f0", fontSize: 13, letterSpacing: "0.02em", textTransform: "uppercase" },
+  td: { padding: "12px 14px", borderBottom: "1px solid #f1f5f9", color: "#334155" }
 };

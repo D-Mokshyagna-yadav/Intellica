@@ -15,7 +15,7 @@ const {
 } = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
-const { ROLES } = require("../constants/roles");
+const ROLES = require("../constants/roles");
 const profileUpload = require("../middleware/profileUpload");
 const asyncHandler = require("../utils/asyncHandler");
 const { loginRateLimiter, verifyOtpRateLimiter } = require("../middleware/rateLimiters");

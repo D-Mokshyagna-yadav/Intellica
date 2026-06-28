@@ -60,10 +60,11 @@ const toastStyle = {
   minWidth: 240,
   maxWidth: 360,
   padding: "12px 16px",
-  borderRadius: 12,
+  borderRadius: 16,
   color: "#fff",
-  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.18)",
+  boxShadow: "0 14px 32px rgba(15, 23, 42, 0.14)",
   fontSize: 14,
+  border: "1px solid rgba(255,255,255,0.12)",
 };
 
 const typeStyles = {

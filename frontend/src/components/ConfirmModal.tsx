@@ -102,8 +102,8 @@ const overlayStyle = {
 
 const modalStyle = {
   background: "#fff",
-  borderRadius: 20,
-  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+  borderRadius: 24,
+  boxShadow: "0 32px 80px rgba(15, 23, 42, 0.22)",
   width: "100%",
   maxWidth: 400,
   padding: 24,
@@ -129,7 +129,7 @@ const messageStyle = {
 const inputStyle = {
   width: "100%",
   padding: "10px 14px",
-  borderRadius: 12,
+  borderRadius: 14,
   border: "1px solid #cbd5e1",
   fontSize: 14,
   marginBottom: 20,
@@ -141,7 +141,7 @@ const inputStyle = {
 const selectStyle = {
   width: "100%",
   padding: "10px 14px",
-  borderRadius: 12,
+  borderRadius: 14,
   border: "1px solid #cbd5e1",
   fontSize: 14,
   marginBottom: 20,
@@ -170,7 +170,7 @@ const actionsStyle = {
 
 const cancelBtnStyle = {
   padding: "10px 18px",
-  borderRadius: 12,
+  borderRadius: 999,
   border: "1px solid #e2e8f0",
   background: "#fff",
   color: "#64748b",
@@ -181,7 +181,7 @@ const cancelBtnStyle = {
 
 const confirmBtnStyle = {
   padding: "10px 18px",
-  borderRadius: 12,
+  borderRadius: 999,
   border: "none",
   background: "#3b82f6",
   color: "#fff",

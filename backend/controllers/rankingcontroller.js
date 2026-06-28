@@ -1,6 +1,7 @@
 const Upload = require("../models/Upload");
 const Faculty = require("../models/Faculty");
 const HOD = require("../models/HOD");
+const { AppError } = require("../utils/errors");
 const { getCategoryConfig } = require("../constants/categories");
 
 const APPROVED_STATUSES = ["HOD_APPROVED", "ADMIN_APPROVED"];
@@ -231,12 +232,68 @@ exports.getMyRank = async (req, res) => {
   const deptSummary = deptLeaderboard.find((item) => item.department === department);
   const mySummary = intraDeptLeaderboard.find((item) => item.userId === requestedId);
 
+  const myCredits = mySummary ? mySummary.overallScore : 0;
+
   res.json({
     departmentRank: mySummary ? mySummary.rank : null,
     departmentTotal: intraDeptLeaderboard.length,
     collegeRank: deptSummary ? deptSummary.rank : null,
     collegeTotal: deptLeaderboard.length,
-    score: mySummary ? mySummary.overallScore : 0,
-    totalCredits: mySummary ? mySummary.overallScore : 0,
+    score: myCredits,
+    myCredits,
+    totalCredits: myCredits,
+    totalFaculty: intraDeptLeaderboard.length,
   });
+};
+
+exports.getDepartmentStats = async (_req, res) => {
+  const rankings = await buildLeaderboard();
+  const [facultyCount, hodCount] = await Promise.all([
+    Faculty.countDocuments({ isApproved: true, status: "APPROVED" }),
+    HOD.countDocuments({ isApproved: true, status: "APPROVED" }),
+  ]);
+
+  const totalFaculty = facultyCount + hodCount;
+  const totalCredits = rankings.reduce((sum, item) => sum + (Number(item.overallScore) || 0), 0);
+
+  res.json({
+    totalDepartments: rankings.length,
+    totalFaculty,
+    totalCredits,
+    averageCreditsPerFaculty: totalFaculty > 0 ? Number((totalCredits / totalFaculty).toFixed(2)) : 0,
+  });
+};
+
+exports.getFacultyRankings = async (req, res) => {
+  const type = String(req.query.type || "credits").toLowerCase();
+  const timeframe = String(req.query.timeframe || "semester").toLowerCase();
+  const uploads = await Upload.find({ status: { $in: APPROVED_STATUSES } }).lean();
+  const users = [...(await Faculty.find({ isApproved: true }).lean()), ...(await HOD.find({ isApproved: true }).lean())];
+
+  const scores = new Map();
+  users.forEach((user) => {
+    scores.set(String(user._id), { _id: user._id, name: user.name, department: user.departmentName || user.department, score: 0 });
+  });
+
+  uploads.forEach((upload) => {
+    const key = String(upload.faculty);
+    if (!scores.has(key)) return;
+    const createdAt = upload.createdAt ? new Date(upload.createdAt) : null;
+
+    if (timeframe === "year" && createdAt && createdAt.getFullYear() !== new Date().getFullYear()) return;
+    if (timeframe === "semester" && createdAt) {
+      const nowSemester = new Date().getMonth() < 6 ? 1 : 2;
+      const uploadSemester = createdAt.getMonth() < 6 ? 1 : 2;
+      if (createdAt.getFullYear() !== new Date().getFullYear() || uploadSemester !== nowSemester) return;
+    }
+
+    const entry = scores.get(key);
+    entry.score += type === "achievements" ? 1 : (Number(upload.credits) || 0);
+  });
+
+  res.json(
+    Array.from(scores.values())
+      .sort((left, right) => right.score - left.score || left.name.localeCompare(right.name))
+      .map((item, index) => ({ ...item, rank: index + 1 }))
+  );
 };

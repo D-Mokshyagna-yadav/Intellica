@@ -5,36 +5,38 @@ import { Loader2 } from "lucide-react";
 
 interface ProfileUser {
   _id?: string;
-  employeeId?: string;
-  name?: string;
-  email?: string;
-  designation?: string;
+    <div style={container}>
+      <div style={heroCard}>
+        <p style={idStyle}>ID: {user.employeeId}</p>
+        <h3 style={nameStyle}>{user.name}</h3>
+        <p style={designationStyle}>{user.designation}</p>
   googleScholar?: string;
-  scopusId?: string;
-  vidwanId?: string;
-  profileImage?: string;
-  department?: string;
-}
-
-interface Props {
-  user: ProfileUser | null;
-}
-
-function ProfileInfo({ user }: Props) {
-  const [showEdit, setShowEdit] = useState(false);
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-
+        {links.length > 0 && (
+          <div style={linkRow}>
+            {links.map(({ label, url }) => (
+              <a
+                key={label}
+                href={url.startsWith("http") ? url : `https://${url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={linkStyle}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        )}
   const [editData, setEditData] = useState({
-    name: "",
-    email: "",
-    designation: "",
-    googleScholar: "",
-    scopusId: "",
-    vidwanId: "",
-  });
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, flexWrap: "wrap" }}>
+          <button style={editBtn} onClick={() => setShowEdit(true)}>
+            Edit Profile
+          </button>
+          <button style={passwordBtn} onClick={() => setShowChangePassword(true)}>
+            Change Password
+          </button>
+        </div>
+      </div>
 
-  const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
   });
@@ -137,7 +139,7 @@ function ProfileInfo({ user }: Props) {
               />
             ))}
 
-            <input style={{ ...inputStyle, background: "#eee", cursor: "not-allowed" }} value={user.employeeId || ""} disabled />
+            <input style={{ ...inputStyle, background: "#f8fafc", cursor: "not-allowed" }} value={user.employeeId || ""} disabled />
 
             <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
               <button style={saveBtn} onClick={handleUpdate} disabled={updateProfile.isPending}>
@@ -152,7 +154,6 @@ function ProfileInfo({ user }: Props) {
         </div>
       )}
 
-      {/* ── Change Password Modal ── */}
       {showChangePassword && (
         <div style={overlay}>
           <div style={modal}>
@@ -205,15 +206,17 @@ export default ProfileInfo;
 
 /* ── Styles ── */
 const container: React.CSSProperties = { marginTop: 18, textAlign: "center" };
-const idStyle: React.CSSProperties = { fontSize: 13, color: "#888", marginBottom: 4 };
-const nameStyle: React.CSSProperties = { margin: 0, fontWeight: 800, fontSize: 20 };
-const designationStyle: React.CSSProperties = { margin: "6px 0", fontSize: 15, fontWeight: 500, opacity: 0.8 };
-const linkStyle: React.CSSProperties = { display: "inline-block", background: "#1e1e2e", color: "white", padding: "5px 12px", borderRadius: 20, margin: "4px", textDecoration: "none", fontSize: 13 };
-const editBtn: React.CSSProperties = { padding: "7px 14px", borderRadius: 8, border: "none", background: "#4f46e5", color: "white", cursor: "pointer", fontSize: 13 };
-const passwordBtn: React.CSSProperties = { padding: "7px 14px", borderRadius: 8, border: "none", background: "#d97706", color: "white", cursor: "pointer", fontSize: 13 };
-const overlay: React.CSSProperties = { position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.55)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 99999 };
-const modal: React.CSSProperties = { background: "var(--color-surface-container, white)", padding: 24, borderRadius: 16, width: 340, maxWidth: "92%", boxShadow: "0 24px 48px rgba(0,0,0,0.3)" };
-const modalTitle: React.CSSProperties = { margin: "0 0 16px", fontWeight: 700, fontSize: 18 };
-const inputStyle: React.CSSProperties = { width: "100%", padding: "9px 12px", marginTop: 10, borderRadius: 8, border: "1px solid #ccc", boxSizing: "border-box", fontSize: 14 };
-const saveBtn: React.CSSProperties = { flex: 1, padding: 10, background: "#22c55e", color: "white", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600 };
-const cancelBtn: React.CSSProperties = { flex: 1, padding: 10, background: "#ef4444", color: "white", border: "none", borderRadius: 8, cursor: "pointer" };
+const heroCard: React.CSSProperties = { background: "#fff", border: "1px solid #e2e8f0", borderRadius: 24, padding: 24, boxShadow: "0 8px 24px rgba(15,23,42,0.04)" };
+const idStyle: React.CSSProperties = { fontSize: 12, color: "#64748b", marginBottom: 6, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" };
+const nameStyle: React.CSSProperties = { margin: 0, fontWeight: 800, fontSize: 24, color: "#0f172a" };
+const designationStyle: React.CSSProperties = { margin: "6px 0 0", fontSize: 15, fontWeight: 500, color: "#475569" };
+const linkRow: React.CSSProperties = { marginTop: 16, display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" };
+const linkStyle: React.CSSProperties = { display: "inline-flex", alignItems: "center", background: "#eff6ff", color: "#1d4ed8", padding: "7px 12px", borderRadius: 999, textDecoration: "none", fontSize: 13, fontWeight: 700, border: "1px solid #bfdbfe" };
+const editBtn: React.CSSProperties = { padding: "9px 16px", borderRadius: 999, border: "1px solid #bfdbfe", background: "#2563eb", color: "white", cursor: "pointer", fontSize: 13, fontWeight: 700 };
+const passwordBtn: React.CSSProperties = { padding: "9px 16px", borderRadius: 999, border: "1px solid #fed7aa", background: "#fff7ed", color: "#c2410c", cursor: "pointer", fontSize: 13, fontWeight: 700 };
+const overlay: React.CSSProperties = { position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(15,23,42,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 99999, padding: 16, backdropFilter: "blur(4px)" };
+const modal: React.CSSProperties = { background: "#fff", padding: 24, borderRadius: 24, width: 420, maxWidth: "92%", boxShadow: "0 32px 80px rgba(15,23,42,0.22)", border: "1px solid #e2e8f0" };
+const modalTitle: React.CSSProperties = { margin: "0 0 16px", fontWeight: 700, fontSize: 18, color: "#0f172a" };
+const inputStyle: React.CSSProperties = { width: "100%", padding: "10px 12px", marginTop: 10, borderRadius: 12, border: "1px solid #cbd5e1", boxSizing: "border-box", fontSize: 14, background: "#fff" };
+const saveBtn: React.CSSProperties = { flex: 1, padding: 10, background: "#2563eb", color: "white", border: "none", borderRadius: 999, cursor: "pointer", fontWeight: 700 };
+const cancelBtn: React.CSSProperties = { flex: 1, padding: 10, background: "#f8fafc", color: "#334155", border: "1px solid #cbd5e1", borderRadius: 999, cursor: "pointer", fontWeight: 700 };

@@ -43,10 +43,14 @@ export function useDepartmentRanks() {
 
 export function useMyRank() {
   return useQuery<{
-    rank: number;
-    totalFaculty: number;
+    departmentRank: number | null;
+    departmentTotal: number;
+    collegeRank: number | null;
+    collegeTotal: number;
+    score: number;
     myCredits: number;
-    departmentRank: number;
+    totalCredits: number;
+    totalFaculty: number;
   }>({
     queryKey: LEADERBOARD_KEYS.myRank,
     queryFn: leaderboardService.getMyRank,

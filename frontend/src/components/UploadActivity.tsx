@@ -479,33 +479,40 @@ export default UploadActivity;
 
 const formWrapper = {
 backgroundColor: "white",
-padding: 25,
-borderRadius: 12,
-maxWidth: 650,
+padding: 24,
+borderRadius: 24,
+maxWidth: 720,
 display: "flex",
 flexDirection: "column",
-gap: 14
+gap: 16,
+border: "1px solid #e2e8f0",
+boxShadow: "0 8px 24px rgba(15,23,42,0.04)"
 };
 
 const fieldWrapper = {
 display: "flex",
 flexDirection: "column",
-gap: 4
+gap: 6
 };
 
 const inputStyle = {
 width: "100%",
-padding: 10
+padding: "10px 12px",
+borderRadius: 12,
+border: "1px solid #cbd5e1",
+background: "#fff"
 };
 
 const submitBtn = {
-padding: 12,
+padding: "12px 16px",
 backgroundColor: "#2563eb",
 color: "white",
 border: "none",
-borderRadius: 10,
+borderRadius: 999,
 cursor: "pointer",
-marginTop: 10
+marginTop: 10,
+fontWeight: 700,
+boxShadow: "0 10px 24px rgba(37,99,235,0.18)"
 };
 
 const radioWrapper = {
